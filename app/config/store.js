@@ -13,6 +13,6 @@ if (process.env.NODE_ENV === 'development') {
 
 const store = createStore(reducer, applyMiddleware(...middleware));
 
-//sagaMiddleware.run(rootSaga);
+sagaMiddleware.run(rootSaga);
 
 export default store;

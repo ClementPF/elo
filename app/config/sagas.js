@@ -5,19 +5,26 @@ import {
   CHANGE_TOURNAMENT_NAME,
   SUBMIT_GAME,
   GET_STATS_TOURNAMENT,
+  GOT_STATS_TOURNAMENT,
+  FAILED_REQUEST,
 } from '../actions/games';
 
 export const getStats = tournamentName => fetch(`http://localhost:8080/tournament/${tournamentName}/stats`);
 
-// declaring function* fetchLatestConversionRates throws an error
-const getStatsForTournamentName = function* (action) {
-  console.log("here");
-  let tournament = action.tournament;
-  if(tournament === undefined){
-    tournament = yield select(state => state.tournament.defaultTournament);
-  }
+const fetchStatsForTournamentName = function* (action) {
+  console.log('TODO: Update the things.', action);
 
-  const response = yield call(getStats,tournament);
+  try {
+    const response = yield call(getStats, action.tournamentName);
+    const result = yield response.json();
+    if (result.error) {
+console.log('TODO: Update the things.', result.error);
+    } else {
+      yield put({ type: GOT_STATS_TOURNAMENT, result });
+    }
+  } catch (error) {
+    yield put({ type: FAILED_REQUEST, error: error.message });
+  }
 };
 
 /*
@@ -39,10 +46,8 @@ function* fetchLatestConversionRates(action) {
   }
 }*/
 
-const rootSaga = function* root() {
-
-
-  yield takeEvery(GET_STATS_TOURNAMENT, getStatsForTournamentName);
+const rootSaga = function* (){
+  yield takeEvery(GET_STATS_TOURNAMENT, fetchStatsForTournamentName);
 };
 
 export default rootSaga;

@@ -1,13 +1,20 @@
 import {
   CHANGE_WINNER_NAME,
+  SWAP_CURRENCY,
   CHANGE_TOURNAMENT_NAME,
   GET_STATS_TOURNAMENT,
+  GOT_STATS_TOURNAMENT,
   SUBMIT_GAME,
+  FAILED_REQUEST,
 } from '../actions/games';
+
+
+import currencies from '../data/currencies';
 
 const initialState = {
    winnerName: 'Joe',
    tournamentName: 'tournament1',
+   stats: currencies,
 };
 
 export default (state = initialState, action) => {
@@ -24,7 +31,6 @@ export default (state = initialState, action) => {
     case GET_STATS_TOURNAMENT:
       return {
         ...state,
-        winnerName: action.winnerName,
         tournamentName: action.tournamentName,
       };
     case SUBMIT_GAME:
@@ -32,6 +38,16 @@ export default (state = initialState, action) => {
         ...state,
         winnerName: action.winnerName,
         tournamentName: action.tournamentName,
+      };
+    case FAILED_REQUEST:
+      return {
+        ...state,
+        tournamentName: action.tournamentName,
+      };
+    case GOT_STATS_TOURNAMENT:
+      return {
+        ...state,
+        stats: action.result,
       };
     default:
       return state;
