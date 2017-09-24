@@ -11,6 +11,26 @@ import {
 
 export const getStats = tournamentName => fetch(`http://localhost:8080/tournament/${tournamentName}/stats`);
 
+export const postGame = (winner, looser, tournament) => fetch(`http://localhost:8080/tournament/${tournamentName}/matchs`, {
+  method: 'POST',
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    "outcomes": [
+    {
+      "result": "WIN",
+      "userName": winner
+    },{
+      "result": "LOST",
+      "userName": looser
+    },
+  ]
+
+  })
+})
+
 const fetchStatsForTournamentName = function* (action) {
   console.log('TODO: Update the things.', action);
 
@@ -26,6 +46,22 @@ console.log('TODO: Update the things.', result.error);
     yield put({ type: FAILED_REQUEST, error: error.message });
   }
 };
+
+const postGameForTournamentName = function* (action) {
+
+  console.log('postGameForTournamentName', action);
+  try {
+    const response = yield call(postGame, action.tournamentName);
+    const result = yield response.json();
+    if (result.error) {
+console.log('TODO: Update the things.', result.error);
+    } else {
+    }
+  } catch (error) {
+    yield put({ type: FAILED_REQUEST, error: error.message });
+  }
+};
+
 
 /*
 function* fetchLatestConversionRates(action) {
@@ -47,6 +83,7 @@ function* fetchLatestConversionRates(action) {
 }*/
 
 const rootSaga = function* (){
+  yield takeEvery(SUBMIT_GAME, postGameForTournamentName);
   yield takeEvery(GET_STATS_TOURNAMENT, fetchStatsForTournamentName);
 };
 

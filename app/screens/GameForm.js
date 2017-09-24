@@ -1,5 +1,6 @@
 import React, { Component, PropTypes }  from 'react';
 import { View,KeyboardAvoidingView, FlatList, StatusBar } from 'react-native';
+import { Button } from 'react-native-elements'
 import { connect } from 'react-redux';
 
 import { ListItem, Separator } from '../components/List';
@@ -27,6 +28,11 @@ handleChangeTournamentText = (text) => {
   this.props.dispatch(changeWinnerName(text));
 };
 
+submitGame = (text) => {
+  console.log('here')
+  this.props.dispatch(submitGame(text));
+};
+
   render() {
     return (
       <Container backgroundColor={this.props.primaryColor}>
@@ -34,7 +40,7 @@ handleChangeTournamentText = (text) => {
         <Header onPress={this.handleOptionsPress} />
         <KeyboardAvoidingView behavior="padding">
           <InputWithButton
-            buttonText={this.props.baseCurrency}
+            buttonText={this.props.winnerName}
             onPress={this.handlePressBaseCurrency}
             defaultValue={this.props.winnerName}
             onChangeText={this.handleChangeUserText}
@@ -48,6 +54,8 @@ handleChangeTournamentText = (text) => {
             onChangeText={this.handleChangeTournamentText}
             textColor={this.props.primaryColor}
           />
+        <Button
+        title='Darn it, I lost!' onPress={this.submitGame}/>
         </KeyboardAvoidingView>
       </Container>
     );

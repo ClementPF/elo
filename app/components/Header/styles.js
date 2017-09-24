@@ -18,4 +18,10 @@ export default EStyleSheet.create({
   icon: {
     width: 18,
   },
+  text: {
+    color: '$white',
+    fontSize: 14,
+    letterSpacing: -0.5,
+    fontWeight: '600',
+  },
 });

@@ -3,6 +3,7 @@ import { StackNavigator } from 'react-navigation';
 
 import Home from '../screens/Home';
 import GameForm from '../screens/GameForm';
+import Login from '../screens/Login';
 
 const HomeStack = StackNavigator(
   {
@@ -28,8 +29,22 @@ const GameFormStack = StackNavigator({
   },
 });
 
+
+const LoginStack = StackNavigator({
+  Login: {
+    screen: Login,
+    navigationOptions: {
+      header: () => null,
+      headerTitle: 'LOGIN',
+    },
+  },
+});
+
 export default StackNavigator(
   {
+    Login: {
+      screen: LoginStack,
+    },
     Home: {
       screen: HomeStack,
     },

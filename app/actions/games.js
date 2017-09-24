@@ -19,7 +19,6 @@ export const changeTournamentName = name => ({
 export const submitGame = winner => ({
   type: SUBMIT_GAME,
   winner: winner,
-  tournamentName: tournament,
 });
 
 export const loadStatsForTournament = tournament => ({

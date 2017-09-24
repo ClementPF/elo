@@ -36,8 +36,6 @@ export default (state = initialState, action) => {
     case SUBMIT_GAME:
       return {
         ...state,
-        winnerName: action.winnerName,
-        tournamentName: action.tournamentName,
       };
     case FAILED_REQUEST:
       return {

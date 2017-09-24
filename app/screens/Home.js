@@ -1,7 +1,7 @@
 import React, { Component }  from 'react';
 import PropTypes from 'prop-types';
 import { View, FlatList, StatusBar } from 'react-native';
-import { List, ListItem } from 'react-native-elements'
+import { List } from 'react-native-elements'
 import { connect } from 'react-redux';
 
 import { ListItem, Separator } from '../components/List';
@@ -30,9 +30,7 @@ componentWillReceiveProps(nextProps) {
 }
 
   handlePress = () => {
-
-    this.props.dispatch(loadStatsForTournament('tournament1'));
-  //  this.props.navigation.navigate('GameForm', { title: 'Game Form'});
+    this.props.navigation.navigate('GameForm', { title: 'Game Form'});
   };
 
   render() {
@@ -40,10 +38,11 @@ componentWillReceiveProps(nextProps) {
 
   const rows = this.props.stats || [];
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 0 }}>
         <StatusBar translucent={false} barStyle="dark-content" />
       <Header onPress={this.handlePress}/>
       <FlatList
+         marginTop={70}
           data={this.props.stats}
           renderItem={({ item }) => (
             <ListItem
