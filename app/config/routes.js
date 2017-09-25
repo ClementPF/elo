@@ -30,15 +30,20 @@ const GameFormStack = StackNavigator({
 });
 
 
-const LoginStack = StackNavigator({
-  Login: {
-    screen: Login,
-    navigationOptions: {
-      header: () => null,
-      headerTitle: 'LOGIN',
+const LoginStack =  StackNavigator(
+  {
+    Login: {
+      screen: Login,
+      navigationOptions: {
+        header: () => null,
+        headerTitle: 'Login',
+      },
     },
   },
-});
+  {
+    headerMode: 'screen',
+  },
+);
 
 export default StackNavigator(
   {
