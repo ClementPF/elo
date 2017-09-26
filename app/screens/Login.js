@@ -1,6 +1,6 @@
-import React, {Component, AsyncStorage} from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {View, FlatList, StatusBar} from 'react-native';
+import {View, FlatList, StatusBar, AsyncStorage} from 'react-native';
 import {List} from 'react-native-elements'
 import {connect} from 'react-redux';
 
@@ -10,7 +10,7 @@ import currencies from '../data/currencies';
 
 import {Container} from '../components/Container';
 import {connectAlert} from '../components/Alert';
-import {createUser} from '../actions/auth';
+import {createUser, restoreSession} from '../actions/auth';
 
 class Login extends Component {
   static propTypes = {
@@ -39,12 +39,22 @@ class Login extends Component {
   };
 
   componentWillMount() {
+    const t = AsyncStorage.getItem('@Store:token').then((value) => {
+
+            this.setState({"token": value});
+            if(value){
+                this.props.dispatch(restoreSession(value));
+                this.props.navigation.navigate('Home', { title: 'Home'});
+
+            }
+        }).done();
 
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.error && !this.props.error) {
       this.props.alertWithType('error', 'Error', nextProps.error);
+
     }
   }
 

@@ -1,5 +1,9 @@
 import {takeEvery, call, put, select} from 'redux-saga/effects';
 
+var React = require("react-native");
+var { AsyncStorage} = React;
+
+
 import {
   CHANGE_WINNER_NAME,
   CHANGE_TOURNAMENT_NAME,
@@ -9,7 +13,7 @@ import {
   FAILED_REQUEST
 } from '../actions/games';
 
-import {CREATE_USER} from '../actions/auth';
+import {CREATE_USER, LOGIN_USER, RESTORE_SESSION} from '../actions/auth';
 
 export const createUser = token => fetch(`http://localhost:8080/auth/token`, {
   method: 'POST',
@@ -20,14 +24,21 @@ export const createUser = token => fetch(`http://localhost:8080/auth/token`, {
   body: JSON.stringify({"fb_access_token": token})
 })
 
-export const getStats = tournamentName => fetch(`http://localhost:8080/tournament/${tournamentName}/stats`);
+export const getStats = tournamentName => fetch(`http://localhost:8080/tournament/${tournamentName}/stats`, {
+  method: 'GET',
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    'Authentication':'Bearer ' + AsyncStorage.getItem('Store:token'),
+  }})
+
 
 export const postGame = (winner, looser, tournament) => fetch(`http://localhost:8080/tournament/${tournamentName}/matchs`, {
   method: 'POST',
   headers: {
     'Accept': 'application/json',
     'Content-Type': 'application/json',
-    'Authentication':'Bearer ' + this.state.token,
+    'Authentication':'Bearer ' + this.state.auth.token,
   },
   body: JSON.stringify({
     "outcomes": [
@@ -81,18 +92,20 @@ const loginUser = function * (action) {
     const result = yield response.json();
 
   console.log('loginUser sucess', result);
-        this.props.navigation.navigate('Home', { title: 'Home'});
 
     if (result.error_message) {
       console.log('Failed Login', result.error_message);
     } else {
-      try {
-        this.props.navigation.navigate('Home', { title: 'Home'});
 
         yield put({type: LOGIN_USER, token: result.access_token});
+      try {
          AsyncStorage.setItem('@Store:token', result.access_token);
+         const t = AsyncStorage.getItem('@Store:token');
+
          //
       } catch (error) {
+
+          console.log('Failed saving token', error);
         // Error saving data
       }
     }
@@ -101,10 +114,15 @@ const loginUser = function * (action) {
   }
 };
 
+const restoreSession = function * (action){
+
+}
+
 const rootSaga = function * () {
   yield takeEvery(SUBMIT_GAME, postGameForTournamentName);
   yield takeEvery(GET_STATS_TOURNAMENT, fetchStatsForTournamentName);
   yield takeEvery(CREATE_USER, loginUser);
+  yield takeEvery(RESTORE_SESSION, restoreSession);
 };
 
 export default rootSaga;

@@ -3,6 +3,7 @@ import {
   UPDATE_USER,
   LOGIN_USER,
   LOGOUT_USER,
+  RESTORE_SESSION,
   FAILED_REQUEST,
 } from '../actions/auth';
 
@@ -28,6 +29,12 @@ export default (state = initialState, action) => {
         token: action.token,
         signedIn: true,
       };
+      case RESTORE_SESSION:
+        return {
+          ...state,
+          token: action.token,
+          signedIn: true,
+        };
     case LOGOUT_USER:
       return {
         ...state,
