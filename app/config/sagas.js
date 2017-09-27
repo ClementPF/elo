@@ -74,7 +74,7 @@ const postGameForTournamentName = function * (action) {
 
   console.log('postGameForTournamentName', action);
   try {
-    const response = yield call(postGame, action.tournamentName);
+    const response = yield call(postGame, action.winnerName, action.tournamentName);
     const result = yield response.json();
     if (result.error) {
       console.log('TODO: Update the things.', result.error);

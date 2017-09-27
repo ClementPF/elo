@@ -22,11 +22,11 @@ export default (state = initialState, action) => {
     case CHANGE_WINNER_NAME:
       return {
         ...state,
-        name: action.text};
+        winnerName: action.name};
     case CHANGE_TOURNAMENT_NAME:
       return {
         ...state,
-        name: action.text,
+        winnerName: action.name,
       };
     case GET_STATS_TOURNAMENT:
       return {

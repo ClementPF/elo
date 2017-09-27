@@ -46,7 +46,8 @@ componentWillReceiveProps(nextProps) {
           data={this.props.stats}
           renderItem={({ item }) => (
             <ListItem
-              text={item.statsId.toString()}
+              key={item.stats_id}
+              text={item.stats_id.toString()}
               subText={item.score}
               onPress={this.handlePress}
             />

@@ -1,6 +1,6 @@
 export default [
   {
-    "statsId": 1,
+    "stats_id": 1,
     "score": 982.7192337693466,
     "gameCount": 5,
     "winCount": 2,

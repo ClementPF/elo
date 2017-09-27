@@ -28,9 +28,9 @@ handleChangeTournamentText = (text) => {
   this.props.dispatch(changeWinnerName(text));
 };
 
-submitGame = (text) => {
+submitGame = (winner, tournamentName) => {
   console.log('here')
-  this.props.dispatch(submitGame(text));
+  this.props.dispatch(submitGame());
 };
 
   render() {
@@ -46,7 +46,7 @@ submitGame = (text) => {
             onChangeText={this.handleChangeUserText}
             textColor={this.props.primaryColor}
           />
-          <InputWithButton
+              <InputWithButton
             editable={false}
             buttonText={this.props.tournamentName}
             onPress={this.handlePressQuoteCurrency}
