@@ -39,7 +39,7 @@ class Login extends Component {
   };
 
   componentWillMount() {
-    const t = AsyncStorage.getItem('@Store:token').then((value) => {
+/*  const t = AsyncStorage.getItem('@Store:token').then((value) => {
 
             this.setState({"token": value});
             if(value){
@@ -47,7 +47,7 @@ class Login extends Component {
                 this.props.navigation.navigate('Home', { title: 'Home'});
 
             }
-        }).done();
+        }).done();*/
 
   }
 

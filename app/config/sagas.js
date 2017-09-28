@@ -14,7 +14,6 @@ import {
 } from '../actions/games';
 
 import {CREATE_USER, LOGIN_USER, RESTORE_SESSION} from '../actions/auth';
-
 export const createUser = token => fetch(`http://localhost:8080/auth/token`, {
   method: 'POST',
   headers: {
@@ -24,32 +23,34 @@ export const createUser = token => fetch(`http://localhost:8080/auth/token`, {
   body: JSON.stringify({"fb_access_token": token})
 })
 
-export const getStats = tournamentName => fetch(`http://localhost:8080/tournament/${tournamentName}/stats`, {
+export const getStats = (token, tournamentName) => fetch(`http://localhost:8080/tournament/${tournamentName}/stats`, {
   method: 'GET',
   headers: {
     'Accept': 'application/json',
     'Content-Type': 'application/json',
-    'Authentication':'Bearer ' + AsyncStorage.getItem('Store:token'),
+    'Authorization':'Bearer ' + token,
   }})
 
 
-export const postGame = (winner, looser, tournament) => fetch(`http://localhost:8080/tournament/${tournamentName}/matchs`, {
+export const postGame = (token, winner, tournament) => fetch(`http://localhost:8080/tournament/${tournament}/games`, {
   method: 'POST',
   headers: {
     'Accept': 'application/json',
     'Content-Type': 'application/json',
-    'Authentication':'Bearer ' + this.state.auth.token,
+    'Authorization':'Bearer ' + token,
   },
   body: JSON.stringify({
     "outcomes": [
       {
         "result": "WIN",
-        "userName": winner
-      }, {
-        "result": "LOST",
-        "userName": looser
+        "user_name": winner
+      },
+      {
+        "result": "LOSS",
+        "user_name": "todo_change_to_actual"
       }
-    ]
+    ],
+  "tournament_name": tournament
 
   })
 })
@@ -58,7 +59,8 @@ const fetchStatsForTournamentName = function * (action) {
   console.log('TODO: Update the things.', action);
 
   try {
-    const response = yield call(getStats, action.tournamentName);
+    const auth = yield select(state => state.auth);
+    const response = yield call(getStats, auth.token, action.tournamentName);
     const result = yield response.json();
     if (result.error) {
       console.log('TODO: Update the things.', result.error);
@@ -71,14 +73,17 @@ const fetchStatsForTournamentName = function * (action) {
 };
 
 const postGameForTournamentName = function * (action) {
-
-  console.log('postGameForTournamentName', action);
   try {
-    const response = yield call(postGame, action.winnerName, action.tournamentName);
+    const auth = yield select(state => state.auth);
+    const games = yield select(state => state.games);
+      console.log('postGameForTournamentName', games.winnerName , auth.token);
+    const response = yield call(postGame, auth.token, games.winnerName, games.tournamentName);
     const result = yield response.json();
     if (result.error) {
-      console.log('TODO: Update the things.', result.error);
-    } else {}
+      yield put({type: FAILED_REQUEST, error: result});
+    } else {
+      console.log('postGameForTournamentName Success', result);
+    }
   } catch (error) {
     yield put({type: FAILED_REQUEST, error: error.message});
   }
@@ -96,17 +101,11 @@ const loginUser = function * (action) {
     if (result.error_message) {
       console.log('Failed Login', result.error_message);
     } else {
-
         yield put({type: LOGIN_USER, token: result.access_token});
       try {
          AsyncStorage.setItem('@Store:token', result.access_token);
-         const t = AsyncStorage.getItem('@Store:token');
-
-         //
       } catch (error) {
-
           console.log('Failed saving token', error);
-        // Error saving data
       }
     }
   } catch (error) {

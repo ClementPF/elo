@@ -28,7 +28,7 @@ handleChangeTournamentText = (text) => {
   this.props.dispatch(changeWinnerName(text));
 };
 
-submitGame = (winner, tournamentName) => {
+submitGame = () => {
   console.log('here')
   this.props.dispatch(submitGame());
 };
