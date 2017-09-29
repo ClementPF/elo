@@ -13,7 +13,7 @@ import {
   FAILED_REQUEST
 } from '../actions/games';
 
-import {CREATE_USER, LOGIN_USER, RESTORE_SESSION} from '../actions/auth';
+import {CREATE_USER, LOGIN_USER, RESTORE_SESSION, TEST_SESSION, EXPIRED_SESSION} from '../actions/auth';
 export const createUser = token => fetch(`http://localhost:8080/auth/token`, {
   method: 'POST',
   headers: {
@@ -21,6 +21,15 @@ export const createUser = token => fetch(`http://localhost:8080/auth/token`, {
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({"fb_access_token": token})
+})
+
+export const getUser = token => fetch(`http://localhost:8080/user`, {
+  method: 'POST',
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    'Authorization':'Bearer ' + token,
+  }
 })
 
 export const getStats = (token, tournamentName) => fetch(`http://localhost:8080/tournament/${tournamentName}/stats`, {
@@ -113,15 +122,35 @@ const loginUser = function * (action) {
   }
 };
 
-const restoreSession = function * (action){
+  const restoreSession = function * (action){
+      const t = AsyncStorage.getItem('@Store:token').then((value) => {
 
-}
+        }).done();
+
+  };
+
+const testSession = function * (action){
+  try{
+      const response = yield call(getUser, action.token);
+      const result = yield response.json();
+      if (result.response_code == 401) {
+        console.log('token Expired', result.error_message);
+        yield put({type: EXPIRED_SESSION});
+      } else {
+
+
+      }
+  }catch (error){
+
+  }
+};
 
 const rootSaga = function * () {
   yield takeEvery(SUBMIT_GAME, postGameForTournamentName);
   yield takeEvery(GET_STATS_TOURNAMENT, fetchStatsForTournamentName);
   yield takeEvery(CREATE_USER, loginUser);
   yield takeEvery(RESTORE_SESSION, restoreSession);
+  yield takeEvery(TEST_SESSION, testSession);
 };
 
 export default rootSaga;

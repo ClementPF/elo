@@ -4,47 +4,54 @@ import {
   LOGIN_USER,
   LOGOUT_USER,
   RESTORE_SESSION,
-  FAILED_REQUEST,
+  EXPIRED_SESSION,
+  FAILED_REQUEST
 } from '../actions/auth';
 
 const initialState = {
-   token: '',
-   signedIn : false,
+  token: '',
+  signedIn: false
 };
 
-export default (state = initialState, action) => {
+export default(state = initialState, action) => {
   switch (action.type) {
     case CREATE_USER:
       return {
         ...state,
         token: action.token
-    };
+      };
     case UPDATE_USER:
       return {
-        ...state,
+        ...state
       };
     case LOGIN_USER:
       return {
         ...state,
         token: action.token,
-        signedIn: true,
+        signedIn: true
       };
-      case RESTORE_SESSION:
-        return {
-          ...state,
-          token: action.token,
-          signedIn: true,
-        };
+    case RESTORE_SESSION:
+      return {
+        ...state,
+        token: action.token,
+        signedIn: true
+      };
+    case EXPIRED_SESSION:
+      return {
+        ...state,
+        token: null,
+        signedIn: false
+      };
     case LOGOUT_USER:
       return {
         ...state,
         token: null,
-        signedIn: false,
+        signedIn: false
       };
     case FAILED_REQUEST:
       return {
         ...state,
-        tournamentName: action.tournamentName,
+        tournamentName: action.tournamentName
       };
     default:
       return state;

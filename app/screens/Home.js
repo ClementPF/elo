@@ -46,13 +46,13 @@ componentWillReceiveProps(nextProps) {
           data={this.props.stats}
           renderItem={({ item }) => (
             <ListItem
-              key={item.stats_id}
-              text={item.stats_id.toString()}
+              index={item.stats_id}
+              text={item.username}
               subText={item.score}
               onPress={this.handlePress}
             />
           )}
-          keyExtractor={item => item.statsId}
+          keyExtractor={item => item.stats_id}
           ItemSeparatorComponent={Separator}
         />
       </View>

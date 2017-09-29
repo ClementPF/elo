@@ -21,6 +21,7 @@ static propTypes = {
 };
 
 handleChangeUserText = (text) => {
+  this.props.winnerName = text;
   this.props.dispatch(changeWinnerName(text));
 };
 
@@ -28,9 +29,9 @@ handleChangeTournamentText = (text) => {
   this.props.dispatch(changeWinnerName(text));
 };
 
-submitGame = () => {
+submitGame = (winner, tournamentName) => {
   console.log('here')
-  this.props.dispatch(submitGame());
+  this.props.dispatch(submitGame(this.props.winnerName, "tournament1"));
 };
 
   render() {
