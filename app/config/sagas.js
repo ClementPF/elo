@@ -1,5 +1,6 @@
 import {takeEvery, call, put, select} from 'redux-saga/effects';
 
+import store from '../config/store';
 var React = require("react-native");
 var { AsyncStorage} = React;
 
@@ -14,6 +15,9 @@ import {
 } from '../actions/games';
 
 import {CREATE_USER, LOGIN_USER, RESTORE_SESSION, TEST_SESSION, EXPIRED_SESSION} from '../actions/auth';
+
+export const getAuth = () => store.getState().auth;
+
 export const createUser = token => fetch(`http://localhost:8080/auth/token`, {
   method: 'POST',
   headers: {
@@ -85,7 +89,6 @@ const postGameForTournamentName = function * (action) {
   try {
     const auth = yield select(state => state.auth);
     const games = yield select(state => state.games);
-      console.log('postGameForTournamentName', games.winnerName , auth.token);
     const response = yield call(postGame, auth.token, games.winnerName, games.tournamentName);
     const result = yield response.json();
     if (result.error) {

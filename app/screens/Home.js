@@ -44,9 +44,9 @@ componentWillReceiveProps(nextProps) {
       <FlatList
          marginTop={70}
           data={this.props.stats}
-          renderItem={({ item }) => (
+          renderItem={({ item , index }) => (
             <ListItem
-              index={item.stats_id}
+              index={index + 1}
               text={item.username}
               subText={item.score}
               onPress={this.handlePress}

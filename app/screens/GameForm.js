@@ -1,6 +1,6 @@
 import React, { Component, PropTypes }  from 'react';
 import { View,KeyboardAvoidingView, FlatList, StatusBar } from 'react-native';
-import { Button } from 'react-native-elements'
+import { Button, SearchBar } from 'react-native-elements'
 import { connect } from 'react-redux';
 
 import { ListItem, Separator } from '../components/List';
@@ -32,6 +32,8 @@ handleChangeTournamentText = (text) => {
 submitGame = (winner, tournamentName) => {
   console.log('here')
   this.props.dispatch(submitGame(this.props.winnerName, "tournament1"));
+
+
 };
 
   render() {
@@ -40,21 +42,14 @@ submitGame = (winner, tournamentName) => {
         <StatusBar backgroundColor="blue" barStyle="light-content" />
         <Header onPress={this.handleOptionsPress} />
         <KeyboardAvoidingView behavior="padding">
-          <InputWithButton
-            buttonText={this.props.winnerName}
-            onPress={this.handlePressBaseCurrency}
-            defaultValue={this.props.winnerName}
-            onChangeText={this.handleChangeUserText}
-            textColor={this.props.primaryColor}
-          />
-              <InputWithButton
-            editable={false}
-            buttonText={this.props.tournamentName}
-            onPress={this.handlePressQuoteCurrency}
-            defaultValue={this.props.tournamentName}
-            onChangeText={this.handleChangeTournamentText}
-            textColor={this.props.primaryColor}
-          />
+
+
+          <SearchBar
+  lightTheme = {true}
+  round
+  onChangeText={this.handleChangeUserText}
+  placeholder='Whos the lucky one...' />
+
         <Button
         title='Darn it, I lost!' onPress={this.submitGame}/>
         </KeyboardAvoidingView>
