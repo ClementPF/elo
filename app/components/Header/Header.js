@@ -1,13 +1,17 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import { View, Image, Text, TouchableOpacity } from 'react-native';
+import {Icon} from 'react-native-elements'
 
+import PropTypes from 'prop-types';
 import styles from './styles';
 
 const Header = ({ onPress }) => (
   <View style={styles.container}>
     <TouchableOpacity onPress={onPress} style={styles.button}>
-      <Image resizeMode="contain" source={require('./images/gear.png')} style={styles.icon} />
-    </TouchableOpacity>
+
+<Icon
+  name='rowing'/>
+        </TouchableOpacity>
   </View>
 );
 

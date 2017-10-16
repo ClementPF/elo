@@ -1,22 +1,28 @@
+import React from 'react';
 import { StatusBar } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 
 import Home from '../screens/Home';
 import GameForm from '../screens/GameForm';
 import Login from '../screens/Login';
+import {Icon} from 'react-native-elements';
 
 const HomeStack = StackNavigator(
   {
     Home: {
       screen: Home,
       navigationOptions: {
-        header: () => null,
         headerTitle: 'Home',
+        header: ({navigate}) => ({
+        right: (
+            <GameForm navigate={navigate}/>
+        ),
+    }),
       },
     },
   },
   {
-    headerMode: 'screen',
+    headerMode: 'none',
   },
 );
 
@@ -27,11 +33,14 @@ const GameFormStack = StackNavigator({
       headerTitle: navigation.state.params.title,
     }),
   },
+},
+{
+  headerMode: 'none',
+    mode: 'modal',
 });
 
 
-const LoginStack =  StackNavigator(
-  {
+const LoginStack =  StackNavigator({
     Login: {
       screen: Login,
       navigationOptions: {
@@ -58,8 +67,8 @@ export default StackNavigator(
     },
   },
   {
-    mode: 'modal',
-    headerMode: 'none',
+    mode: 'card',
+    headerMode: 'screen',
     cardStyle: { paddingTop: StatusBar.currentHeight },
   },
 );

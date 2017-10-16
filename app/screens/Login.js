@@ -10,7 +10,7 @@ import currencies from '../data/currencies';
 
 import {Container} from '../components/Container';
 import {connectAlert} from '../components/Alert';
-import {createUser, restoreSession} from '../actions/auth';
+import {createUser, restoreSession, testSession} from '../actions/auth';
 
 class Login extends Component {
   static propTypes = {
@@ -40,21 +40,22 @@ class Login extends Component {
 
   componentWillMount() {
 
-      const t = AsyncStorage.getItem('@Store:token').then((value) => {
-
+      const t = AsyncStorage.getItem('@Store:token').
+      then((value) => {
             this.setState({"token": value});
-            if(value){
-
-                this.props.dispatch(restoreSession(value));
-                this.props.navigation.navigate('Home', { title: 'Home'});
-            }
+            this.props.dispatch(restoreSession(value));
+            this.props.navigation.navigate('Home', { title: 'Home'});
         }).done();
   }
 
   componentWillReceiveProps(nextProps) {
+    console.log("componentWillReceiveProps" + nextProps);
     if (nextProps.error && !this.props.error) {
       this.props.alertWithType('error', 'Error', nextProps.error);
 
+    }
+    if(nextProps.signedIn){
+      this.props.navigation.navigate('Home', { title: 'Home'});
     }
   }
 

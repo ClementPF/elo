@@ -95,6 +95,7 @@ const postGameForTournamentName = function * (action) {
       yield put({type: FAILED_REQUEST, error: result});
     } else {
       console.log('postGameForTournamentName Success', result);
+      return
     }
   } catch (error) {
     yield put({type: FAILED_REQUEST, error: error.message});
@@ -127,9 +128,7 @@ const loginUser = function * (action) {
 
   const restoreSession = function * (action){
       const t = AsyncStorage.getItem('@Store:token').then((value) => {
-
         }).done();
-
   };
 
 const testSession = function * (action){
