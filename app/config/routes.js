@@ -11,14 +11,13 @@ const HomeStack = StackNavigator(
   {
     Home: {
       screen: Home,
-      navigationOptions: {
+
+      navigationOptions: ({ navigation }) => ({
         headerTitle: 'Home',
-        header: ({navigate}) => ({
-        right: (
-            <GameForm navigate={navigate}/>
-        ),
-    }),
-      },
+        headerRight:   <Icon
+          name='rowing'
+          onPress={ () => navigation.navigate('GameForm', { title: 'Game'}) } />,
+      }),
     },
   },
   {

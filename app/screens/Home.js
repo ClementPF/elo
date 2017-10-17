@@ -5,7 +5,6 @@ import { List } from 'react-native-elements'
 import { connect } from 'react-redux';
 
 import { ListItem, Separator } from '../components/List';
-import { Header } from '../components/Header';
 import currencies from '../data/currencies';
 
 import { Container } from '../components/Container';
@@ -40,9 +39,7 @@ componentWillReceiveProps(nextProps) {
     return (
       <View style={{ flex: 0 }}>
         <StatusBar translucent={false} barStyle="dark-content" />
-      <Header onPress={this.handlePress}/>
       <FlatList
-         marginTop={70}
           data={this.props.stats}
           renderItem={({ item , index }) => (
             <ListItem
