@@ -1,6 +1,7 @@
 import React from 'react';
 import { StatusBar } from 'react-native';
 import { StackNavigator } from 'react-navigation';
+import { NavigationActions } from 'react-navigation'
 
 import Home from '../screens/Home';
 import GameForm from '../screens/GameForm';
@@ -15,7 +16,7 @@ const HomeStack = StackNavigator(
       navigationOptions: ({ navigation }) => ({
         headerTitle: 'Home',
         headerRight:   <Icon
-          name='rowing'
+          name='plus-one'
           onPress={ () => navigation.navigate('GameForm', { title: 'Game'}) } />,
       }),
     },

@@ -50,8 +50,6 @@ class GameForm extends Component {
 
   submitGame = (winner, tournamentName) => {
 
-    //  this.props.dispatch(submitGame(this.props.winnerName, "tournament1"));
-
     fetch(`http://localhost:8080/tournament/${this.tournamentName}/games`, {
       method: 'POST',
       headers: {
@@ -83,24 +81,19 @@ class GameForm extends Component {
 
   };
 
-  close = () => {
-    this.props.navigation.goBack(null);
-  };
-
   render() {
     return (
-      <Container backgroundColor={this.props.primaryColor}>
-        <StatusBar backgroundColor="blue" barStyle="light-content"/>
-        <Icon
-          name='close' onPress={this.close}/>
+      < View>
+        <StatusBar backgroundColor="blue" barStyle="dark-content"/>
+
         <KeyboardAvoidingView behavior="padding">
 
           <SearchBar lightTheme={true} round onChangeText={this.handleChangeUserText} placeholder='Whos the lucky one...'/>
-        <Text> "YO :" {this.state.gameValue} </Text>
+        <Text> Match value : {this.state.gameValue} </Text>
           <Button title='Darn it, I lost!' onPress={this.submitGame}/>
 
         </KeyboardAvoidingView>
-      </Container>
+      </View>
     );
   }
 }

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {View, FlatList, StatusBar, AsyncStorage} from 'react-native';
+import {View, Text, FlatList, StatusBar, AsyncStorage} from 'react-native';
 import {SocialIcon} from 'react-native-elements';
 import {connect} from 'react-redux';
 
@@ -16,8 +16,15 @@ class Login extends Component {
   static propTypes = {
     navigation: PropTypes.object,
     dispatch: PropTypes.func,
-    state: PropTypes.object
+    state: PropTypes.object,
   }
+
+  constructor() {
+        super()
+        this.state = {
+           welcome_text: 'Welcome please log in',
+        }
+     }
 
   async logIn() {
 
@@ -42,9 +49,7 @@ class Login extends Component {
 
       const t = AsyncStorage.getItem('@Store:token').
       then((value) => {
-            this.setState({'token': value});
-            this.props.dispatch(restoreSession(value));
-            this.props.navigation.navigate('Home', { title: 'Home'});
+            this.testSession(value);
         }).done();
   }
 
@@ -55,21 +60,46 @@ class Login extends Component {
 
     }
     if(nextProps.signedIn){
-      this.props.navigation.navigate('Home', { title: 'Home'});
+    //  this.props.navigation.navigate('Home', { title: 'Home'});
     }
   }
+
+  testSession = (token) => {
+
+    fetch(`http://localhost:8080/users`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      }
+    }).then((responseJson) => {
+      if(responseJson.error_message == null){
+              this.props.dispatch(restoreSession(token));
+              this.props.navigation.navigate('Home', {title: 'Home'});
+      }else{
+
+      }
+
+      console.log(responseJson.error_message);
+    }).catch((error) => {
+      console.error(error);
+    });
+
+  };
 
   render() {
 
     const rows = this.props.stats || [];
 
     if (this.props.signedIn) {
-      this.props.navigation.navigate('Home', {title: 'Home'});
+      //this.props.navigation.navigate('Home', {title: 'Home'});
     }
 
     return (
       <Container>
         <StatusBar translucent={ false } barStyle="dark-content"/>
+        <Text> {this.state.welcome_text} </Text>
         <SocialIcon title="Sign In With Facebook" button={ true } onPress={ this.handlePress } type="facebook"/>
       </Container>
     );

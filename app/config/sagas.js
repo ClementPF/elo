@@ -128,6 +128,7 @@ const loginUser = function * (action) {
 
   const restoreSession = function * (action){
       const t = AsyncStorage.getItem('@Store:token').then((value) => {
+
         }).done();
   };
 
