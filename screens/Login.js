@@ -23,15 +23,12 @@ class Login extends Component {
 
      async logIn() {
 
-
-       this.props.navigation.navigate('Links',{});
-
        Axios.post('http://localhost:8080/auth/token', {
          fb_access_token: 'EAAQn18tXJhcBAFkSCsE4khy4WWfGDqQvJE5dcqKfKpxY7SCbNl2RY7rer8EqZAmOQZCptkAjAFKsSPCZB5okfo99kE5TiSNVVu8w6U4NCvN3HDHk2eP0JMDppPZAZAFebhj4gtnH2VG5BXZC8hkOZBWZAnoyr0lJv6lXUhuNWDwjofh59FM38LI9a7dOm0wZB6HfulqsTma5bQ2u30bMC3iKX'
        }).then((response) => {
                console.log(response.data);
 
-               this.props.navigation.navigate('MainTabNavigator',{});
+               this.props.navigation.navigate('Main',{});
            })
            .catch((error) => {
                console.log(error);
