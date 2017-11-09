@@ -14,9 +14,6 @@ export default StackNavigator(
     {
         Login: {
             screen: Login
-        },
-        Links: {
-            screen: LinksScreen
         }
     },
     {

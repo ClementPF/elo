@@ -4,9 +4,10 @@ const API_CONF = {
 };
 
 const API_ENDPOINTS = {
+  AUTH : '/auth/token',
+  TOURNAMENT : '/tournament',
+  USER : '/user' ,
   USERS : '/users' ,
-
-
 };
 
 export {API_CONF, API_ENDPOINTS};

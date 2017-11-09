@@ -10,9 +10,13 @@ import Colors from '../constants/Colors';
 import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import TournamentScreen from '../screens/TournamentScreen';
 
 export default TabNavigator(
     {
+        Tournament: {
+            screen: TournamentScreen
+        },
         Home: {
             screen: HomeScreen
         },
@@ -35,6 +39,9 @@ export default TabNavigator(
                             ? `ios-information-circle${ focused ? '' : '-outline' }`
                             : 'md-information-circle';
                         break;
+                    case 'Tournament':
+                      iconName = 'ios-trophy';
+                    break;
                     case 'Links':
                         iconName = Platform.OS === 'ios' ? `ios-link${ focused ? '' : '-outline' }` : 'md-link';
                         break;

@@ -2,8 +2,10 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {View, Text, FlatList, StatusBar, AsyncStorage} from 'react-native';
 import {SocialIcon} from 'react-native-elements';
-import {createUserAxios} from '../api/login';
+import {loginUser, testTokenValidity} from '../api/login';
 import Axios from 'axios';
+
+import { NavigationActions } from 'react-navigation';
 
 import {API_CONF, API_ENDPOINTS} from '../api/config.js';
 
@@ -23,47 +25,41 @@ class Login extends Component {
 
      async logIn() {
 
-       Axios.post('http://localhost:8080/auth/token', {
-         fb_access_token: 'EAAQn18tXJhcBAFkSCsE4khy4WWfGDqQvJE5dcqKfKpxY7SCbNl2RY7rer8EqZAmOQZCptkAjAFKsSPCZB5okfo99kE5TiSNVVu8w6U4NCvN3HDHk2eP0JMDppPZAZAFebhj4gtnH2VG5BXZC8hkOZBWZAnoyr0lJv6lXUhuNWDwjofh59FM38LI9a7dOm0wZB6HfulqsTma5bQ2u30bMC3iKX'
-       }).then((response) => {
-               console.log(response.data);
+       const {type, token} = await Expo.Facebook.logInWithReadPermissionsAsync('1169707689780759', {
+         permissions: ['email', 'public_profile']
+       });
 
-               this.props.navigation.navigate('Main',{});
-           })
-           .catch((error) => {
-               console.log(error);
-               this.setState({
-                   returnValueFromApi: 'There was an error!'
-               });
-           });
+       if (type === 'success') {
+         console.log('FB login success - token : ' + token);
 
-     };
+         loginUser(token)
+         .then((response) => {
+                 console.log('User Logged in Successfully');
+                 Axios.defaults.headers.common['Authorization'] = 'Bearer '+response.data.access_token;
+                 AsyncStorage.setItem('@Store:token', response.data.access_token);
+                 this.navigateToHome();
+             })
+             .catch((error) => {
+                  console.log('User failed to log in ' + error);
+             });
 
-  async logIn2() {
-
-    const {type, token} = await Expo.Facebook.logInWithReadPermissionsAsync('1169707689780759', {
-      permissions: ['email', 'public_profile']
-    });
-    if (type === 'success') {
-      console.log(token);
-
-      createUserAxios(token).then((response) => {
-      if(response.error_message == null){
-        this.props.navigation.navigate();
-      }else{
-
-      }
-
-      console.log(response.error_message);
-    }).catch((error) => {
-      console.error(error);
-    });
-      // Get the user's name using Facebook's Graph API
-      /*const response = await fetch(
-      `https://graph.facebook.com/me?access_token=${token}`);
-      console.log((await response.json()));*/
-    }
+         console.log(response.error_message);
+       };
   };
+
+// This function will navigate to the Home screen and remove the login from the stack
+  navigateToHome() {
+    const resetAction = NavigationActions.reset({
+      index: 0,
+      key: null,
+      actions:
+          [
+            NavigationActions.navigate({ routeName: 'Main' })
+      ]
+    })
+    this.props.navigation.dispatch(resetAction)
+  }
+
 
   handlePress = () => {
     this.logIn();
@@ -71,10 +67,21 @@ class Login extends Component {
 
   componentWillMount() {
 
-      const t = AsyncStorage.getItem('@Store:token').
-      then((value) => {
-            this.testSession(value);
-        }).done();
+    const t = AsyncStorage.getItem('@Store:token').then((value) => {
+      console.log('Previous session found ' + value);
+      testTokenValidity(value).then((response) => {
+        console.log('session is valid lets skip this screen');
+
+        this.navigateToHome();
+        //this.props.navigation.navigate('Main',{});
+
+
+
+      })
+      .catch((error) => {
+        console.log('session invalid ' + error);
+      });
+    }).done();
   }
 
   componentWillReceiveProps(nextProps) {
