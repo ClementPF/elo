@@ -11,6 +11,7 @@ import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import TournamentScreen from '../screens/TournamentScreen';
+import GameFormScreen from '../screens/GameFormScreen';
 
 export default TabNavigator(
     {
@@ -19,6 +20,9 @@ export default TabNavigator(
         },
         Home: {
             screen: HomeScreen
+        },
+        GameForm: {
+            screen: GameFormScreen
         },
         Links: {
             screen: LinksScreen
@@ -48,6 +52,10 @@ export default TabNavigator(
                     case 'Settings':
                         iconName =
                         Platform.OS === 'ios' ? `ios-options${ focused ? '' : '-outline' }` : 'md-options';
+                        break;
+                    case 'GameForm':
+                        iconName = 'md-add-circle';
+                        break;
                 }
                 return (
                     <Ionicons

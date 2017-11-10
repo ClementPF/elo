@@ -5,4 +5,22 @@ function getStatsForTournament(tournamentName) {
   return Axios.get(`${API_ENDPOINTS.TOURNAMENT}/${tournamentName}/stats`);
 }
 
-export {getStatsForTournament};
+function postGameForTournament(tournamentName, winnerName) {
+  return Axios.post(`${API_ENDPOINTS.TOURNAMENT}/${tournamentName}/games`,
+      {
+   "outcomes": [
+     {
+       "result": "WIN",
+       "user_name": winnerName
+     },
+     {
+       "result": "LOSS",
+       "user_name": "this_has_to_be_changed_in_react"
+     }
+   ],
+ "tournament_name": tournamentName
+
+ })
+;}
+
+export {getStatsForTournament,postGameForTournament};
