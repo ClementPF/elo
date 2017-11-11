@@ -1,7 +1,7 @@
 import React, { Component }  from 'react';
 import PropTypes from 'prop-types';
 import { View, FlatList, StatusBar } from 'react-native';
-import { List , ListItem} from 'react-native-elements'
+import { Icon, List , ListItem} from 'react-native-elements'
 
 import { getStatsForTournament } from '../api/tournament';
 
@@ -12,6 +12,16 @@ static propTypes = {
   navigation: PropTypes.object,
   dispatch: PropTypes.func
 }
+
+static navigationOptions = ({ navigation }) => {
+    const { params = {} } = navigation.state;
+    return {
+        title: 'Tournament',
+        headerTitleStyle :{color:'#FFFFFF'},
+        headerStyle: {backgroundColor:'#3c3c3c'},
+        headerRight: <Icon style={{ marginLeft:15,color:'#fff' }} name={'bars'} size={25} onPress={() => params.handlePress()} />
+    };
+};
 
 constructor(props) {
     super(props);
@@ -24,6 +34,8 @@ componentWillMount(){
 
   console.log("componentWillMount");
 
+
+  this.props.navigation.setParams({ handlePress: this._handlePress });
 
   getStatsForTournament('tournament1').then((response) => {
     this.setState({
@@ -41,7 +53,7 @@ componentWillReceiveProps(nextProps) {
   }
 }
 
-  handlePress = () => {
+  _handlePress(){
     this.props.navigation.navigate('GameForm', { title: 'Game Form'});
   };
 
@@ -52,7 +64,7 @@ componentWillReceiveProps(nextProps) {
 
   const rows = this.state.stats;
     return (
-      <View style={{ flex: 0 }}>
+      <View>
         <StatusBar translucent={false} barStyle="dark-content" />
 
         <List>
