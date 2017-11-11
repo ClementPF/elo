@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { View, FlatList, StatusBar } from 'react-native';
 import { Icon, List , ListItem} from 'react-native-elements'
 
+
 import { getStatsForTournament } from '../api/tournament';
 
 import { NavigationActions } from 'react-navigation';
@@ -14,7 +15,7 @@ static propTypes = {
 }
 
 static navigationOptions = ({ navigation }) => {
-    const { params = {} } = navigation.state;
+    const  params = navigation.state.params;
     return {
         title: 'Tournament',
         headerTitleStyle :{color:'#FFFFFF'},
@@ -54,7 +55,20 @@ componentWillReceiveProps(nextProps) {
 }
 
   _handlePress(){
-    this.props.navigation.navigate('GameForm', { title: 'Game Form'});
+  console.log("click");
+
+  const navigateAction = NavigationActions.navigate({
+
+    routeName: 'Main',
+
+    params: {},
+
+    action: NavigationActions.navigate({ routeName: 'GameForm'})
+  })
+
+  this.props.navigation.dispatch(navigateAction)
+
+    //NavigationActions.navigate({ routeName: 'Main' })
   };
 
 
