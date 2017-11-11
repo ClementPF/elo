@@ -1,8 +1,8 @@
 {
-  "expoServerPort": 19000,
-  "packagerPort": 19002,
-  "packagerPid": 4773,
-  "expoServerNgrokUrl": "https://jq-ait.clementpf.elo.exp.direct",
-  "packagerNgrokUrl": "https://packager.jq-ait.clementpf.elo.exp.direct",
-  "ngrokPid": 4789
+  "expoServerPort": 19004,
+  "packagerPort": 19005,
+  "packagerPid": 3811,
+  "expoServerNgrokUrl": null,
+  "packagerNgrokUrl": null,
+  "ngrokPid": null
 }

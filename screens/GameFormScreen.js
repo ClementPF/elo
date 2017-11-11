@@ -60,7 +60,7 @@ class GameFormScreen extends Component {
 
           <SearchBar lightTheme={true} round
               onChangeText={this.handleChangeUserText}
-              placeholder='Whos the lucky one...'/>
+              placeholder="Who's the lucky one?" />
         <Text> Match value : {this.state.gameValue} </Text>
           <Button title='Darn it, I lost!'
               onPress={this.submitGame}/>
