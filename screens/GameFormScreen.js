@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {View, Text, KeyboardAvoidingView, FlatList, StatusBar, AsyncStorage} from 'react-native';
-import {Button, SearchBar, Icon} from 'react-native-elements'
-import {postGameForTournament} from '../api/tournament'
+import {ScrollView, View, Text, KeyboardAvoidingView, FlatList, StatusBar, AsyncStorage} from 'react-native';
+import {Button, SearchBar, Icon, List, ListItem} from 'react-native-elements'
+import {postGameForTournament, getUsersForTournament} from '../api/tournament'
 
 class GameFormScreen extends Component {
 
@@ -14,16 +14,36 @@ class GameFormScreen extends Component {
     //gameValue: PropTypes.string
   };
 
+  static navigationOptions = ({ navigation }) => {
+      const  params = navigation.state.params;
+      return {
+          title: 'Game',
+          headerTitleStyle :{color:'#FFFFFF'},
+          headerStyle: {backgroundColor:'#3c3c3c'},
+          headerRight: <Icon style={{ marginLeft:15,color:'#fff' }} name={'close'} size={25} onPress={() => params.handlePress()} />
+      };
+  };
+
   constructor(props) {
       super(props);
       this.state = {
-          gameValue : '0'
+          users : [],
+          gameValue : '0',
+          winnerName : 'Who\'s the lucky one',
       };
   }
 
-  componentWillMount() {
-      this.props.tournamentName = 'tournament1'
-                console.log(" componentWillMount " + this.props.tournamentName);
+  componentWillMount(){
+
+    console.log("componentWillMount");
+    getUsersForTournament('tournament1').then((response) => {
+      this.setState({
+          users: response.data
+      });
+    })
+    .catch((error) => {
+      console.log('failed to get stats for tournament ' + error);
+    }).done();
   }
 
   handleChangeUserText = (text) => {
@@ -52,15 +72,50 @@ class GameFormScreen extends Component {
 
   };
 
+//rowID actually has the object
+  _onPressRow = (rowID, rowData)  => {
+
+      console.log(rowID);
+      this.setState({
+          winnerName: rowID.username
+      });
+   console.log(this.state.winnerName);
+ }
+
+onPlayerSelected (item) {
+    winnerName = item.username;
+        console.log('click ' + winnerName + item.username);
+}
+
   render() {
+            const rows = this.state.users;
     return (
-      < View>
+
+      <View>
         <StatusBar backgroundColor="blue" barStyle="dark-content"/>
 
 
           <SearchBar lightTheme={true} round
               onChangeText={this.handleChangeUserText}
-              placeholder="Who's the lucky one?" />
+              placeholder={this.state.winnerName} />
+
+              <ScrollView>
+                  <List>
+                    {
+                      rows.map((item, i) => (
+                        <ListItem
+                          key={i}
+                          title={item.first_name + " " + item.last_name}
+                          subtitle = {item.username}
+                          hideChevron = {true}
+                          onPress={this._onPressRow.bind(i, item)}
+                        />
+                      ))
+                    }
+                  </List>
+</ScrollView>
+
+
         <Text> Match value : {this.state.gameValue} </Text>
           <Button title='Darn it, I lost!'
               onPress={this.submitGame}/>

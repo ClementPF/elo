@@ -1,6 +1,6 @@
 import React, { Component }  from 'react';
 import PropTypes from 'prop-types';
-import { View, FlatList, StatusBar } from 'react-native';
+import { View, FlatList, StatusBar, ScrollView } from 'react-native';
 import { Icon, List , ListItem} from 'react-native-elements'
 
 
@@ -19,8 +19,7 @@ static navigationOptions = ({ navigation }) => {
     return {
         title: 'Tournament',
         headerTitleStyle :{color:'#FFFFFF'},
-        headerStyle: {backgroundColor:'#3c3c3c'},
-        headerRight: <Icon style={{ marginLeft:15,color:'#fff' }} name={'bars'} size={25} onPress={() => params.handlePress()} />
+        headerStyle: {backgroundColor:'#3c3c3c'}
     };
 };
 
@@ -34,17 +33,13 @@ constructor(props) {
 componentWillMount(){
 
   console.log("componentWillMount");
-
-
-  this.props.navigation.setParams({ handlePress: this._handlePress });
-
   getStatsForTournament('tournament1').then((response) => {
     this.setState({
         stats: response.data
     });
   })
   .catch((error) => {
-    console.log('failed to get stats for tournament ' + error);
+    console.log('failed to get users for tournament ' + error);
   }).done();
 }
 
@@ -54,26 +49,6 @@ componentWillReceiveProps(nextProps) {
   }
 }
 
-  _handlePress(){
-  console.log("click");
-
-  const navigateAction = NavigationActions.navigate({
-
-    routeName: 'Main',
-
-    params: {},
-
-    action: NavigationActions.navigate({ routeName: 'GameForm'})
-  })
-
-  this.props.navigation.dispatch(navigateAction)
-
-    //NavigationActions.navigate({ routeName: 'Main' })
-  };
-
-
-
-
   render() {
 
   const rows = this.state.stats;
@@ -81,6 +56,7 @@ componentWillReceiveProps(nextProps) {
       <View>
         <StatusBar translucent={false} barStyle="dark-content" />
 
+                      <ScrollView>
         <List>
           {
             rows.map((item, i) => (
@@ -93,6 +69,7 @@ componentWillReceiveProps(nextProps) {
             ))
           }
         </List>
+    </ScrollView>
       </View>
     );
   }
