@@ -9,8 +9,6 @@ class GameFormScreen extends Component {
   static propTypes = {
     navigation: PropTypes.object,
     dispatch: PropTypes.func,
-    winnerName: PropTypes.string,
-    tournamentName: PropTypes.string,
     //gameValue: PropTypes.string
   };
 
@@ -30,13 +28,14 @@ class GameFormScreen extends Component {
           users : [],
           gameValue : '0',
           winnerName : 'Who\'s the lucky one',
+          tournamentName: 'tournament1',
       };
   }
 
   componentWillMount(){
 
     console.log("componentWillMount");
-    getUsersForTournament('tournament1').then((response) => {
+    getUsersForTournament(this.state.tournamentName).then((response) => {
       this.setState({
           users: response.data
       });
@@ -56,9 +55,9 @@ class GameFormScreen extends Component {
 
   submitGame = (text) => {
 
-      console.log("adding game for " + this.props.tournamentName + " " + this.props.winnerName);
+      console.log("adding game for " + this.state.winnerName + " " + this.state.tournamentName);
 
-    postGameForTournament(this.props.tournamentName, this.props.winnerName)
+    postGameForTournament(this.state.tournamentName, this.state.winnerName)
     .then((response) => {
         console.log(JSON.stringify(response.data.outcomes[0].score_value));
         this.setState({
@@ -98,7 +97,8 @@ onPlayerSelected (item) {
           <SearchBar lightTheme={true} round
               onChangeText={this.handleChangeUserText}
               placeholder={this.state.winnerName} />
-
+              <Button title='Darn it, I lost!'
+                  onPress={this.submitGame}/>
               <ScrollView>
                   <List>
                     {
