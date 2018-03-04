@@ -18,7 +18,8 @@ const RootStackNavigator = StackNavigator(
     {
         navigationOptions: () => ({
             headerTitleStyle: {
-                fontWeight: 'normal',
+                fontWeight: 'bold',
+                color: '#ff0000'
             }
         })
     }

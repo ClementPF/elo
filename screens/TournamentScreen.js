@@ -18,8 +18,8 @@ static navigationOptions = ({ navigation }) => {
     const  params = navigation.state.params;
     return {
         title: 'Tournament',
-        headerTitleStyle :{color:'#FFFFFF'},
-        headerStyle: {backgroundColor:'#3c3c3c'}
+        headerTitleStyle :{color:'#ff0000'},
+        headerStyle: {backgroundColor:'#fafafa'}
     };
 };
 
@@ -53,24 +53,23 @@ componentWillReceiveProps(nextProps) {
 
   const rows = this.state.stats;
     return (
-      <View>
-        <StatusBar translucent={false} barStyle="dark-content" />
-
-                      <ScrollView>
-        <List>
-          {
-            rows.map((item, i) => (
-              <ListItem
-                key={i}
-                title={item.username}
-                subtitle = {item.score.toFixed(0)}
-                hideChevron = {true}
-              />
-            ))
-          }
-        </List>
-    </ScrollView>
-      </View>
+        <View style={{flex: 1, backgroundColor:'#ff00ff'}}>
+            <StatusBar translucent={false} barStyle="dark-content" />
+            <ScrollView style={{flex: 1, backgroundColor:'#ffff00'}}>
+                <List style={{flex: 1, backgroundColor:'#00ffff'}}>
+                    {
+                    rows.map((item, i) => (
+                    <ListItem
+                    key={i}
+                    title={item.username}
+                    subtitle = {item.score.toFixed(0)}
+                    hideChevron = {true}
+                    />
+                    ))
+                    }
+                </List>
+            </ScrollView>
+        </View>
     );
   }
 }
