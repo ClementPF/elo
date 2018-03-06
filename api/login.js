@@ -10,7 +10,7 @@ function logtest(fb_token) {
   console.log(fb_token);
 }
 
-function loginUser(fb_token) {
+function loginUser(fb_token)     {
   return Axios.post(API_ENDPOINTS.AUTH, {
     fb_access_token: fb_token
   });

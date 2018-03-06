@@ -91,7 +91,7 @@ class Login extends Component {
 
     }
     if(nextProps.signedIn){
-    //  this.props.navigation.navigate('Home', { title: 'Home'});
+      this.props.navigation.navigate('Home', { title: 'Home'});
     }
   }
 
@@ -108,10 +108,10 @@ class Login extends Component {
     }
 
     return (
-      <View style= { { 'alignItems': 'center', 'justifyContent' : 'center', 'flex' : 1 } }>
+      <View style= { {'justifyContent' : 'center', 'flex' : 1 } }>
         <StatusBar translucent={ false } barStyle="dark-content"/>
-        <Text> {this.state.welcome_text} </Text>
-        <SocialIcon  title="Sign In With Facebook" button={ true } onPress={ this.handlePress } type="facebook"/>
+        <Text style= { {'textAlign' : 'center'} }> {this.state.welcome_text} </Text>
+        <SocialIcon title="Sign In With Facebook" button={ true } onPress={ this.handlePress } type="facebook"/>
       </View>
     );
   }

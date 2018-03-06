@@ -1,6 +1,14 @@
 import Axios from 'axios';
 import {API_CONF, API_ENDPOINTS} from './config.js';
 
+function getTournaments() {
+  return Axios.get(`${API_ENDPOINTS.TOURNAMENTS}/all`);
+}
+
+function getTournamentsForSport(sportName) {
+  return Axios.get(`${API_ENDPOINTS.TOURNAMENT}/tournaments?sport=${sportName}`);
+}
+
 function getStatsForTournament(tournamentName) {
   return Axios.get(`${API_ENDPOINTS.TOURNAMENT}/${tournamentName}/stats`);
 }
@@ -27,4 +35,4 @@ function postGameForTournament(tournamentName, winnerName) {
  })
 ;}
 
-export {getStatsForTournament, getUsersForTournament,postGameForTournament};
+export {getTournaments, getTournamentsForSport, getStatsForTournament, getUsersForTournament,postGameForTournament};

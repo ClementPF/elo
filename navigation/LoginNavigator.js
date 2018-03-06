@@ -7,7 +7,6 @@ import { StackNavigator } from 'react-navigation';
 
 import Colors from '../constants/Colors';
 
-import LinksScreen from '../screens/LinksScreen';
 import Login from '../screens/Login';
 
 export default StackNavigator(

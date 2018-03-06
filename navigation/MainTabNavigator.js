@@ -7,28 +7,29 @@ import { TabNavigator, TabBarBottom } from 'react-navigation';
 
 import Colors from '../constants/Colors';
 
-import HomeScreen from '../screens/HomeScreen';
-import LinksScreen from '../screens/LinksScreen';
-import SettingsScreen from '../screens/SettingsScreen';
-import TournamentScreen from '../screens/TournamentScreen';
 import GameFormScreen from '../screens/GameFormScreen';
+import stackNavFeed from './StackNavigatorFeed';
+import stackNavTournaments from './StackNavigatorTournaments';
 
 export default TabNavigator(
     {
-        Tournament: {
-            screen: TournamentScreen
+        TabFeed: {
+            screen: stackNavFeed,
+            navigationOptions: {
+                tabBarLabel: "Feed",
+            }
         },
-        Home: {
-            screen: HomeScreen
+        TabGameForm: {
+            screen: GameFormScreen,
+            navigationOptions: {
+                tabBarLabel: "Add Match",
+            }
         },
-        GameForm: {
-            screen: GameFormScreen
-        },
-        Links: {
-            screen: LinksScreen
-        },
-        Settings: {
-            screen: SettingsScreen
+        TabTournaments: {
+            screen: stackNavTournaments,
+            navigationOptions: {
+                tabBarLabel: "Tournaments",
+            }
         }
     },
     {
@@ -37,23 +38,16 @@ export default TabNavigator(
                 const { routeName } = navigation.state;
                 let iconName;
                 switch (routeName) {
-                    case 'Home':
+                    case 'TabFeed':
                         iconName =
                         Platform.OS === 'ios'
                             ? `ios-information-circle${ focused ? '' : '-outline' }`
                             : 'md-information-circle';
                         break;
-                    case 'Tournament':
+                    case 'TabTournaments':
                       iconName = 'ios-trophy';
                     break;
-                    case 'Links':
-                        iconName = Platform.OS === 'ios' ? `ios-link${ focused ? '' : '-outline' }` : 'md-link';
-                        break;
-                    case 'Settings':
-                        iconName =
-                        Platform.OS === 'ios' ? `ios-options${ focused ? '' : '-outline' }` : 'md-options';
-                        break;
-                    case 'GameForm':
+                    case 'TabGameForm':
                         iconName = 'md-add-circle';
                         break;
                 }

@@ -11,17 +11,9 @@ const RootStackNavigator = StackNavigator(
       Login: {
           screen: LoginNavigator,
       },
-        Main: {
+      Main: {
             screen: MainTabNavigator,
         }
-    },
-    {
-        navigationOptions: () => ({
-            headerTitleStyle: {
-                fontWeight: 'bold',
-                color: '#ff0000'
-            }
-        })
     }
 );
 

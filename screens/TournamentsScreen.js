@@ -4,7 +4,8 @@ import { View, FlatList, StatusBar, ScrollView } from 'react-native';
 import { Icon, List , ListItem} from 'react-native-elements'
 
 
-import { getStatsForTournament } from '../api/tournament';
+import { getTournaments } from '../api/tournament';
+import { getSports } from '../api/sport';
 
 import { NavigationActions } from 'react-navigation';
 
@@ -17,28 +18,38 @@ static propTypes = {
 static navigationOptions = ({ navigation }) => {
     const  params = navigation.state.params;
     return {
-        title: params.name,
+        title: 'Tournaments'
     };
 };
 
 constructor(props) {
     super(props);
     this.state = {
-        stats: [],
-        tournamentName: props.navigation.state.params.name
+        sports: [],
+        tournaments: [],
     };
 }
 
 componentWillMount(){
 
-  console.log("componentWillMount for tournament " + this.state.tournamentName);
-  getStatsForTournament(this.state.tournamentName).then((response) => {
+  console.log("componentWillMount for tournaments ");
+/*
+  getSports().then((response) => {
     this.setState({
-        stats: response.data
+        sports: response.data
     });
   })
   .catch((error) => {
-    console.log('failed to get stats for tournament : ' +  + error);
+    console.log('failed to get sports : ' +  + error);
+}).done();*/
+
+  getTournaments().then((response) => {
+    this.setState({
+        tournaments: response.data
+    });
+  })
+  .catch((error) => {
+    console.log('failed to get tournaments : ' +  + error);
   }).done();
 }
 
@@ -50,7 +61,8 @@ componentWillReceiveProps(nextProps) {
 
   render() {
 
-  const rows = this.state.stats;
+      const { navigate } = this.props.navigation;
+  const rows = this.state.tournaments;
     return (
         <View style={{flex: 1}}>
             <StatusBar translucent={false} barStyle="dark-content" />
@@ -60,9 +72,10 @@ componentWillReceiveProps(nextProps) {
                     rows.map((item, i) => (
                     <ListItem
                     key={i}
-                    title={item.username}
-                    subtitle = {item.score.toFixed(0)}
+                    title={item.display_name}
+                    rightTitle={item.sport.name}
                     hideChevron = {true}
+                    onPress = { () => navigate('Tournament', { name: item.name })}
                     />
                     ))
                     }
