@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
+    "babel-preset-expo": "^4.0.0",
     "babel-preset-react-native": "^2.1.0",
+    "eslint-plugin-react": "^7.4.0",
     "jest-expo": "~20.0.0",
     "react-native-scripts": "1.2.1",
     "react-test-renderer": "16.0.0-alpha.12"
@@ -20,16 +22,22 @@
     "preset": "jest-expo"
   },
   "dependencies": {
-    "expo": "^20.0.0",
-    "hoist-non-react-statics": "^1.2.0",
+    "@expo/samples": "2.1.1",
+    "axios": "0.17.0",
+    "expo": "21.0.2",
+    "hoist-non-react-statics": "1.2.0",
+    "native-navigation": "^0.2.1",
     "react": "16.0.0-alpha.12",
-    "react-native": "^0.47.0",
-    "react-native-dropdownalert": "^2.8.0",
-    "react-native-extended-stylesheet": "^0.6.0",
-    "react-navigation": "^1.0.0-beta.11",
-    "react-redux": "^5.0.4",
-    "redux": "^3.6.0",
-    "redux-logger": "^3.0.1",
-    "redux-saga": "^0.15.3"
+    "react-native": "0.48.4",
+    "react-native-dropdownalert": "2.8.0",
+    "react-native-elements": "0.17.0",
+    "react-native-extended-stylesheet": "0.6.0",
+    "react-native-keychain": "1.2.1",
+    "react-native-vector-icons": "4.4.2",
+    "react-navigation": "1.0.0-beta.11",
+    "react-redux": "5.0.4",
+    "redux": "3.6.0",
+    "redux-logger": "3.0.1",
+    "redux-saga": "0.15.3"
   }
 }
