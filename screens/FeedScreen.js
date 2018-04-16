@@ -1,7 +1,10 @@
 import React, { Component }  from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, FlatList, StatusBar, ScrollView } from 'react-native';
-import { Icon, List , ListItem, Card} from 'react-native-elements'
+import { View, Text, FlatList, StatusBar, ScrollView,TouchableOpacity } from 'react-native';
+import { Icon, List , ListItem, Card} from 'react-native-elements';
+import GameRow from '../components/GameRow';
+import TournamentRow from '../components/TournamentRow';
+import Moment from 'moment';
 
 import { NavigationActions } from 'react-navigation';
 
@@ -64,48 +67,55 @@ textForGameResult(game){
     var result = game.outcomes[0].result;
 
     var str = `${player_one} ${result} against ${player_two}`;
+    //var str = Moment(game.date).format('d MMM');
 
     return str;
 }
+
+  _keyExtractor = (item, index) => item.id;
+
+  _renderItemGame = ({item}) => (
+      <GameRow
+          name1= { item.outcomes[0].user_name }
+          name2= { item.outcomes[1].user_name }
+          tournament= { item.tournament_name }
+          result= { item.outcomes[1].result }
+          value= { item.outcomes[0].score_value }
+          date= { item.date }
+      />
+     );
+
+     _renderItemTournament = ({item}) => (
+         <TouchableOpacity onPress = { () => this.props.navigation.navigate('Tournament', { name: item.tournament_name })}>
+             <TournamentRow
+                 tournament= { item.tournament_name }
+                 position= { 1 }
+                 score= { item.score }
+             />
+         </TouchableOpacity>
+    );
 
   render() {
       const { navigate } = this.props.navigation;
       const rows = this.state.stats;
     return (
       <View>
-        <StatusBar translucent={false} barStyle="dark-content" />
+        <StatusBar translucent={ false } barStyle="dark-content" />
         <ScrollView>
             <Card title="YOUR TOURNAMENTS">
-            <List style={{flex: 1}}>
-            {
-            this.state.stats.map((item, i) => (
-                <ListItem
-                key={i}
-                title={item.tournament_name}
-                subtitle = {item.score.toFixed(0)}
-                hideChevron = {true}
-                onPress = { () => navigate('Tournament', { name: item.tournament_name })}
-                />
-            ))
-            }
-            </List>
+                <FlatList
+                data={ this.state.stats }
+                keyExtractor={ this._keyExtractor }
+                renderItem={ this._renderItemTournament }
+              //onPress = { () => navigate('Tournament', { name: item.tournament_name })
+          />
 
           </Card>
-
-                <Card title="RECENT STUFFS RELATED TO YOU">
-            <List style={{flex: 3}}>
-            {
-            this.state.games.map((item, i) => (
-                <ListItem
-                key={i}
-                title={this.textForGameResult(item)}
-                subtitle = {item.outcomes[0].score_value.toFixed(0)}
-                subtitleStyle = {{textAlign: 'right'}}
-                hideChevron = {true}
-                />
-            ))
-            }
-            </List>
+          <Card title="GAME HISTORY">
+                <FlatList
+                    data={ this.state.games }
+                    keyExtractor={ this._keyExtractor }
+                    renderItem={ this._renderItemGame }/>
 
         </Card>
         </ScrollView>

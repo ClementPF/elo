@@ -14,12 +14,6 @@ class GameFormScreen extends Component {
 
   static navigationOptions = ({ navigation }) => {
       const  params = navigation.state.params;
-      return {
-          title: 'Game',
-          headerTitleStyle :{color:'#FFFFFF'},
-          headerStyle: {backgroundColor:'#3c3c3c'},
-          headerRight: <Icon style={{ marginLeft:15,color:'#fff' }} name={'close'} size={25} onPress={() => params.handlePress()} />
-      };
   };
 
   constructor(props) {
@@ -46,29 +40,29 @@ class GameFormScreen extends Component {
   }
 
   handleChangeUserText = (text) => {
-            this.props.winnerName = text;
-                      console.log(" handleChangeUserText " + this.props.winnerName);
+      this.props.winnerName = text;
+      console.log(" handleChangeUserText " + this.props.winnerName);
   };
 
   handleChangeTournamentText = (text) => {
+      this.props.winnerName = text;
+      console.log(" handleChangeUserText " + this.props.winnerName);
   };
 
   submitGame = (text) => {
-
       console.log("adding game for " + this.state.winnerName + " " + this.state.tournamentName);
 
-    postGameForTournament(this.state.tournamentName, this.state.winnerName)
-    .then((response) => {
-        console.log(JSON.stringify(response.data.outcomes[0].score_value));
-        this.setState({
-            gameValue: response.data.outcomes[0].score_value
-        });
-        this.props.gameValue = response.data.outcomes[0].score_value;
-    })
-    .catch((error) => {
-      console.log('failed to get stats for tournament ' + error);
-    }).done();
-
+      postGameForTournament(this.state.tournamentName, this.state.winnerName)
+        .then((response) => {
+            console.log(JSON.stringify(response.data.outcomes[0].score_value));
+            this.setState({
+                gameValue: response.data.outcomes[0].score_value
+            });
+            this.props.gameValue = response.data.outcomes[0].score_value;
+        })
+        .catch((error) => {
+          console.log('failed to get stats for tournament ' + error);
+        }).done();
   };
 
 //rowID actually has the object
@@ -90,16 +84,23 @@ onPlayerSelected (item) {
             const rows = this.state.users;
     return (
 
-      <View>
+      <View
+          style={{ paddingTop: 48 }}>
         <StatusBar backgroundColor="blue" barStyle="dark-content"/>
 
 
-          <SearchBar lightTheme={true} round
+          <SearchBar
+              lightTheme={true} round
               onChangeText={this.handleChangeUserText}
               placeholder={this.state.winnerName} />
+
+              <SearchBar
+                  lightTheme={true} round
+                  onChangeText={this.handleChangeTournamentText}
+                  placeholder={this.state.tournamentName} />
               <Button title='Darn it, I lost!'
                   onPress={this.submitGame}/>
-              <ScrollView>
+             <ScrollView>
                   <List>
                     {
                       rows.map((item, i) => (

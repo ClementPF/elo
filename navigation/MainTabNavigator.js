@@ -21,8 +21,14 @@ export default TabNavigator(
         },
         TabGameForm: {
             screen: GameFormScreen,
+            headerMode: 'screen',
             navigationOptions: {
                 tabBarLabel: "Add Match",
+                headerTitleStyle: {
+                    fontWeight: 'bold',
+                    color: '#ffffff'
+                },
+                headerStyle: {backgroundColor:'#3c3c3c'}
             }
         },
         TabTournaments: {

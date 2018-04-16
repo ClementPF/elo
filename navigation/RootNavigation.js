@@ -14,7 +14,8 @@ const RootStackNavigator = StackNavigator(
       Main: {
             screen: MainTabNavigator,
         }
-    }
+    },
+    { headerMode: 'none' }
 );
 
 export default class RootNavigator extends React.Component {

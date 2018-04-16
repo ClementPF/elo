@@ -12,7 +12,7 @@ import GameFormScreen from '../screens/GameFormScreen';
 const stackNav = StackNavigator({
     Tournaments: {
         screen: TournamentsScreen
-    },    
+    },
     Tournament: {
         screen: TournamentScreen
     },
@@ -25,6 +25,7 @@ const stackNav = StackNavigator({
     }
     ,
     {
+        headerMode: 'screen',
         navigationOptions: () => ({
             headerTitleStyle: {
                 fontWeight: 'bold',

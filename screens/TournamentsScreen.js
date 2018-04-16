@@ -1,7 +1,7 @@
 import React, { Component }  from 'react';
 import PropTypes from 'prop-types';
-import { View, FlatList, StatusBar, ScrollView } from 'react-native';
-import { Icon, List , ListItem} from 'react-native-elements'
+import { View, FlatList, StatusBar, ScrollView, Button } from 'react-native';
+import { Icon, SearchBar, List , ListItem} from 'react-native-elements'
 
 
 import { getTournaments } from '../api/tournament';
@@ -14,35 +14,29 @@ static propTypes = {
   navigation: PropTypes.object,
   dispatch: PropTypes.func
 }
-
 static navigationOptions = ({ navigation }) => {
-    const  params = navigation.state.params;
-    return {
-        title: 'Tournaments'
+        const { params = {} } = navigation.state;
+        return {
+            title: 'Explore Tournaments',
+            headerRight: <Button title="Add" onPress={ () => params.handleSave() } />
+        };
     };
-};
 
 constructor(props) {
     super(props);
     this.state = {
         sports: [],
         tournaments: [],
+        tournamentSearch: 'Search for tournament',
+
     };
 }
 
 componentWillMount(){
 
   console.log("componentWillMount for tournaments ");
-/*
-  getSports().then((response) => {
-    this.setState({
-        sports: response.data
-    });
-  })
-  .catch((error) => {
-    console.log('failed to get sports : ' +  + error);
-}).done();*/
 
+  //this.props.navigation.setParams({ handleSave: this._saveDetails });
   getTournaments().then((response) => {
     this.setState({
         tournaments: response.data
@@ -52,11 +46,24 @@ componentWillMount(){
     console.log('failed to get tournaments : ' +  + error);
   }).done();
 }
+_saveDetails = () => {
+        console.log('clicked save');
+    }
+
+handleChangeUserText = (text) => {
+    this.props.winnerName = text;
+    console.log(" handleChangeUserText " + this.props.tournamentSearch);
+};
+
 
 componentWillReceiveProps(nextProps) {
   if (nextProps.error && !this.props.error) {
     this.props.alertWithType('error', 'Error', nextProps.error);
   }
+}
+
+saveDetails() {
+    alert('Save Details');
 }
 
   render() {
@@ -67,6 +74,9 @@ componentWillReceiveProps(nextProps) {
         <View style={{flex: 1}}>
             <StatusBar translucent={false} barStyle="dark-content" />
             <ScrollView>
+                <SearchBar lightTheme={true} round
+                    onChangeText={this.handleChangeUserText}
+                    placeholder={this.state.tournamentSearch} />
                 <List style={{flex: 1}}>
                     {
                     rows.map((item, i) => (

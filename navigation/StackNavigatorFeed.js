@@ -25,6 +25,7 @@ const stackNav = StackNavigator({
     }
     ,
     {
+        headerMode: 'screen',
         navigationOptions: () => ({
             headerTitleStyle: {
                 fontWeight: 'bold',

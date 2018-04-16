@@ -1,10 +1,10 @@
 import React, { Component }  from 'react';
 import PropTypes from 'prop-types';
 import { View, FlatList, StatusBar, ScrollView } from 'react-native';
-import { Icon, List , ListItem} from 'react-native-elements'
+import { Icon, List , ListItem, Card} from 'react-native-elements'
 
 
-import { getStatsForTournament } from '../api/tournament';
+import { getStatsForTournament, getGamesForTournament } from '../api/tournament';
 
 import { NavigationActions } from 'react-navigation';
 
@@ -25,21 +25,37 @@ constructor(props) {
     super(props);
     this.state = {
         stats: [],
+        games: [],
         tournamentName: props.navigation.state.params.name
     };
 }
 
 componentWillMount(){
 
-  console.log("componentWillMount for tournament " + this.state.tournamentName);
-  getStatsForTournament(this.state.tournamentName).then((response) => {
-    this.setState({
-        stats: response.data
-    });
-  })
-  .catch((error) => {
-    console.log('failed to get stats for tournament : ' +  + error);
-  }).done();
+    console.log("componentWillMount for tournament " + this.state.tournamentName);
+
+    getStatsForTournament(this.state.tournamentName).then((response) => {
+        this.setState({stats: response.data})
+    }).catch((error) => {
+        console.log('failed to get stats for tournament : ' + + error);
+    }).done();
+
+    getGamesForTournament(this.state.tournamentName).then((response) => {
+        this.setState({games: response.data})
+    }).catch((error) => {
+        console.log('failed to get games for tournament : ' + + error);
+    }).done();
+}
+
+
+textForGameResult(game){
+    var player_one = game.outcomes[0].user_name;
+    var player_two = game.outcomes[1].user_name;
+    var result = game.outcomes[0].result;
+
+    var str = `${player_one} ${result} against ${player_two}`;
+
+    return str;
 }
 
 componentWillReceiveProps(nextProps) {
@@ -50,23 +66,41 @@ componentWillReceiveProps(nextProps) {
 
   render() {
 
-  const rows = this.state.stats;
+  const stats = this.state.stats;
+  const games = this.state.games;
     return (
         <View style={{flex: 1}}>
             <StatusBar translucent={false} barStyle="dark-content" />
             <ScrollView>
-                <List style={{flex: 1}}>
-                    {
-                    rows.map((item, i) => (
-                    <ListItem
-                    key={i}
-                    title={item.username}
-                    subtitle = {item.score.toFixed(0)}
-                    hideChevron = {true}
-                    />
-                    ))
-                    }
-                </List>
+                    <Card title="RANKING">
+                        <List style={{flex: 1}}>
+                            {
+                            stats.map((item, i) => (
+                            <ListItem
+                            key={i}
+                            title={item.username}
+                            subtitle = {item.score.toFixed(0)}
+                            hideChevron = {true}
+                            />
+                            ))
+                            }
+                        </List>
+                    </Card>
+                    <Card title="HISTORY">
+                        <List style={{flex: 1}}>
+                            {
+                            games.map((item, i) => (
+                                <ListItem
+                                key={i}
+                                title={this.textForGameResult(item)}
+                                subtitle = {item.outcomes[0].score_value.toFixed(0)}
+                                subtitleStyle = {{textAlign: 'right'}}
+                                hideChevron = {true}
+                            />
+                            ))
+                            }
+                        </List>
+                    </Card>
             </ScrollView>
         </View>
     );
