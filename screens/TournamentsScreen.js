@@ -36,7 +36,7 @@ componentWillMount(){
 
   console.log("componentWillMount for tournaments ");
 
-  //this.props.navigation.setParams({ handleSave: this._saveDetails });
+  this.props.navigation.setParams({ handleSave: this._saveDetails });
   getTournaments().then((response) => {
         this.setState({
             tournaments: response.data
@@ -49,6 +49,8 @@ componentWillMount(){
 
     _saveDetails = () => {
             console.log('clicked save');
+
+            this.props.navigation.navigate('TournamentCreation');
         }
 
     handleChangeTournamentText = (text) => {

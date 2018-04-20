@@ -4,7 +4,7 @@ import { StackNavigator} from 'react-navigation'
 
 import FeedScreen from '../screens/FeedScreen';
 import HomeScreen from '../screens/HomeScreen';
-import SettingsScreen from '../screens/SettingsScreen';
+import TournamentCreationScreen from '../screens/TournamentCreationScreen';
 import TournamentScreen from '../screens/TournamentScreen';
 import TournamentsScreen from '../screens/TournamentsScreen';
 
@@ -15,8 +15,8 @@ const stackNav = StackNavigator({
     Tournament: {
         screen: TournamentScreen
     },
-    Settings: {
-        screen: SettingsScreen
+    TournamentCreation: {
+        screen: TournamentCreationScreen
     }
     }
     ,

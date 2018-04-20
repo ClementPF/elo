@@ -24,19 +24,30 @@ function getGamesForTournament(tournamentName) {
 function postGameForTournament(tournamentName, winnerName) {
   return Axios.post(`${API_ENDPOINTS.TOURNAMENT}/${tournamentName}/games`,
       {
-   "outcomes": [
+   'outcomes': [
      {
-       "result": "WIN",
-       "user_name": winnerName
+       'result': 'WIN',
+       'user_name': winnerName
      },
      {
-       "result": "LOSS",
-       "user_name": "this_has_to_be_changed_in_react"
+       'result': 'LOSS',
+       'user_name': 'this_has_to_be_changed_in_react'
      }
    ],
- "tournament_name": tournamentName
+ 'tournament_name': tournamentName
 
  })
 ;}
 
-export {getTournaments, getTournamentsForSport, getStatsForTournament, getUsersForTournament, getGamesForTournament, postGameForTournament};
+function postTournament(tournamentName, sportName) {
+  return Axios.post(`${API_ENDPOINTS.TOURNAMENT}/`,
+      {
+          'display_name': tournamentName,
+          'is_over': false,
+          'sport': {
+            'name': sportName
+          }
+     })
+;}
+
+export {getTournaments, getTournamentsForSport, getStatsForTournament, getUsersForTournament, getGamesForTournament, postGameForTournament, postTournament};

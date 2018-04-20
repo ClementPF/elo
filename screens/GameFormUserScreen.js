@@ -4,6 +4,7 @@ import {ScrollView, View, Text, StyleSheet, FlatList, StatusBar, ActivityIndicat
 import {Button, SearchBar, Icon, List, ListItem} from 'react-native-elements'
 import SearchableFlatList from '../components/SearchableFlatList';
 import {postGameForTournament, getUsersForTournament} from '../api/tournament'
+import {getUsers} from '../api/user'
 
 class GameFormUserScreen extends Component {
 
@@ -25,6 +26,7 @@ class GameFormUserScreen extends Component {
       this.state = {
           isLoading: true,
           users : [],
+          allusers : [],
           gameValue : '0',
           winnerName : '',
           tournament: props.navigation.state.params.tournament,
@@ -43,6 +45,17 @@ class GameFormUserScreen extends Component {
     .catch((error) => {
         isLoading: false,
         console.log('failed to get stats for tournament ' + error);
+    }).done();
+
+    getUsers().then((response) => {
+      this.setState({
+          allusers: response.data,
+          isLoading: false,
+      });
+    })
+    .catch((error) => {
+        isLoading: false,
+        console.log('failed to get all stats for tournament ' + error);
     }).done();
   }
 
@@ -113,7 +126,15 @@ class GameFormUserScreen extends Component {
                    data={ this.state.users }
                    keyExtractor={ this._keyExtractor }
                    renderItem={ this._renderItem }/>
-             </ScrollView>
+             <Text style= { gameFormStyle.listHeader }>
+                 All Players </Text>
+            <SearchableFlatList style={{flex:1}}
+               searchProperty={"username"}
+               searchTerm={this.state.winnerName}
+               data={ this.state.allusers }
+               keyExtractor={ this._keyExtractor }
+               renderItem={ this._renderItem }/>
+         </ScrollView>
           </View>
         );
       }
