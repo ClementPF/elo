@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {ScrollView, View, Text, KeyboardAvoidingView, FlatList, StatusBar, AsyncStorage} from 'react-native';
-import {Button, SearchBar, Icon, List, ListItem} from 'react-native-elements'
+import {ScrollView, View, Text} from 'react-native';
+import {Card} from 'react-native-elements'
 import {postGameForTournament, getUsersForTournament} from '../api/tournament'
+import GameRow from '../components/GameRow';
 
 class GameFormResultScreen extends Component {
 
@@ -35,11 +36,18 @@ class GameFormResultScreen extends Component {
 
   render() {
      return (
-      <View>
-      <Text> Tournament : {this.state.tournament.name} </Text>
-      <Text> Winner : {this.state.winner.username} </Text>
-        <Text> Match value : {this.state.game.outcomes[0].score_value} </Text>
-      </View>
+         <View style={{flex:1}}>
+             <Card title="RESULTS">
+                 <GameRow
+                     name1= { this.state.game.outcomes[0].user_name }
+                     name2= { this.state.game.outcomes[1].user_name }
+                     tournament= { this.state.game.tournament_name }
+                     result= { this.state.game.outcomes[1].result }
+                     value= { this.state.game.outcomes[0].score_value }
+                     date= { this.state.game.date }
+                 />
+           </Card>
+           </View>
     );
   }
 }

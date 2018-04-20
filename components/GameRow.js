@@ -8,12 +8,12 @@ export default class GameRow extends Component {
     name1: PropTypes.string,
     name2: PropTypes.string,
     tournament: PropTypes.string,
-    result: PropTypes.number,
+    //result: PropTypes.number,
     value: PropTypes.number,
     date: PropTypes.number,
   }
   render = () => {
-    const { name1, name2, tournament, result, value,  date} = this.props;
+    const { name1, name2, tournament, /*result,*/ value,  date} = this.props;
 
     let strName1 = '🏆' + ` ${name1} ` + '🏆';
     let strName2 = `${name2} `;
@@ -69,7 +69,6 @@ styles = StyleSheet.create({
     container: {
         padding: 8,
         margin: 1,
-        flex: 1,
         height: 128,
         flexDirection: 'row',
         backgroundColor: 'whitesmoke'

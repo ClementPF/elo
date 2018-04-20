@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {ScrollView, View, Text, KeyboardAvoidingView, FlatList, StatusBar, AsyncStorage} from 'react-native';
-import {Button, SearchBar, Icon, List, ListItem} from 'react-native-elements'
-import {getTournaments} from '../api/tournament'
+import {ScrollView, View, Text, StatusBar, StyleSheet} from 'react-native';
+import {Button, SearchBar, Icon, List, ListItem} from 'react-native-elements';
+import SearchableFlatList from '../components/SearchableFlatList';
+import {getTournaments} from '../api/tournament';
 
 class GameFormTournamentScreen extends Component {
 
@@ -41,6 +42,7 @@ class GameFormTournamentScreen extends Component {
 
   handleChangeTournamentText = (text) => {
       this.props.tournamentName = text;
+      this.setState({tournamentName: text})
       console.log(" handleChangeTournamentText " + this.props.tournamentName);
   }
 
@@ -48,7 +50,7 @@ class GameFormTournamentScreen extends Component {
 
       console.log(rowID);
 
-      this.props.tournamentName = rowID.name
+      this.props.tournamentName = rowID.name;
 
       console.log("Tournament selected named : " + rowID.name);
       this.props.navigation.navigate('GameFormUser', { tournament: rowID })
@@ -74,16 +76,12 @@ class GameFormTournamentScreen extends Component {
                onChangeText={this.handleChangeTournamentText}
                placeholder={this.state.tournamentName} />
 
-            <Text style={{ backgroundColor: 'whitesmoke',
-            padding:4,
-            paddingHorizontal:8,
-            color:'slategrey',
-                fontSize: 16,
-                fontWeight: 'bold',
-                textAlignVertical: 'center'}}>
+            <Text style={gameFormStyle.listHeader }>
                 Top Tournaments </Text>
             <ScrollView contentContainerStyle={{flex:1}} >
-               <FlatList style={{flex:1}}
+               <SearchableFlatList style={{flex:1}}
+                  searchProperty={"name"}
+                  searchTerm={this.state.tournamentName}
                   data={ this.state.tournaments }
                   keyExtractor={ this._keyExtractor }
                   renderItem={ this._renderItemTournament }/>
@@ -92,5 +90,17 @@ class GameFormTournamentScreen extends Component {
        );
      }
 }
+
+gameFormStyle = StyleSheet.create({
+    listHeader: {
+        backgroundColor: 'whitesmoke',
+        padding:4,
+        paddingHorizontal:8,
+        color:'slategrey',
+            fontSize: 16,
+            fontWeight: 'bold',
+            textAlignVertical: 'center'
+    }
+})
 
 export default GameFormTournamentScreen;

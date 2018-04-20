@@ -20,10 +20,6 @@ export default class TournamentRow extends Component {
                     { tournament }
                 </Text>
                 <Text style={ stylesTournament.scoreText }>
-                    { position }
-                </Text>
-
-                <Text style={ stylesTournament.scoreText }>
                     {  score.toFixed(0) }
                 </Text>
       </View>

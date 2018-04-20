@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {ScrollView, View, Text, KeyboardAvoidingView, FlatList, StatusBar, AsyncStorage} from 'react-native';
-import {Button, SearchBar, Icon, List, ListItem} from 'react-native-elements'
+import {View, Text, StatusBar} from 'react-native';
+import {Button, Card, ListItem} from 'react-native-elements'
 import {postGameForTournament} from '../api/tournament'
 
 class GameFormConfirmationScreen extends Component {
@@ -47,11 +47,25 @@ class GameFormConfirmationScreen extends Component {
     return (
 
       <View>
-      <Text> Tournament : {this.state.tournament.name} </Text>
-      <Text> Winner : {this.state.winner.username} </Text>
+          <Card title="SUMMARY">
+            <Text style={{
+                fontSize: 16,
+                fontWeight: 'normal',
+                color: 'black',
+                textAlign: 'center',
+                textAlignVertical: 'center'}}>
+                Tournament : {this.state.tournament.name} </Text>
+            <Text style={{
+                fontSize: 16,
+                fontWeight: 'normal',
+                color: 'black',
+                textAlign: 'center',
+                textAlignVertical: 'center'}}
+                > Winner : {this.state.winner.username} </Text>
+        </Card>
       <Button title='Darn it, I lost!'
                   onPress={this.submitGame}/>
-      </View>
+        </View>
     );
   }
 }

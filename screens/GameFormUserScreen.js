@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {ScrollView, View, Text, StyleSheet, FlatList, StatusBar, ActivityIndicator} from 'react-native';
 import {Button, SearchBar, Icon, List, ListItem} from 'react-native-elements'
+import SearchableFlatList from '../components/SearchableFlatList';
 import {postGameForTournament, getUsersForTournament} from '../api/tournament'
 
 class GameFormUserScreen extends Component {
@@ -25,14 +26,14 @@ class GameFormUserScreen extends Component {
           isLoading: true,
           users : [],
           gameValue : '0',
-          winnerName : 'Who\'s the lucky one',
+          winnerName : '',
           tournament: props.navigation.state.params.tournament,
       };
   }
 
   componentWillMount(){
 
-    console.log("componentWillMount");
+    console.log("componentWillMount " + this.state.tournament.name);
     getUsersForTournament(this.state.tournament.name).then((response) => {
       this.setState({
           users: response.data,
@@ -47,6 +48,7 @@ class GameFormUserScreen extends Component {
 
   handleChangeUserText = (text) => {
       this.props.winnerName = text;
+      this.setState({winnerName: text})
       console.log(" handleChangeUserText " + this.props.winnerName);
   };
 
@@ -102,10 +104,12 @@ class GameFormUserScreen extends Component {
                 onChangeText={this.handleChangeUserText}
                 placeholder={this.state.winnerName} />
 
-             <Text style= { gameFormStyle.headerListText }>
+             <Text style= { gameFormStyle.listHeader }>
                  Top Players </Text>
              <ScrollView contentContainerStyle={{flex:1}} >
-                <FlatList style={{flex:1}}
+                <SearchableFlatList style={{flex:1}}
+                   searchProperty={"username"}
+                   searchTerm={this.state.winnerName}
                    data={ this.state.users }
                    keyExtractor={ this._keyExtractor }
                    renderItem={ this._renderItem }/>

@@ -19,7 +19,7 @@ class Login extends Component {
   constructor() {
         super()
         this.state = {
-           welcome_text: 'Welcome please log in',
+           welcome_text: 'Welcome please log in.',
         }
      }
 
