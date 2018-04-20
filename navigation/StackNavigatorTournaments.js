@@ -7,7 +7,6 @@ import HomeScreen from '../screens/HomeScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import TournamentScreen from '../screens/TournamentScreen';
 import TournamentsScreen from '../screens/TournamentsScreen';
-import GameFormScreen from '../screens/GameFormScreen';
 
 const stackNav = StackNavigator({
     Tournaments: {
@@ -15,9 +14,6 @@ const stackNav = StackNavigator({
     },
     Tournament: {
         screen: TournamentScreen
-    },
-    GameForm: {
-        screen: GameFormScreen
     },
     Settings: {
         screen: SettingsScreen

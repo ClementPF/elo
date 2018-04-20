@@ -7,8 +7,8 @@ import { TabNavigator, TabBarBottom } from 'react-navigation';
 
 import Colors from '../constants/Colors';
 
-import GameFormScreen from '../screens/GameFormScreen';
 import stackNavFeed from './StackNavigatorFeed';
+import stackNavGameForm from './StackNavigatorGameForm';
 import stackNavTournaments from './StackNavigatorTournaments';
 
 export default TabNavigator(
@@ -20,15 +20,9 @@ export default TabNavigator(
             }
         },
         TabGameForm: {
-            screen: GameFormScreen,
-            headerMode: 'screen',
+            screen: stackNavGameForm,
             navigationOptions: {
-                tabBarLabel: "Add Match",
-                headerTitleStyle: {
-                    fontWeight: 'bold',
-                    color: '#ffffff'
-                },
-                headerStyle: {backgroundColor:'#3c3c3c'}
+                tabBarLabel: "Add Game",
             }
         },
         TabTournaments: {

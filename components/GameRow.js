@@ -36,7 +36,7 @@ export default class GameRow extends Component {
                         { strName1  }
                     </Text>
                     <Text style={ styles.VSText }>
-                        { 'VS' }
+                        { '🆚' }
                     </Text>
                     <Text style={ styles.nameText }>
                         { strName2 }
@@ -101,7 +101,7 @@ styles = StyleSheet.create({
         textAlignVertical: 'center'
     },
     VSText: {
-        fontSize: 20,
+        fontSize: 24,
         fontWeight: 'bold',
         color: 'tomato',
         textAlign: 'center',

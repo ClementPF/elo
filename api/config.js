@@ -1,5 +1,6 @@
 const API_CONF = {
-  BASE_URL : 'http://localhost:8080',
+  BASE_URL : 'http://localhost:5000',
+  //BASE_URL : 'http://shrkltr1.us-east-2.elasticbeanstalk.com',
 
 };
 
