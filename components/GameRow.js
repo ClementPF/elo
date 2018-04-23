@@ -21,7 +21,7 @@ export default class GameRow extends Component {
     return (
 
         <View style={ styles.container }>
-            <View style={ {flex: 5, flexDirection: 'column'} }>
+            <View style={ {flex: '4', flexDirection: 'column'} }>
                 <Text >
                     <Text style={ styles.dateText }>
                         { Moment(date).format('DD MMM')}
@@ -108,7 +108,6 @@ styles = StyleSheet.create({
     },
     scoreText: {
         fontSize: 36,
-        textShadowRadius: 10,
         fontWeight: 'bold',
         color: 'grey',
         textAlign: 'center',

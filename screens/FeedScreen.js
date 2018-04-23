@@ -8,7 +8,7 @@ import Moment from 'moment';
 
 import { NavigationActions } from 'react-navigation';
 
-import { getStatsForUser, getGamesForUser } from '../api/user';
+import { getUser, getStatsForUser, getGamesForUser } from '../api/user';
 
 class TournamentScreen extends Component {
 static propTypes = {
@@ -19,7 +19,7 @@ static propTypes = {
 static navigationOptions = ({ navigation }) => {
     const  params = navigation.state.params;
     return {
-        title: 'Feed'
+        title: 'Feed',
     };
 };
 
@@ -27,7 +27,8 @@ constructor(props) {
     super(props);
     this.state = {
         stats: [],
-        games: []
+        games: [],
+        user: {}
     };
 }
 
@@ -35,24 +36,28 @@ componentWillMount(){
 
   console.log("componentWillMount");
 
-  getStatsForUser("").then((response) => {
+  getUser().then((response) => {
     this.setState({
-        stats: response.data
+        user: response.data
     });
-  })
-  .catch((error) => {
-    console.log('failed to get stats for user ' + error);
-    }).done();
-
-    getGamesForUser("").then((response) => {
+    getStatsForUser(this.state.user.username).then((response) => {
       this.setState({
-          games: response.data
+          stats: response.data
       });
     })
     .catch((error) => {
       console.log('failed to get stats for user ' + error);
-    }).done();
+      }).done();
 
+      getGamesForUser(this.state.user.username).then((response) => {
+        this.setState({
+            games: response.data
+        });
+      })
+      .catch((error) => {
+        console.log('failed to get stats for user ' + error);
+      }).done();
+  })
 }
 
 componentWillReceiveProps(nextProps) {
@@ -76,11 +81,11 @@ textForGameResult(game){
 
   _renderItemGame = ({item}) => (
       <GameRow
-          name1= { item.outcomes[0].user_name }
-          name2= { item.outcomes[1].user_name }
+          name1= { item.outcomes[item.outcomes[0].result == "WIN" ? 0 : 1].user_name}
+          name2= { item.outcomes[item.outcomes[0].result != "WIN" ? 0 : 1].user_name }
           tournament= { item.tournament_name }
-          result= { item.outcomes[1].result }
-          value= { item.outcomes[0].score_value }
+          result= { item.outcomes[item.outcomes[0].username == this.state.user.username ? 0 : 1] }
+          value= { item.outcomes[item.outcomes[0].username != this.state.user.username ? 0 : 1].score_value }
           date= { item.date }
       />
      );
