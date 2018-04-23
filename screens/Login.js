@@ -4,6 +4,7 @@ import {View, Text, FlatList, StatusBar, AsyncStorage} from 'react-native';
 import {SocialIcon} from 'react-native-elements';
 import {loginUser, testTokenValidity} from '../api/login';
 import Axios from 'axios';
+import DropdownAlert from 'react-native-dropdownalert';
 
 import { NavigationActions } from 'react-navigation';
 
@@ -20,6 +21,7 @@ class Login extends Component {
         super()
         this.state = {
            welcome_text: 'Welcome please log in.',
+           appVersion: '0.0.0'
         }
      }
 
@@ -34,13 +36,13 @@ class Login extends Component {
 
          loginUser(token)
          .then((response) => {
-                 console.log('User Logged in Successfully');
+                  this.dropdown.alertWithType('info', 'Info', 'User Logged in Successfully');
                  Axios.defaults.headers.common['Authorization'] = 'Bearer '+response.data.access_token;
                  AsyncStorage.setItem('@Store:token', response.data.access_token);
                  this.navigateToHome();
              })
              .catch((error) => {
-                  console.log('User failed to log in ' + error);
+                  this.onError('User failed to log in ' + error);
              });
 
          console.log(response.error_message);
@@ -67,19 +69,18 @@ class Login extends Component {
 
   componentWillMount() {
 
+   var packageMod = require('../package.json');
+   this.setState({'appVersion':packageMod.version});
+
     const t = AsyncStorage.getItem('@Store:token').then((value) => {
       console.log('Previous session found ' + value);
       testTokenValidity(value).then((response) => {
-        console.log('session is valid lets skip this screen');
-
+        this.dropdown.alertWithType('info', 'Info', 'Valid Session Found');
         this.navigateToHome();
         //this.props.navigation.navigate('Main',{});
-
-
-
       })
       .catch((error) => {
-        console.log('session invalid ' + error);
+        this.onError('Previous session is invalid \n' + error);
       });
     }).done();
   }
@@ -88,7 +89,6 @@ class Login extends Component {
     console.log('componentWillReceiveProps' + nextProps);
     if (nextProps.error && !this.props.error) {
       this.props.alertWithType('error', 'Error', nextProps.error);
-
     }
     if(nextProps.signedIn){
       this.props.navigation.navigate('Home', { title: 'Home'});
@@ -98,6 +98,18 @@ class Login extends Component {
   testSession = (token) => {
 
   };
+
+  onError = error => {
+    if (error) {
+      this.dropdown.alertWithType('error', 'Error', error);
+    }
+  };
+
+  onClose(data) {
+    // data = {type, title, message, action}
+    // action means how the alert was closed.
+    // returns: automatic, programmatic, tap, pan or cancel
+  }
 
   render() {
 
@@ -109,9 +121,12 @@ class Login extends Component {
 
     return (
       <View style= { {'justifyContent' : 'center', 'flex' : 1 } }>
-        <StatusBar translucent={ false } barStyle="dark-content"/>
+        <StatusBar translucent={ false } barStyle="light-content"/>
         <Text style= { {'textAlign' : 'center'} }> {this.state.welcome_text} </Text>
         <SocialIcon title="Sign In With Facebook" button={ true } onPress={ this.handlePress } type="facebook"/>
+        <Text style= { {'textAlign' : 'center'} }> { 'Version : ' + this.state.appVersion} </Text>
+
+       <DropdownAlert ref={ref => this.dropdown = ref} onClose={data => this.onClose(data)} />
       </View>
     );
   }

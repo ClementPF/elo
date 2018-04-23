@@ -1,7 +1,7 @@
 import React, { Component }  from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, FlatList, StatusBar, ScrollView,TouchableOpacity } from 'react-native';
-import { Icon, List , ListItem, Card} from 'react-native-elements';
+import { Icon, List , ListItem, Card, Button} from 'react-native-elements';
 import GameRow from '../components/GameRow';
 import TournamentRow from '../components/TournamentRow';
 import Moment from 'moment';
@@ -35,7 +35,7 @@ componentWillMount(){
 
   console.log("componentWillMount");
 
-  getStatsForUser("clement-frequency").then((response) => {
+  getStatsForUser("").then((response) => {
     this.setState({
         stats: response.data
     });
@@ -44,7 +44,7 @@ componentWillMount(){
     console.log('failed to get stats for user ' + error);
     }).done();
 
-    getGamesForUser("clement-frequency").then((response) => {
+    getGamesForUser("").then((response) => {
       this.setState({
           games: response.data
       });
@@ -88,7 +88,7 @@ textForGameResult(game){
      _renderItemTournament = ({item}) => (
          <TouchableOpacity onPress = { () => this.props.navigation.navigate('Tournament', { name: item.tournament_name })}>
              <TournamentRow
-                 tournament= { item.tournament_name }
+                 tournament= { item.tournament_display_name }
                  position= { 1 }
                  score= { item.score }
              />
@@ -100,13 +100,25 @@ textForGameResult(game){
       const rows = this.state.stats;
     return (
       <View>
-        <StatusBar translucent={ false } barStyle="dark-content" />
+        <StatusBar translucent={ false } barStyle="light-content" />
         <ScrollView>
             <Card title="YOUR TOURNAMENTS">
                 <FlatList
                 data={ this.state.stats }
                 keyExtractor={ this._keyExtractor }
                 renderItem={ this._renderItemTournament }
+                ListEmptyComponent={
+                    <Button raised
+                        icon={{name: 'add'}}
+                        title="Havn't played yet, create a tournament or enter a game"
+                        onPress={ () => { this.props.navigation.navigate('Tournaments');}}
+                        buttonStyle={{
+                          backgroundColor: "tomato",
+                          borderColor: "transparent",
+                          borderWidth: 0,
+                          borderRadius: 10
+                        }}/>
+                    }
               //onPress = { () => navigate('Tournament', { name: item.tournament_name })
           />
 
@@ -115,8 +127,20 @@ textForGameResult(game){
                 <FlatList
                     data={ this.state.games }
                     keyExtractor={ this._keyExtractor }
-                    renderItem={ this._renderItemGame }/>
-
+                    renderItem={ this._renderItemGame }
+                    ListEmptyComponent={
+                        <Button raised
+                            icon={{name: 'add'}}
+                            title="Looks pretty emtpy, why don't you just go play a game, treat yourself, you deserve it"
+                            onPress={ () => { this.props.navigation.navigate('GameFormTournament');}}
+                            buttonStyle={{
+                              backgroundColor: "tomato",
+                              borderColor: "transparent",
+                              borderWidth: 0,
+                              borderRadius: 10
+                            }}/>
+                        }
+                    />
         </Card>
         </ScrollView>
       </View>

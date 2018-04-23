@@ -51,14 +51,14 @@ class GameFormConfirmationScreen extends Component {
             <Text style={{
                 fontSize: 16,
                 fontWeight: 'normal',
-                color: 'black',
+                color: 'darkgrey',
                 textAlign: 'center',
                 textAlignVertical: 'center'}}>
                 Tournament : {this.state.tournament.name} </Text>
             <Text style={{
                 fontSize: 16,
                 fontWeight: 'normal',
-                color: 'black',
+                color: 'darkgrey',
                 textAlign: 'center',
                 textAlignVertical: 'center'}}
                 > Winner : {this.state.winner.username} </Text>

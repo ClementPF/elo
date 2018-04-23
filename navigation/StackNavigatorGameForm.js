@@ -27,9 +27,9 @@ const stackNavGameForm = StackNavigator({
       navigationOptions: () => ({
          headerTitleStyle: {
          fontWeight: 'bold',
-         color: '#ffffff'
+         color: 'white'
       },
-      headerStyle: {backgroundColor:'#3c3c3c'}
+      headerStyle: {backgroundColor:'black'}
    })
 })
 

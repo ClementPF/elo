@@ -1,7 +1,7 @@
 import React, { Component }  from 'react';
 import PropTypes from 'prop-types';
-import { View, StatusBar, ScrollView, Button, Text } from 'react-native';
-import { Icon, SearchBar , ListItem} from 'react-native-elements'
+import { View, StatusBar, ScrollView, Text } from 'react-native';
+import { Icon, SearchBar, Button , ListItem} from 'react-native-elements'
 import SearchableFlatList from '../components/SearchableFlatList';
 
 
@@ -15,11 +15,12 @@ static propTypes = {
   navigation: PropTypes.object,
   dispatch: PropTypes.func
 }
+
 static navigationOptions = ({ navigation }) => {
         const { params = {} } = navigation.state;
         return {
             title: 'Explore Tournaments',
-            headerRight: <Button title="Add" onPress={ () => params.handleSave() } />
+            headerRight: <Button title="Add" onPress={ () => { navigation.navigate('TournamentCreation');}} />
         };
     };
 
@@ -35,8 +36,6 @@ constructor(props) {
 componentWillMount(){
 
   console.log("componentWillMount for tournaments ");
-
-  this.props.navigation.setParams({ handleSave: this._saveDetails });
   getTournaments().then((response) => {
         this.setState({
             tournaments: response.data
@@ -46,12 +45,6 @@ componentWillMount(){
         console.log('failed to get tournaments : ' +  + error);
       }).done();
     }
-
-    _saveDetails = () => {
-            console.log('clicked save');
-
-            this.props.navigation.navigate('TournamentCreation');
-        }
 
     handleChangeTournamentText = (text) => {
       this.props.tournamentName = text;
@@ -108,7 +101,10 @@ componentWillMount(){
                   searchTerm={this.state.tournamentName}
                   data={ this.state.tournaments }
                   keyExtractor={ this._keyExtractor }
-                  renderItem={ this._renderItemTournament }/>
+                  renderItem={ this._renderItemTournament }
+                  ListEmptyComponent={
+                      <Button title="Looks pretty empty in here, why don't you create a tournament and start praying on some fish"
+                          onPress={ () => { this.props.navigation.navigate('TournamentCreation');}} />}/>
             </ScrollView>
          </View>
        );

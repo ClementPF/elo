@@ -3,7 +3,6 @@ import { TouchableOpacity } from 'react-native';
 import { StackNavigator} from 'react-navigation'
 
 import FeedScreen from '../screens/FeedScreen';
-import HomeScreen from '../screens/HomeScreen';
 import TournamentCreationScreen from '../screens/TournamentCreationScreen';
 import TournamentScreen from '../screens/TournamentScreen';
 import TournamentsScreen from '../screens/TournamentsScreen';
@@ -25,9 +24,9 @@ const stackNav = StackNavigator({
         navigationOptions: () => ({
             headerTitleStyle: {
                 fontWeight: 'bold',
-                color: '#ffffff'
+                color: 'white'
             },
-            headerStyle: {backgroundColor:'#3c3c3c'}
+            headerStyle: {backgroundColor:'black'}
         })
 })
 

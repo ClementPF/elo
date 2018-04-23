@@ -95,7 +95,7 @@ styles = StyleSheet.create({
     nameText: {
         fontSize: 16,
         fontWeight: 'normal',
-        color: 'black',
+        color: 'darkgrey',
         textAlign: 'center',
         textAlignVertical: 'center'
     },

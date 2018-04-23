@@ -84,7 +84,20 @@ class GameFormTournamentScreen extends Component {
                   searchTerm={this.state.tournamentName}
                   data={ this.state.tournaments }
                   keyExtractor={ this._keyExtractor }
-                  renderItem={ this._renderItemTournament }/>
+                  renderItem={ this._renderItemTournament }
+                  ListEmptyComponent={
+                      <Button raised
+                          icon={{name: 'add'}}
+                          title="Can't find what you're looking for ? Just create your tournament."
+                          onPress={ () => { this.props.navigation.navigate('TournamentCreation');}}
+                          buttonStyle={{
+                            backgroundColor: "tomato",
+                            borderColor: "transparent",
+                            borderWidth: 0,
+                            borderRadius: 10
+                          }}/>
+                      }
+                      />
             </ScrollView>
          </View>
        );

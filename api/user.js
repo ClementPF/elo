@@ -9,6 +9,10 @@ function getGamesForUser(username) {
   return Axios.get(`${API_ENDPOINTS.USER}/${username}/games`);
 }
 
+function getTournamentsForUser(username) {
+  return Axios.get(`${API_ENDPOINTS.USER}/${username}/games`);
+}
+
 function getUsers() {
   return Axios.get(`${API_ENDPOINTS.USERS}`);
 }

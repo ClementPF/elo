@@ -79,7 +79,7 @@ componentWillReceiveProps(nextProps) {
 
     return (
         <View style={{flex: 1}}>
-            <StatusBar translucent={false} barStyle="dark-content" />
+            <StatusBar translucent={false} barStyle="light-content" />
             <ScrollView>
                     <Card title="RANKING">
                         <FlatList
