@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {View, Text, FlatList, StatusBar, AsyncStorage} from 'react-native';
+import {View, Image, Text, FlatList, StatusBar, AsyncStorage} from 'react-native';
 import {SocialIcon} from 'react-native-elements';
 import {loginUser, testTokenValidity} from '../api/login';
 import Axios from 'axios';
@@ -20,7 +20,7 @@ class Login extends Component {
   constructor() {
         super()
         this.state = {
-           welcome_text: 'Welcome please log in.',
+           welcome_text: 'Welcome to the SHARKULATOR fellow shark, before starting praying on some fishes please Sign in with Facebook.',
            appVersion: '0.0.0'
         }
      }
@@ -120,12 +120,26 @@ class Login extends Component {
     }
 
     return (
-      <View style= { {'justifyContent' : 'center', 'flex' : 1 } }>
-        <StatusBar translucent={ false } barStyle="light-content"/>
-        <Text style= { {'textAlign' : 'center'} }> {this.state.welcome_text} </Text>
-        <SocialIcon title="Sign In With Facebook" button={ true } onPress={ this.handlePress } type="facebook"/>
-        <Text style= { {'textAlign' : 'center'} }> { 'Version : ' + this.state.appVersion + API_CONF.BASE_URL == API_CONF.BASE_LOCAL_URL ? "L" : "R"} </Text>
+      <View style= { { 'backgroundColor' : 'white', 'flex' : 1 } }>
+        <StatusBar translucent={ false } barStyle="dark-content"/>
+        <View style= { {'justifyContent' : 'center', 'flex' : 5,
+            alignItems: 'center' } }>
+            <Image style={{width: 256, height: 256}}
+                 source={require('../assets/images/icon.png')} />
+         </View>
+         <View style= { { 'flex' : 1 } }>
+            <Text style= { {'justifyContent' : 'top', 'textAlign' : 'center',
+                fontSize: 16,
+                fontWeight: 'bold',
+                color: 'darkslategrey',} }> {this.state.welcome_text} </Text>
 
+        </View>
+         <View style= { { 'flex' : 2,
+        flexDirection: 'column',
+        justifyContent: 'space-between', } }>
+            <SocialIcon title="Sign In With Facebook" button={ true } onPress={ this.handlePress } type="facebook"/>
+            <Text style= { {'textAlign' : 'center'} }> { 'Version : ' + this.state.appVersion + (API_CONF.BASE_URL == API_CONF.BASE_LOCAL_URL ? "L" : "R")} </Text>
+        </View>
        <DropdownAlert ref={ref => this.dropdown = ref} onClose={data => this.onClose(data)} />
       </View>
     );

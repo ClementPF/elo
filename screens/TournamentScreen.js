@@ -51,15 +51,15 @@ componentWillMount(){
 _keyExtractor = (item, index) => item.id;
 
 _renderItemGame = ({item}) => (
-    <GameRow
-        name1= { item.outcomes[0].user_name }
-        name2= { item.outcomes[1].user_name }
-        tournament= { item.tournament_name }
-        result= { item.outcomes[1].result }
-        value= { item.outcomes[0].score_value }
-        date= { item.date }
-    />
-);
+  <GameRow
+      name1= { item.outcomes[item.outcomes[0].result == "WIN" ? 0 : 1].user_name}
+      name2= { item.outcomes[item.outcomes[0].result != "WIN" ? 0 : 1].user_name }
+      tournament= { item.tournament_name }
+      result= { "WIN" }
+      value= { item.outcomes[0].score_value > 0 ? item.outcomes[0].score_value : item.outcomes[1].score_value }
+      date= { item.date }
+  />
+ );
 
 _renderItemRank = ({item, index}) => (
     <RankRow
@@ -88,10 +88,10 @@ componentWillReceiveProps(nextProps) {
                             renderItem={ this._renderItemRank }/>
                     </Card>
                     <Card title="HISTORY">
-                          <FlatList
-                              data={ this.state.games }
-                              keyExtractor={ this._keyExtractor }
-                              renderItem={ this._renderItemGame }/>
+                        <FlatList
+                            data={ this.state.games }
+                            keyExtractor={ this._keyExtractor }
+                            renderItem={ this._renderItemGame }/>
                     </Card>
             </ScrollView>
         </View>

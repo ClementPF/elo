@@ -84,8 +84,8 @@ textForGameResult(game){
           name1= { item.outcomes[item.outcomes[0].result == "WIN" ? 0 : 1].user_name}
           name2= { item.outcomes[item.outcomes[0].result != "WIN" ? 0 : 1].user_name }
           tournament= { item.tournament_name }
-          result= { item.outcomes[item.outcomes[0].username == this.state.user.username ? 0 : 1] }
-          value= { item.outcomes[item.outcomes[0].username != this.state.user.username ? 0 : 1].score_value }
+          result= { item.outcomes[item.outcomes[0].user_name == this.state.user.username ? 0 : 1] }
+          value= { item.outcomes[item.outcomes[0].user_name == this.state.user.username ? 0 : 1].score_value }
           date= { item.date }
       />
      );

@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "sharkulator-3",
-    "description": "No description",
+    "description": "The sharkulator is here to find out who's no joke. Bring some number to get the right to brag. Every game you play, enter who wins and who loses and you're score will be updated.",
     "slug": "sharkulator-3",
     "privacy": "public",
     "sdkVersion": "22.0.0",
@@ -18,7 +18,11 @@
       "assetExts": ["ttf"]
     },
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "com.elo.sharkulator",
+        "supportsTablet": true
+    },
+    "android": {
+      "package": "com.yourcompany.yourappname"
     }
   }
 }
