@@ -21,7 +21,7 @@ export default class GameRow extends Component {
     return (
 
         <View style={ styles.container }>
-            <View style={ {flex: '4', flexDirection: 'column'} }>
+            <View style={ {flex: 4, flexDirection: 'column'} }>
                 <Text >
                     <Text style={ styles.dateText }>
                         { Moment(date).format('DD MMM')}

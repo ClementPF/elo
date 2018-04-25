@@ -124,7 +124,7 @@ class Login extends Component {
         <StatusBar translucent={ false } barStyle="light-content"/>
         <Text style= { {'textAlign' : 'center'} }> {this.state.welcome_text} </Text>
         <SocialIcon title="Sign In With Facebook" button={ true } onPress={ this.handlePress } type="facebook"/>
-        <Text style= { {'textAlign' : 'center'} }> { 'Version : ' + this.state.appVersion} </Text>
+        <Text style= { {'textAlign' : 'center'} }> { 'Version : ' + this.state.appVersion + API_CONF.BASE_URL == API_CONF.BASE_LOCAL_URL ? "L" : "R"} </Text>
 
        <DropdownAlert ref={ref => this.dropdown = ref} onClose={data => this.onClose(data)} />
       </View>
