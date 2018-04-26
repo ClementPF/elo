@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {View, Text, StatusBar} from 'react-native';
 import {Button, Card, ListItem} from 'react-native-elements'
 import {postGameForTournament} from '../api/tournament'
+import DropdownAlert from 'react-native-dropdownalert';
 
 class GameFormConfirmationScreen extends Component {
 
@@ -39,9 +40,21 @@ class GameFormConfirmationScreen extends Component {
             this.props.navigation.navigate('GameFormResult', { tournament: this.state.tournament, winner: this.state.winner, game:  response.data});
         })
         .catch((error) => {
-          console.log('failed to post game for tournament ' + error);
+            this.onError(error);
         }).done();
   };
+
+  onError = error => {
+    if (error) {
+      this.dropdown.alertWithType('error', 'Error', error.message);
+    }
+  };
+
+  onClose(data) {
+    // data = {type, title, message, action}
+    // action means how the alert was closed.
+    // returns: automatic, programmatic, tap, pan or cancel
+  }
 
   render() {
     return (
@@ -63,9 +76,10 @@ class GameFormConfirmationScreen extends Component {
                 textAlignVertical: 'center'}}
                 > Winner : {this.state.winner.username} </Text>
         </Card>
-      <Button title='Darn it, I lost!'
+        <Button title='Darn it, I lost!'
                   onPress={this.submitGame}/>
-        </View>
+        <DropdownAlert ref={ref => this.dropdown = ref} onClose={data => this.onClose(data)} />
+    </View>
     );
   }
 }
