@@ -1,6 +1,6 @@
 import React, { Component }  from 'react';
 import PropTypes from 'prop-types';
-import { View, StatusBar, ScrollView, Text } from 'react-native';
+import { View, StatusBar, Text } from 'react-native';
 import { Icon, SearchBar, Button , ListItem} from 'react-native-elements'
 import SearchableFlatList from '../components/SearchableFlatList';
 
@@ -100,7 +100,6 @@ componentWillMount(){
 
             <Text style={gameFormStyle.listHeader }>
                 All Tournaments </Text>
-            <ScrollView contentContainerStyle={{flex:1}} >
                <SearchableFlatList style={{flex:1}}
                   searchProperty={"name"}
                   searchTerm={this.state.tournamentName}
@@ -110,7 +109,7 @@ componentWillMount(){
                   ListEmptyComponent={
                       <Button title="Looks pretty empty in here, why don't you create a tournament and start praying on some fish"
                           onPress={ () => { this.props.navigation.navigate('TournamentCreation');}} />}/>
-            </ScrollView>
+
          </View>
        );
      }

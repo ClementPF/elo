@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {ScrollView, View, Text, StatusBar, StyleSheet, SectionList, TouchableOpacity} from 'react-native';
+import {View, Text, StatusBar, StyleSheet, SectionList, TouchableOpacity} from 'react-native';
 import {Button, SearchBar, Icon, ListItem} from 'react-native-elements';
 import SearchableFlatList from '../components/SearchableFlatList';
 import {getTournaments, getUsersForTournament} from '../api/tournament';

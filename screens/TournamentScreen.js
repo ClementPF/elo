@@ -1,6 +1,6 @@
 import React, { Component }  from 'react';
 import PropTypes from 'prop-types';
-import { View, FlatList, StatusBar, ScrollView } from 'react-native';
+import { View, FlatList, StatusBar } from 'react-native';
 import { Icon, List , ListItem, Card} from 'react-native-elements';
 import GameRow from '../components/GameRow';
 import RankRow from '../components/RankRow';
@@ -80,7 +80,7 @@ componentWillReceiveProps(nextProps) {
     return (
         <View style={{flex: 1}}>
             <StatusBar translucent={false} barStyle="light-content" />
-            <ScrollView>
+
                     <Card title="RANKING">
                         <FlatList
                             data={ this.state.stats }
@@ -93,7 +93,7 @@ componentWillReceiveProps(nextProps) {
                             keyExtractor={ this._keyExtractor }
                             renderItem={ this._renderItemGame }/>
                     </Card>
-            </ScrollView>
+
         </View>
     );
   }

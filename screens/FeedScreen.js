@@ -1,6 +1,6 @@
 import React, { Component }  from 'react';
 import PropTypes from 'prop-types';
-import { View, Text,SectionList, FlatList, StatusBar, ScrollView,TouchableOpacity, RefreshControl, StyleSheet } from 'react-native';
+import { View, Text,SectionList, FlatList, StatusBar,TouchableOpacity, RefreshControl, StyleSheet } from 'react-native';
 import { Icon, List , ListItem, Card, Button} from 'react-native-elements';
 import GameRow from '../components/GameRow';
 import UserStatRow from '../components/UserStatRow';
