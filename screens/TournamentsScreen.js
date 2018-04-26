@@ -20,7 +20,12 @@ static navigationOptions = ({ navigation }) => {
         const { params = {} } = navigation.state;
         return {
             title: 'Explore Tournaments',
-            headerRight: <Button title="Add" onPress={ () => { navigation.navigate('TournamentCreation');}} />
+            headerRight: <Button icon
+                icon={{name: 'add'}}
+                buttonStyle= { {
+                    backgroundColor: "transparent",
+                } }
+                 title="Add" onPress={ () => { navigation.navigate('TournamentCreation');}} />
         };
     };
 

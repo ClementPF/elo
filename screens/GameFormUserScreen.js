@@ -1,62 +1,69 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {ScrollView, View, Text, StyleSheet, FlatList, StatusBar, ActivityIndicator} from 'react-native';
-import {Button, SearchBar, Icon, List, ListItem} from 'react-native-elements'
+import {ScrollView, View, Text, StatusBar, StyleSheet, SectionList, TouchableOpacity} from 'react-native';
+import {Button, SearchBar, Icon, ListItem} from 'react-native-elements';
 import SearchableFlatList from '../components/SearchableFlatList';
-import {postGameForTournament, getUsersForTournament} from '../api/tournament'
-import {getUsers} from '../api/user'
+import {getTournaments, getUsersForTournament} from '../api/tournament';
+import {getTournamentsForUser} from '../api/user';
+import {getUser, getUsers} from '../api/user';
+import UserStatRow from '../components/UserStatRow';
+import EmptyResultsButton from '../components/EmptyResultsButton';
+import SearchableSectionList from '../components/SearchableSectionList';
 
 class GameFormUserScreen extends Component {
 
   static propTypes = {
     navigation: PropTypes.object,
     dispatch: PropTypes.func,
-    //gameValue: PropTypes.string
   };
 
-  static navigationOptions = ({ navigation }) => {
-      const  params = navigation.state.params;
-      return {
-          title: navigation.state.params.tournament.name,
-      };
-  };
+    static navigationOptions = ({ navigation }) => {
+        const  params = navigation.state.params;
+        return {
+            title: navigation.state.params.tournament.name,
+        };
+    };
 
   constructor(props) {
       super(props);
       this.state = {
-          isLoading: true,
-          users : [],
-          allusers : [],
-          gameValue : '0',
-          winnerName : '',
+          user : {},
+          topPlayers : [],
+          allPlayers : [],
+          winnerName: '',
+          refreshing: false,
           tournament: props.navigation.state.params.tournament,
       };
   }
 
   componentWillMount(){
 
-    console.log("componentWillMount " + this.state.tournament.name);
-    getUsersForTournament(this.state.tournament.name).then((response) => {
-      this.setState({
-          users: response.data,
-          isLoading: false,
-      });
-    })
-    .catch((error) => {
-        isLoading: false,
-        console.log('failed to get stats for tournament ' + error);
-    }).done();
+    console.log("componentWillMount");
+    this.loadLists();
+  }
 
-    getUsers().then((response) => {
-      this.setState({
-          allusers: response.data,
-          isLoading: false,
-      });
-    })
-    .catch((error) => {
-        isLoading: false,
-        console.log('failed to get all stats for tournament ' + error);
-    }).done();
+  loadLists(){
+
+      getUsersForTournament(this.state.tournament.name).then((response) => {
+          console.log(" " + response.data[0].first_name + " " + response.data[0].stats[0].score);
+
+        this.setState({
+            topPlayers: response.data,
+        });
+      })
+      .catch((error) => {
+        console.log('failed to get stats for user ' + error);
+        }).done();
+
+        getUsers().then((response) => {
+          this.setState({
+              allPlayers: response.data,
+              refreshing: false,
+          });
+        })
+        .catch((error) => {
+          console.log('failed to get stats for user ' + error);
+        }).done();
   }
 
   handleChangeUserText = (text) => {
@@ -65,23 +72,6 @@ class GameFormUserScreen extends Component {
       console.log(" handleChangeUserText " + this.props.winnerName);
   };
 
-  submitGame = (text) => {
-      console.log("adding game for " + this.state.winnerName + " " + this.state.tournament.name);
-
-      postGameForTournament(this.state.tournament.name, this.state.winnerName)
-        .then((response) => {
-            console.log(JSON.stringify(response.data.outcomes[0].score_value));
-            this.setState({
-                gameValue: response.data.outcomes[0].score_value
-            });
-            this.props.gameValue = response.data.outcomes[0].score_value;
-        })
-        .catch((error) => {
-          console.log('failed to get stats for tournament ' + error);
-        }).done();
-  };
-
-//rowID actually has the object
   _onPressRow = (rowID, rowData)  => {
 
    console.log("Selected user :" + rowID.username);
@@ -89,55 +79,55 @@ class GameFormUserScreen extends Component {
    this.props.navigation.navigate('GameFormConfirmation', { tournament: this.state.tournament , winner: rowID})
  }
 
-    _keyExtractor = (item, index) => item.id;
+   _renderItem = ({item, i}) => (
 
-    _renderItem = ({item, i}) => (
-          <ListItem
-           key={i}
-           title={item.first_name + ' ' + item.last_name}
-           subtitle = {item.username}
-           hideChevron = {true}
-           onPress={this._onPressRow.bind(i, item)}
-          />
-    );
+       <TouchableOpacity
+       onPress={this._onPressRow.bind(i, item)}>
+            <UserStatRow
+                tournament= { item.first_name + ' ' + item.last_name }
+                position= { 1 }
+                score= { item.stats != null ? item.stats[0].score : 1000 }
+            />
+        </TouchableOpacity>
+   );
 
-    render() {
-        if (this.state.isLoading) {
-          return (
-            <View style={{flex: 1, paddingTop: 20}}>
-              <ActivityIndicator />
-            </View>
-          );
-        }
+  _onRefresh() {
+    console.log('refreshing ')
+    this.setState({refreshing: true});
+    this.loadLists();
+}
 
-       return (
-          <View style={{flex:1}} >
-             <SearchBar
+
+render() {
+    return (
+        <View style={{flex:1}} >
+            <SearchBar
                 lightTheme={true} round
                 onChangeText={this.handleChangeUserText}
                 placeholder={this.state.winnerName} />
 
-             <Text style= { gameFormStyle.listHeader }>
-                 Top Players </Text>
-             <ScrollView contentContainerStyle={{flex:1}} >
-                <SearchableFlatList style={{flex:1}}
+            <SearchableSectionList
+                style = { feedScreenStyle.list }
+                data={ [...this.state.topPlayers, ...this.state.allPlayers] }
                    searchProperty={"username"}
                    searchTerm={this.state.winnerName}
-                   data={ this.state.users }
-                   keyExtractor={ this._keyExtractor }
-                   renderItem={ this._renderItem }/>
-             <Text style= { gameFormStyle.listHeader }>
-                 All Players </Text>
-            <SearchableFlatList style={{flex:1}}
-               searchProperty={"username"}
-               searchTerm={this.state.winnerName}
-               data={ this.state.allusers }
-               keyExtractor={ this._keyExtractor }
-               renderItem={ this._renderItem }/>
-         </ScrollView>
-          </View>
-        );
-      }
- }
+                keyExtractor={(item, index) => item + index}
+                renderItem={({ item, index, section }) => <Text key={index}>{item}</Text>}
+                renderSectionHeader={({ section: { title } }) => <Text style={ feedScreenStyle.sectionHeaderText }>{title}</Text>}
+                sections={[
+                { title: 'TOP PLAYERS', data: this.state.topPlayers, renderItem: this._renderItem },
+                { title: 'ALL PLAYERS', data: this.state.allPlayers, renderItem: this._renderItem },
+                ]}
+                refreshing={this.state.refreshing}
+                onRefresh={this._onRefresh.bind(this)}
+                ListEmptyComponent={
+                <EmptyResultsButton
+                title="No player here ? Go find some people and tell them how great the sharkulator is."
+                onPress={ () => { this.props.navigation.navigate('Tournaments');}}/>
+            }/>
+        </View>
+    );
+}
+}
 
 export default GameFormUserScreen;

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 
-export default class TournamentRow extends Component {
+export default class UserStatRow extends Component {
   static propTypes = {
     tournament: PropTypes.string,
     sport: PropTypes.string,
@@ -14,20 +14,20 @@ export default class TournamentRow extends Component {
 
     return (
 
-        <View style={ stylesTournament.container }>
+        <View style={ stylesStats.container }>
 
-                <Text style={ stylesTournament.tournamentText }>
+                <Text style={ stylesStats.tournamentText }>
                     { tournament }
                 </Text>
-                <Text style={ stylesTournament.sportText }>
-                    {  sport }
+                <Text style={ stylesStats.scoreText }>
+                    {  score.toFixed(0) }
                 </Text>
       </View>
     );
   }
 }
 
-stylesTournament = StyleSheet.create({
+stylesStats = StyleSheet.create({
     container: {
         padding: 8,
         margin: 1,
@@ -38,8 +38,8 @@ stylesTournament = StyleSheet.create({
         justifyContent: 'space-between',
         backgroundColor: 'whitesmoke'
     },
-    sportText: {
-        fontSize: 12,
+    scoreText: {
+        fontSize: 24,
         fontWeight: 'bold',
         color: 'grey',
         textAlign: 'right'

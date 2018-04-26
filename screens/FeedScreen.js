@@ -1,9 +1,10 @@
 import React, { Component }  from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, FlatList, StatusBar, ScrollView,TouchableOpacity } from 'react-native';
+import { View, Text,SectionList, FlatList, StatusBar, ScrollView,TouchableOpacity, RefreshControl, StyleSheet } from 'react-native';
 import { Icon, List , ListItem, Card, Button} from 'react-native-elements';
 import GameRow from '../components/GameRow';
-import TournamentRow from '../components/TournamentRow';
+import UserStatRow from '../components/UserStatRow';
+import EmptyResultsButton from '../components/EmptyResultsButton';
 import Moment from 'moment';
 
 import { NavigationActions } from 'react-navigation';
@@ -26,9 +27,11 @@ static navigationOptions = ({ navigation }) => {
 constructor(props) {
     super(props);
     this.state = {
-        stats: [],
-        games: [],
-        user: {}
+      refreshing: false,
+      dataSource: [],
+      stats: [],
+      games: [],
+      user: {}
     };
 }
 
@@ -42,7 +45,7 @@ componentWillMount(){
     });
     getStatsForUser(this.state.user.username).then((response) => {
       this.setState({
-          stats: response.data
+          stats: response.data,
       });
     })
     .catch((error) => {
@@ -51,7 +54,7 @@ componentWillMount(){
 
       getGamesForUser(this.state.user.username).then((response) => {
         this.setState({
-            games: response.data
+            games: response.data,
         });
       })
       .catch((error) => {
@@ -77,9 +80,11 @@ textForGameResult(game){
     return str;
 }
 
-  _keyExtractor = (item, index) => item.id;
+  _renderItem = ({ item , index }) => {
+     console.log("_renderItem " + index);
+ }
 
-  _renderItemGame = ({item}) => (
+  _renderItemGame = ({item, index}) => (
       <GameRow
           name1= { item.outcomes[item.outcomes[0].result == "WIN" ? 0 : 1].user_name}
           name2= { item.outcomes[item.outcomes[0].result != "WIN" ? 0 : 1].user_name }
@@ -90,9 +95,9 @@ textForGameResult(game){
       />
      );
 
-     _renderItemTournament = ({item}) => (
-         <TouchableOpacity onPress = { () => this.props.navigation.navigate('Tournament', { name: item.tournament_name })}>
-             <TournamentRow
+     _renderItemTournament = ({item, index}) => (
+        <TouchableOpacity onPress = { () => this.props.navigation.navigate('Tournament', { name: item.tournament_name })}>
+             <UserStatRow
                  tournament= { item.tournament_display_name }
                  position= { 1 }
                  score= { item.score }
@@ -100,54 +105,56 @@ textForGameResult(game){
          </TouchableOpacity>
     );
 
+    _onRefresh() {
+      console.log('refreshing ')
+    this.setState({refreshing: true});
+
+    getStatsForUser(this.state.user.username).then((response) => {
+      this.setState({
+          stats: response.data
+      });
+    })
+    .catch((error) => {
+      console.log('failed to get stats for user ' + error);
+      }).then(() => {
+        this.setState({refreshing: false});
+      });
+
+      getGamesForUser(this.state.user.username).then((response) => {
+        this.setState({
+            games: response.data
+        });
+      })
+      .catch((error) => {
+        console.log('failed to get stats for user ' + error);
+     }).done();
+  }
+
+
   render() {
       const { navigate } = this.props.navigation;
       const rows = this.state.stats;
-    return (
-      <View>
+      return (
+      <View
+        style = { feedScreenStyle.container }>
         <StatusBar translucent={ false } barStyle="light-content" />
-        <ScrollView>
-            <Card title="YOUR TOURNAMENTS">
-                <FlatList
-                data={ this.state.stats }
-                keyExtractor={ this._keyExtractor }
-                renderItem={ this._renderItemTournament }
-                ListEmptyComponent={
-                    <Button raised
-                        icon={{name: 'add'}}
-                        title="Havn't played yet, create a tournament or enter a game"
-                        onPress={ () => { this.props.navigation.navigate('Tournaments');}}
-                        buttonStyle={{
-                          backgroundColor: "tomato",
-                          borderColor: "transparent",
-                          borderWidth: 0,
-                          borderRadius: 10
-                        }}/>
-                    }
-              //onPress = { () => navigate('Tournament', { name: item.tournament_name })
-          />
-
-          </Card>
-          <Card title="GAME HISTORY">
-                <FlatList
-                    data={ this.state.games }
-                    keyExtractor={ this._keyExtractor }
-                    renderItem={ this._renderItemGame }
-                    ListEmptyComponent={
-                        <Button raised
-                            icon={{name: 'add'}}
-                            title="Looks pretty emtpy, why don't you just go play a game, treat yourself, you deserve it"
-                            onPress={ () => { this.props.navigation.navigate('GameFormTournament');}}
-                            buttonStyle={{
-                              backgroundColor: "tomato",
-                              borderColor: "transparent",
-                              borderWidth: 0,
-                              borderRadius: 10
-                            }}/>
-                        }
-                    />
-        </Card>
-        </ScrollView>
+        <SectionList
+          style = { feedScreenStyle.list }
+          data={ [...this.state.stats, ...this.state.games]}
+          keyExtractor={(item, index) => item + index}
+          renderItem={({ item, index, section }) => <Text key={index}>{item}</Text>}
+          renderSectionHeader={({ section: { title } }) => <Text style={ feedScreenStyle.sectionHeaderText }>{title}</Text>}
+          sections={[
+            { title: 'YOUR TOURNAMENTS', data: this.state.stats, renderItem: this._renderItemTournament },
+            { title: 'YOUR HISTORY', data: this.state.games, renderItem: this._renderItemGame }
+          ]}
+          refreshing={this.state.refreshing}
+          onRefresh={this._onRefresh.bind(this)}
+          ListEmptyComponent={
+            <EmptyResultsButton
+              title="Havn't played yet, create a tournament or enter a game"
+              onPress={ () => { this.props.navigation.navigate('Tournaments');}}/>
+        }/>
       </View>
     );
   }
@@ -159,5 +166,22 @@ const mapStateToProps = (state) => {
   return {
   };
 };
+
+feedScreenStyle = StyleSheet.create({
+    container: {
+        paddingTop: 8,
+    },
+    list: {
+        paddingRight: 16,
+        paddingLeft: 16,
+    },
+    sectionHeaderText: {
+        padding: 8,
+        fontSize: 20,
+        fontWeight: 'normal',
+        color: 'grey',
+        textAlign: 'center'
+    }
+})
 
 export default TournamentScreen;

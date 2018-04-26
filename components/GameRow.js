@@ -24,7 +24,7 @@ export default class GameRow extends Component {
             <View style={ {flex: 4, flexDirection: 'column'} }>
                 <Text >
                     <Text style={ styles.dateText }>
-                        { Moment(date).format('DD MMM')}
+                        { Moment(date).fromNow()}
                     </Text>
                     <Text style={ styles.tournamentText }>
                         {' - ' + tournament}

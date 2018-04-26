@@ -20,7 +20,7 @@ class Login extends Component {
   constructor() {
         super()
         this.state = {
-           welcome_text: 'Welcome to the SHARKULATOR fellow shark, before starting praying on some fishes please Sign in with Facebook.',
+           welcome_text: 'Welcome to the SHARKULATOR fellow shark, before starting praying on some fishes \nplease Sign in with Facebook.',
            appVersion: '0.0.0'
         }
      }
