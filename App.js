@@ -12,7 +12,7 @@ export default class App extends React.Component {
     };
 
     _loadResourcesAsync = async () => {
-        return Promise.all([
+        return Promise.all(/*[
             Asset.loadAsync([
                 require('./assets/images/robot-dev.png'),
                 require('./assets/images/robot-prod.png'),
@@ -24,13 +24,13 @@ export default class App extends React.Component {
                 // to remove this if you are not using it in your app
                 { 'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf') },
             ]),
-        ]);
+        ]*/);
     };
 
     _handleLoadingError = error => {
         // In this case, you might want to report the error to your error
         // reporting service, for example Sentry
-        console.warn(error);
+        console.log(error);
     };
 
     _handleFinishLoading = () => {
@@ -66,7 +66,7 @@ App.propTypes = {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#000',
     },
     statusBarUnderlay: {
         height: 24,

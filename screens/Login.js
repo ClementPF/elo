@@ -44,8 +44,6 @@ class Login extends Component {
              .catch((error) => {
                   this.onError('User failed to log in ' + error);
              });
-
-         console.log(response.error_message);
        };
   };
 
@@ -128,7 +126,7 @@ class Login extends Component {
                  source={require('../assets/images/icon.png')} />
          </View>
          <View style= { { 'flex' : 1 } }>
-            <Text style= { {'justifyContent' : 'top', 'textAlign' : 'center',
+            <Text style= { { 'padding':16,  'justifyContent' : 'center', 'textAlign' : 'center',
                 fontSize: 16,
                 fontWeight: 'bold',
                 color: 'darkslategrey',} }> {this.state.welcome_text} </Text>
