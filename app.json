@@ -4,7 +4,7 @@
     "description": "The sharkulator is here to find out who's no joke. Bring some number to get the right to brag. Every game you play, enter who wins and who loses and you're score will be updated.",
     "slug": "sharkulator-3",
     "privacy": "public",
-    "sdkVersion": "22.0.0",
+    "sdkVersion": "27.0.0",
     "version": "1.0.0",
     "orientation": "portrait",
     "primaryColor": "#cccccc",

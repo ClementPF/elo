@@ -1,9 +1,10 @@
 import React, { Component }  from 'react';
 import PropTypes from 'prop-types';
-import { View, FlatList, StatusBar, ScrollView } from 'react-native';
-import { Icon, List , ListItem, Card} from 'react-native-elements';
+import { View, SectionList, StatusBar, Text } from 'react-native';
+import { Icon, List , ListItem} from 'react-native-elements';
 import GameRow from '../components/GameRow';
 import RankRow from '../components/RankRow';
+import EmptyResultsButton from '../components/EmptyResultsButton';
 
 import { getStatsForTournament, getGamesForTournament } from '../api/tournament';
 
@@ -25,6 +26,7 @@ static navigationOptions = ({ navigation }) => {
 constructor(props) {
     super(props);
     this.state = {
+        refreshing: false,
         stats: [],
         games: [],
         tournamentName: props.navigation.state.params.name
@@ -69,6 +71,24 @@ _renderItemRank = ({item, index}) => (
     />
 );
 
+
+_onRefresh() {
+  console.log('refreshing ')
+  this.setState({refreshing: true});
+  getStatsForTournament(this.state.tournamentName).then((response) => {
+    this.setState({stats: response.data})
+  }).catch((error) => {
+    console.log('failed to get stats for tournament : ' + + error);
+  }).done();
+
+  getGamesForTournament(this.state.tournamentName).then((response) => {
+    this.setState({games: response.data})
+    this.setState({refreshing: false});
+  }).catch((error) => {
+    console.log('failed to get games for tournament : ' + + error);
+  }).done();
+}
+
 componentWillReceiveProps(nextProps) {
   if (nextProps.error && !this.props.error) {
     this.props.alertWithType('error', 'Error', nextProps.error);
@@ -80,20 +100,24 @@ componentWillReceiveProps(nextProps) {
     return (
         <View style={{flex: 1}}>
             <StatusBar translucent={false} barStyle="light-content" />
-            <ScrollView>
-                    <Card title="RANKING">
-                        <FlatList
-                            data={ this.state.stats }
-                            keyExtractor={ this._keyExtractor }
-                            renderItem={ this._renderItemRank }/>
-                    </Card>
-                    <Card title="HISTORY">
-                        <FlatList
-                            data={ this.state.games }
-                            keyExtractor={ this._keyExtractor }
-                            renderItem={ this._renderItemGame }/>
-                    </Card>
-            </ScrollView>
+                    <SectionList
+                      style = { feedScreenStyle.list }
+                      data={ [...this.state.stats, ...this.state.games]}
+                      keyExtractor={(item, index) => item + index}
+                      renderItem={({ item, index, section }) => <Text key={index}>{item}</Text>}
+                      renderSectionHeader={({ section: { title } }) => <Text style={ feedScreenStyle.sectionHeaderText }>{title}</Text>}
+                      sections={[
+                        { title: 'RANKING', data: this.state.stats, renderItem: this._renderItemRank },
+                        { title: 'HISTORY', data: this.state.games, renderItem: this._renderItemGame }
+                      ]}
+                      refreshing={this.state.refreshing}
+                      onRefresh={this._onRefresh.bind(this)}
+                      ListEmptyComponent={
+                        <EmptyResultsButton
+                          title="Havn't played yet, create a tournament or enter a game"
+                          onPress={ () => { this.props.navigation.navigate('Tournaments');}}/>
+                    }/>
+
         </View>
     );
   }

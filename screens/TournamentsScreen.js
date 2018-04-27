@@ -1,8 +1,10 @@
 import React, { Component }  from 'react';
 import PropTypes from 'prop-types';
-import { View, StatusBar, ScrollView, Text } from 'react-native';
+import { View, StatusBar, Text, TouchableOpacity } from 'react-native';
 import { Icon, SearchBar, Button , ListItem} from 'react-native-elements'
-import SearchableFlatList from '../components/SearchableFlatList';
+import SearchableSectionList from '../components/SearchableSectionList';
+import EmptyResultsButton from '../components/EmptyResultsButton';
+import TournamentRow from '../components/TournamentRow';
 
 
 import { getTournaments } from '../api/tournament';
@@ -20,13 +22,19 @@ static navigationOptions = ({ navigation }) => {
         const { params = {} } = navigation.state;
         return {
             title: 'Explore Tournaments',
-            headerRight: <Button title="Add" onPress={ () => { navigation.navigate('TournamentCreation');}} />
+            headerRight: <Button icon
+                icon={{name: 'add'}}
+                buttonStyle= { {
+                    backgroundColor: "transparent",
+                } }
+                 title="Add" onPress={ () => { navigation.navigate('TournamentCreation');}} />
         };
     };
 
 constructor(props) {
     super(props);
     this.state = {
+        refreshing: false,
         sports: [],
         tournaments: [],
         tournamentName: '',
@@ -76,14 +84,26 @@ componentWillMount(){
    _keyExtractor = (item, index) => item.id;
 
    _renderItemTournament = ({item, i}) => (
-         <ListItem
-          key={i}
-          title={item.display_name}
-          subtitle = {item.name}
-          hideChevron = {true}
-          onPress={this._onPressRow.bind(i, item)}
-         />
+         <TouchableOpacity onPress={this._onPressRow.bind(i, item)}>
+              <TournamentRow
+                  tournament= { item.display_name }
+                  sport= { item.sport.name }
+              />
+          </TouchableOpacity>
    );
+
+   _onRefresh() {
+     console.log('refreshing ')
+     getTournaments().then((response) => {
+           this.setState({
+               tournaments: response.data
+           });
+           this.setState({refreshing: false});
+         })
+         .catch((error) => {
+           console.log('failed to get tournaments : ' +  + error);
+         }).done();
+ }
 
    render() {
       return (
@@ -93,19 +113,24 @@ componentWillMount(){
                onChangeText={this.handleChangeTournamentText}
                placeholder={this.state.tournamentName} />
 
-            <Text style={gameFormStyle.listHeader }>
-                All Tournaments </Text>
-            <ScrollView contentContainerStyle={{flex:1}} >
-               <SearchableFlatList style={{flex:1}}
-                  searchProperty={"name"}
-                  searchTerm={this.state.tournamentName}
-                  data={ this.state.tournaments }
-                  keyExtractor={ this._keyExtractor }
-                  renderItem={ this._renderItemTournament }
-                  ListEmptyComponent={
-                      <Button title="Looks pretty empty in here, why don't you create a tournament and start praying on some fish"
-                          onPress={ () => { this.props.navigation.navigate('TournamentCreation');}} />}/>
-            </ScrollView>
+               <SearchableSectionList
+                   style = { feedScreenStyle.list }
+                   data={ [this.state.tournaments] }
+                      searchProperty={"display_name"}
+                      searchTerm={this.state.tournamentName}
+                   keyExtractor={(item, index) => item + index}
+                   renderItem={({ item, index, section }) => <Text key={index}>{item}</Text>}
+                   renderSectionHeader={({ section: { title } }) => <Text style={ feedScreenStyle.sectionHeaderText }>{title}</Text>}
+                   sections={[
+                   { title: 'ALL TOURNAMENTS', data: this.state.tournaments, renderItem: this._renderItemTournament },
+                   ]}
+                   refreshing={this.state.refreshing}
+                   onRefresh={this._onRefresh.bind(this)}
+                   ListEmptyComponent={
+                   <EmptyResultsButton
+                   title="Looks pretty empty in here, why don't you create a tournament and start praying on some fish"
+                   onPress={ () => { this.props.navigation.navigate('TournamentCreation');}} />
+               }/>
          </View>
        );
      }

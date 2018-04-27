@@ -14,11 +14,11 @@ function getGamesForUser(username) {
 }
 
 function getTournamentsForUser(username) {
-  return Axios.get(`${API_ENDPOINTS.USER}/${username}/games`);
+  return Axios.get(`${API_ENDPOINTS.USER}/${username}/tournaments`);
 }
 
 function getUsers() {
   return Axios.get(`${API_ENDPOINTS.USERS}`);
 }
 
-export {getUser, getStatsForUser, getGamesForUser, getUsers};
+export {getUser, getTournamentsForUser, getStatsForUser, getGamesForUser, getUsers};

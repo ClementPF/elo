@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {ScrollView, View, Text} from 'react-native';
+import { View, Text} from 'react-native';
 import {Card} from 'react-native-elements'
 import {postGameForTournament, getUsersForTournament} from '../api/tournament'
 import GameRow from '../components/GameRow';

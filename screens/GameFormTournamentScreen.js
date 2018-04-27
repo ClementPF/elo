@@ -1,9 +1,14 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {ScrollView, View, Text, StatusBar, StyleSheet} from 'react-native';
-import {Button, SearchBar, Icon, List, ListItem} from 'react-native-elements';
+import {View, Text, StatusBar, StyleSheet, SectionList, TouchableOpacity} from 'react-native';
+import {Button, SearchBar, Icon} from 'react-native-elements';
 import SearchableFlatList from '../components/SearchableFlatList';
 import {getTournaments} from '../api/tournament';
+import {getTournamentsForUser} from '../api/user';
+import {getUser} from '../api/user';
+import TournamentRow from '../components/TournamentRow';
+import EmptyResultsButton from '../components/EmptyResultsButton';
+import SearchableSectionList from '../components/SearchableSectionList';
 
 class GameFormTournamentScreen extends Component {
 
@@ -22,22 +27,46 @@ class GameFormTournamentScreen extends Component {
   constructor(props) {
       super(props);
       this.state = {
-          tournaments : [],
+          user : {},
+          topTournaments : [],
+          allTournaments : [],
           tournamentName: '',
+          refreshing: false
       };
   }
 
   componentWillMount(){
 
     console.log("componentWillMount");
-    getTournaments().then((response) => {
+
+    getUser().then((response) => {
       this.setState({
-          tournaments: response.data
+          user: response.data
       });
+      this.loadLists();
     })
-    .catch((error) => {
-      console.log('failed to get all tournaments ' + error);
-    }).done();
+  }
+
+  loadLists(){
+
+      getTournamentsForUser(this.state.user.username).then((response) => {
+        this.setState({
+            topTournaments: response.data,
+        });
+      })
+      .catch((error) => {
+        console.log('failed to get stats for user ' + error);
+        }).done();
+
+        getTournaments().then((response) => {
+          this.setState({
+              allTournaments: response.data,
+              refreshing: false,
+          });
+        })
+        .catch((error) => {
+          console.log('failed to get stats for user ' + error);
+        }).done();
   }
 
   handleChangeTournamentText = (text) => {
@@ -53,55 +82,57 @@ class GameFormTournamentScreen extends Component {
       this.props.tournamentName = rowID.name;
 
       console.log("Tournament selected named : " + rowID.name);
-      this.props.navigation.navigate('GameFormUser', { tournament: rowID })
+
    }
 
    _keyExtractor = (item, index) => item.id;
 
-   _renderItemTournament = ({item, i}) => (
-         <ListItem
-          key={i}
-          title={item.display_name}
-          subtitle = {item.name}
-          hideChevron = {true}
-          onPress={this._onPressRow.bind(i, item)}
-         />
-   );
+   _renderItemTournament = ({item, index}) => (
+      <TouchableOpacity onPress = { () => this.props.navigation.navigate('GameFormUser', { tournament: item })}>
+           <TournamentRow
+               tournament= { item.display_name }
+               sport= { item.sport.name }
+           />
+       </TouchableOpacity>
+  );
 
-   render() {
-      return (
-         <View style={{flex:1}} >
+  _onRefresh() {
+    console.log('refreshing ')
+    this.setState({refreshing: true});
+    this.loadLists();
+}
+
+
+render() {
+    return (
+        <View style={{flex:1}} >
             <SearchBar
-               lightTheme={true} round
-               onChangeText={this.handleChangeTournamentText}
-               placeholder={this.state.tournamentName} />
+                lightTheme={true} round
+                onChangeText={this.handleChangeTournamentText}
+                placeholder={this.state.tournamentName} />
 
-            <Text style={gameFormStyle.listHeader }>
-                Top Tournaments </Text>
-            <ScrollView contentContainerStyle={{flex:1}} >
-               <SearchableFlatList style={{flex:1}}
-                  searchProperty={"name"}
-                  searchTerm={this.state.tournamentName}
-                  data={ this.state.tournaments }
-                  keyExtractor={ this._keyExtractor }
-                  renderItem={ this._renderItemTournament }
-                  ListEmptyComponent={
-                      <Button raised
-                          icon={{name: 'add'}}
-                          title="Can't find what you're looking for ? Just create your tournament."
-                          onPress={ () => { this.props.navigation.navigate('TournamentCreation');}}
-                          buttonStyle={{
-                            backgroundColor: "tomato",
-                            borderColor: "transparent",
-                            borderWidth: 0,
-                            borderRadius: 10
-                          }}/>
-                      }
-                      />
-            </ScrollView>
-         </View>
-       );
-     }
+            <SearchableSectionList
+                style = { feedScreenStyle.list }
+                data={ [...this.state.topTournaments, ...this.state.allTournaments] }
+                   searchProperty={"display_name"}
+                   searchTerm={this.state.tournamentName}
+                keyExtractor={(item, index) => item + index}
+                renderItem={({ item, index, section }) => <Text key={index}>{item}</Text>}
+                renderSectionHeader={({ section: { title } }) => <Text style={ feedScreenStyle.sectionHeaderText }>{title}</Text>}
+                sections={[
+                { title: 'RECENT TOURNAMENTS', data: this.state.topTournaments, renderItem: this._renderItemTournament },
+                { title: 'ALL TOURNAMENTS', data: this.state.allTournaments, renderItem: this._renderItemTournament },
+                ]}
+                refreshing={this.state.refreshing}
+                onRefresh={this._onRefresh.bind(this)}
+                ListEmptyComponent={
+                <EmptyResultsButton
+                title="Havn't played yet, create a tournament or enter a game"
+                onPress={ () => { this.props.navigation.navigate('Tournaments');}}/>
+            }/>
+        </View>
+    );
+}
 }
 
 gameFormStyle = StyleSheet.create({
