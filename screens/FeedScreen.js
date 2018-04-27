@@ -28,7 +28,6 @@ constructor(props) {
     super(props);
     this.state = {
       refreshing: false,
-      dataSource: [],
       stats: [],
       games: [],
       user: {}
@@ -180,7 +179,8 @@ feedScreenStyle = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'normal',
         color: 'grey',
-        textAlign: 'center'
+        textAlign: 'center',
+        backgroundColor:'gainsboro'
     }
 })
 

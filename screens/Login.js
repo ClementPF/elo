@@ -73,7 +73,7 @@ class Login extends Component {
     const t = AsyncStorage.getItem('@Store:token').then((value) => {
       console.log('Previous session found ' + value);
       testTokenValidity(value).then((response) => {
-        this.dropdown.alertWithType('info', 'Info', 'Valid Session Found');
+        //this.dropdown.alertWithType('info', 'Info', 'Valid Session Found');
         this.navigateToHome();
         //this.props.navigation.navigate('Main',{});
       })
@@ -109,6 +109,11 @@ class Login extends Component {
     // returns: automatic, programmatic, tap, pan or cancel
   }
 
+    componentWillUnmount() {
+
+    }
+
+
   render() {
 
     const rows = this.props.stats || [];
@@ -138,7 +143,9 @@ class Login extends Component {
             <SocialIcon title="Sign In With Facebook" button={ true } onPress={ this.handlePress } type="facebook"/>
             <Text style= { {'textAlign' : 'center'} }> { 'Version : ' + this.state.appVersion + (API_CONF.BASE_URL == API_CONF.BASE_LOCAL_URL ? "L" : "R")} </Text>
         </View>
-       <DropdownAlert ref={ref => this.dropdown = ref} onClose={data => this.onClose(data)} />
+       <DropdownAlert
+           ref={ref => this.dropdown = ref}
+           onClose={data => this.onClose(data)} />
       </View>
     );
   }

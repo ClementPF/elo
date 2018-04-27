@@ -20,6 +20,7 @@ const stackNavFeed = StackNavigator({
     }
     ,
     {
+        cardStyle:{backgroundColor:'gainsboro' },
         headerMode: 'screen',
         navigationOptions: () => ({
             headerTitleStyle: {

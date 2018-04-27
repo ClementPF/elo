@@ -5,7 +5,7 @@ import { Button } from 'react-native-elements';
 export default class EmptyResultsButton extends Component {
     static propTypes = {
       title: PropTypes.string,
-      onPress: PropTypes.function,
+      onPress: PropTypes.func,
     }
 
     render = () => {
