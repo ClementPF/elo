@@ -156,7 +156,6 @@ const mapStateToProps = (state) => {
 
 feedScreenStyle = StyleSheet.create({
     container: {
-        paddingTop: 8
     },
     list: {
         paddingRight: 16,
@@ -166,7 +165,7 @@ feedScreenStyle = StyleSheet.create({
         padding: 8,
         fontSize: 20,
         fontWeight: 'normal',
-        color: 'grey',
+        color: 'white',
         textAlign: 'center',
         backgroundColor: 'black'
     }
