@@ -14,7 +14,7 @@ export default class EmptyResultsButton extends Component {
         return (
           <Button raised
               title= { title }
-              icon={{name: 'add'}}
+              icon={ {name: 'add'} }
               buttonStyle= { {
                   backgroundColor: "tomato",
                   borderColor: "transparent",

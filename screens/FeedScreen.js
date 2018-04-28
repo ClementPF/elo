@@ -15,12 +15,14 @@ import GameRow from '../components/GameRow';
 import UserStatRow from '../components/UserStatRow';
 import EmptyResultsButton from '../components/EmptyResultsButton';
 import Moment from 'moment';
+import { getUser } from '../redux/actions';
+import { connect } from 'react-redux';
 
 import {NavigationActions} from 'react-navigation';
 
-import {getUser, getStatsForUser, getGamesForUser} from '../api/user';
+import { getStatsForUser, getGamesForUser} from '../api/user';
 
-class TournamentScreen extends Component {
+class FeedScreen extends Component {
     static propTypes = {
         navigation: PropTypes.object,
         dispatch: PropTypes.func
@@ -44,26 +46,30 @@ class TournamentScreen extends Component {
     componentWillMount() {
 
         console.log("componentWillMount");
+        this.props.getUser();
 
-        getUser().then((response) => {
-            this.setState({user: response.data});
-            getStatsForUser(this.state.user.username).then((response) => {
-                this.setState({stats: response.data});
-            }).catch((error) => {
-                console.log('failed to get stats for user ' + error);
-            }).done();
-
-            getGamesForUser(this.state.user.username).then((response) => {
-                this.setState({games: response.data});
-            }).catch((error) => {
-                console.log('failed to get stats for user ' + error);
-            }).done();
-        })
     }
 
     componentWillReceiveProps(nextProps) {
+
+                console.log("componentWillReceiveProps " + nextProps.user.username);
         if (nextProps.error && !this.props.error) {
             this.props.alertWithType('error', 'Error', nextProps.error);
+        }
+
+        if(nextProps.user != null){
+            console.log("HEY MF")
+            getStatsForUser(nextProps.user.username).then((response) => {
+                    this.setState({stats: response.data});
+                }).catch((error) => {
+                    console.log('failed to get stats for user ' + error);
+                }).done();
+
+                getGamesForUser(nextProps.user.username).then((response) => {
+                    this.setState({games: response.data});
+                }).catch((error) => {
+                    console.log('failed to get stats for user ' + error);
+                }).done();
         }
     }
 
@@ -104,7 +110,7 @@ class TournamentScreen extends Component {
         console.log('refreshing ')
         this.setState({refreshing: true});
 
-        getStatsForUser(this.state.user.username).then((response) => {
+        getStatsForUser(this.props.user.username).then((response) => {
             this.setState({stats: response.data});
         }).catch((error) => {
             console.log('failed to get stats for user ' + error);
@@ -112,7 +118,7 @@ class TournamentScreen extends Component {
             this.setState({refreshing: false});
         });
 
-        getGamesForUser(this.state.user.username).then((response) => {
+        getGamesForUser(this.props.user.username).then((response) => {
             this.setState({games: response.data});
         }).catch((error) => {
             console.log('failed to get stats for user ' + error);
@@ -120,6 +126,8 @@ class TournamentScreen extends Component {
     }
 
     render() {
+
+        console.log(JSON.stringify(this.props.user));
         const { navigate } = this.props.navigation;
         const rows = this.state.stats;
         return (
@@ -148,12 +156,6 @@ class TournamentScreen extends Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    const tournamentName = state.games.tournamentName;
-
-    return {};
-};
-
 feedScreenStyle = StyleSheet.create({
     container: {
     },
@@ -163,7 +165,7 @@ feedScreenStyle = StyleSheet.create({
     },
     sectionHeaderText: {
         padding: 8,
-        fontSize: 20,
+        fontSize: 28,
         fontWeight: 'normal',
         color: 'white',
         textAlign: 'center',
@@ -171,4 +173,9 @@ feedScreenStyle = StyleSheet.create({
     }
 })
 
-export default TournamentScreen;
+const mapStateToProps = ({ authReducer }) => {
+    const { user } = authReducer;
+    return { user };
+};
+
+export default connect(mapStateToProps, { getUser })(FeedScreen);
