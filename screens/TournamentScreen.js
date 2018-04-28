@@ -20,6 +20,7 @@ static navigationOptions = ({ navigation }) => {
     const  params = navigation.state.params;
     return {
         title: params.name,
+        headerTintColor: 'white'
     };
 };
 

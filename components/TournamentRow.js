@@ -36,7 +36,7 @@ stylesTournament = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        backgroundColor: 'whitesmoke'
+        backgroundColor: 'white'
     },
     sportText: {
         fontSize: 12,

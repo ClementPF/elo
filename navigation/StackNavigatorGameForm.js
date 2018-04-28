@@ -23,7 +23,7 @@ const stackNavGameForm = StackNavigator({
    }
    ,
    {
-       cardStyle:{backgroundColor:'gainsboro' },
+       cardStyle:{backgroundColor:'black' },
       headerMode: 'screen',
       navigationOptions: () => ({
          headerTitleStyle: {

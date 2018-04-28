@@ -61,8 +61,13 @@ export default TabNavigator(
                 );
             },
         }),
+        tabBarOptions: {
+             activeTintColor: 'black',
+             showLabel: true,
+        },
         tabBarComponent: TabBarBottom,
         tabBarPosition: 'bottom',
+        tabBarSelectedButtonColor: 'black',
         animationEnabled: false,
         swipeEnabled: false,
     }

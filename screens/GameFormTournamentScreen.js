@@ -137,7 +137,7 @@ render() {
 
 gameFormStyle = StyleSheet.create({
     listHeader: {
-        backgroundColor: 'whitesmoke',
+        backgroundColor: 'white',
         padding:4,
         paddingHorizontal:8,
         color:'slategrey',

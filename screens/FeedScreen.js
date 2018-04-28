@@ -168,7 +168,7 @@ feedScreenStyle = StyleSheet.create({
         fontWeight: 'normal',
         color: 'grey',
         textAlign: 'center',
-        backgroundColor: 'gainsboro'
+        backgroundColor: 'black'
     }
 })
 

@@ -71,7 +71,7 @@ styles = StyleSheet.create({
         margin: 1,
         height: 128,
         flexDirection: 'row',
-        backgroundColor: 'whitesmoke'
+        backgroundColor: 'white'
     },
     resultContainer: {
         flex: 1,
