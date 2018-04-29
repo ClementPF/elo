@@ -5,6 +5,11 @@ import { AppLoading, Asset, Font } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import RootNavigation from './navigation/RootNavigation';
 
+import { Provider } from 'react-redux'
+import { createStore, applyMiddleware, compose } from 'redux'
+import ReduxThunk from 'redux-thunk';
+import reducers from './redux/reducers';
+import { getUser } from './redux/actions';
 
 export default class App extends React.Component {
     state = {
@@ -38,24 +43,20 @@ export default class App extends React.Component {
     };
 
     render() {
-
-        if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
-            return (
-                <AppLoading
-                    startAsync={ this._loadResourcesAsync }
-                    onError={ this._handleLoadingError }
-                    onFinish={ this._handleFinishLoading }
-                />
-            );
-        } else {
-            return (
+        const store = createStore(
+          reducers,
+          {},
+          compose(applyMiddleware(ReduxThunk))
+        );
+        return (
+            <Provider store={ store }>
                 <View style={ styles.container }>
                     { Platform.OS === 'ios' && <StatusBar barStyle="default" /> }
                     { Platform.OS === 'android' && <View style={ styles.statusBarUnderlay } /> }
                     <RootNavigation />
                 </View>
-            );
-        }
+            </Provider>
+        );
     }
 }
 

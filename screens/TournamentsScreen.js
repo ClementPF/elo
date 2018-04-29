@@ -43,7 +43,7 @@ constructor(props) {
 
 componentWillMount(){
 
-  console.log("componentWillMount for tournaments ");
+  console.log("TournamentScreen - componentWillMount");
   getTournaments().then((response) => {
         this.setState({
             tournaments: response.data

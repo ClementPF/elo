@@ -15,12 +15,14 @@ import GameRow from '../components/GameRow';
 import UserStatRow from '../components/UserStatRow';
 import EmptyResultsButton from '../components/EmptyResultsButton';
 import Moment from 'moment';
+import { getUser } from '../redux/actions';
+import { connect } from 'react-redux';
 
 import {NavigationActions} from 'react-navigation';
 
-import {getUser, getStatsForUser, getGamesForUser} from '../api/user';
+import { getStatsForUser, getGamesForUser} from '../api/user';
 
-class TournamentScreen extends Component {
+class FeedScreen extends Component {
     static propTypes = {
         navigation: PropTypes.object,
         dispatch: PropTypes.func
@@ -37,33 +39,35 @@ class TournamentScreen extends Component {
             refreshing: false,
             stats: [],
             games: [],
-            user: {}
         };
     }
 
     componentWillMount() {
 
-        console.log("componentWillMount");
+        console.log("FeedScreen - componentWillMount");
+        this.props.getUser();
 
-        getUser().then((response) => {
-            this.setState({user: response.data});
-            getStatsForUser(this.state.user.username).then((response) => {
-                this.setState({stats: response.data});
-            }).catch((error) => {
-                console.log('failed to get stats for user ' + error);
-            }).done();
-
-            getGamesForUser(this.state.user.username).then((response) => {
-                this.setState({games: response.data});
-            }).catch((error) => {
-                console.log('failed to get stats for user ' + error);
-            }).done();
-        })
     }
 
     componentWillReceiveProps(nextProps) {
+
+                console.log("FeedScreen - componentWillReceiveProps " + nextProps.user.username);
         if (nextProps.error && !this.props.error) {
             this.props.alertWithType('error', 'Error', nextProps.error);
+        }
+
+        if(nextProps.user != null){
+            getStatsForUser(nextProps.user.username).then((response) => {
+                    this.setState({stats: response.data});
+                }).catch((error) => {
+                    console.log('failed to get stats for user ' + error);
+                }).done();
+
+                getGamesForUser(nextProps.user.username).then((response) => {
+                    this.setState({games: response.data});
+                }).catch((error) => {
+                    console.log('failed to get stats for user ' + error);
+                }).done();
         }
     }
 
@@ -79,7 +83,7 @@ class TournamentScreen extends Component {
     }
 
     _renderItem = ({item, index}) => {
-        console.log("_renderItem " + index);
+        console.log("FeedScreen - _renderItem " + index);
     }
 
     _renderItemGame = ({item, index}) => (
@@ -87,8 +91,8 @@ class TournamentScreen extends Component {
             name1= { item.outcomes[item.outcomes[0].result == "WIN" ? 0 : 1].user_name }
             name2= { item.outcomes[item.outcomes[0].result != "WIN" ? 0 : 1].user_name }
             tournament={ item.tournament_name }
-            result= { item.outcomes[item.outcomes[0].user_name == this.state.user.username ? 0 : 1] }
-            value= { item.outcomes[item.outcomes[0].user_name == this.state.user.username ? 0 : 1].score_value }
+            result= { item.outcomes[item.outcomes[0].user_name == this.props.user.username ? 0 : 1].score_value < 0 }
+            value= { item.outcomes[item.outcomes[0].user_name == this.props.user.username ? 0 : 1].score_value }
             date= { item.date }/>);
 
     _renderItemTournament = ({item, index}) => (
@@ -104,7 +108,7 @@ class TournamentScreen extends Component {
         console.log('refreshing ')
         this.setState({refreshing: true});
 
-        getStatsForUser(this.state.user.username).then((response) => {
+        getStatsForUser(this.props.user.username).then((response) => {
             this.setState({stats: response.data});
         }).catch((error) => {
             console.log('failed to get stats for user ' + error);
@@ -112,7 +116,7 @@ class TournamentScreen extends Component {
             this.setState({refreshing: false});
         });
 
-        getGamesForUser(this.state.user.username).then((response) => {
+        getGamesForUser(this.props.user.username).then((response) => {
             this.setState({games: response.data});
         }).catch((error) => {
             console.log('failed to get stats for user ' + error);
@@ -148,12 +152,6 @@ class TournamentScreen extends Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    const tournamentName = state.games.tournamentName;
-
-    return {};
-};
-
 feedScreenStyle = StyleSheet.create({
     container: {
     },
@@ -163,7 +161,7 @@ feedScreenStyle = StyleSheet.create({
     },
     sectionHeaderText: {
         padding: 8,
-        fontSize: 20,
+        fontSize: 28,
         fontWeight: 'normal',
         color: 'white',
         textAlign: 'center',
@@ -171,4 +169,11 @@ feedScreenStyle = StyleSheet.create({
     }
 })
 
-export default TournamentScreen;
+const mapStateToProps = ({ authReducer }) => {
+    console.log('FeedScreen - mapStateToProps ' + JSON.stringify(authReducer));
+    console.log('FeedScreen - mapStateToProps ' + JSON.stringify(this.props));
+    const { user } = authReducer;
+    return { user };
+};
+
+export default connect(mapStateToProps, { getUser })(FeedScreen);
