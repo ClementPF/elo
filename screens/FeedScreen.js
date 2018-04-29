@@ -39,26 +39,24 @@ class FeedScreen extends Component {
             refreshing: false,
             stats: [],
             games: [],
-            user: {}
         };
     }
 
     componentWillMount() {
 
-        console.log("componentWillMount");
+        console.log("FeedScreen - componentWillMount");
         this.props.getUser();
 
     }
 
     componentWillReceiveProps(nextProps) {
 
-                console.log("componentWillReceiveProps " + nextProps.user.username);
+                console.log("FeedScreen - componentWillReceiveProps " + nextProps.user.username);
         if (nextProps.error && !this.props.error) {
             this.props.alertWithType('error', 'Error', nextProps.error);
         }
 
         if(nextProps.user != null){
-            console.log("HEY MF")
             getStatsForUser(nextProps.user.username).then((response) => {
                     this.setState({stats: response.data});
                 }).catch((error) => {
@@ -85,7 +83,7 @@ class FeedScreen extends Component {
     }
 
     _renderItem = ({item, index}) => {
-        console.log("_renderItem " + index);
+        console.log("FeedScreen - _renderItem " + index);
     }
 
     _renderItemGame = ({item, index}) => (
@@ -93,8 +91,8 @@ class FeedScreen extends Component {
             name1= { item.outcomes[item.outcomes[0].result == "WIN" ? 0 : 1].user_name }
             name2= { item.outcomes[item.outcomes[0].result != "WIN" ? 0 : 1].user_name }
             tournament={ item.tournament_name }
-            result= { item.outcomes[item.outcomes[0].user_name == this.state.user.username ? 0 : 1] }
-            value= { item.outcomes[item.outcomes[0].user_name == this.state.user.username ? 0 : 1].score_value }
+            result= { item.outcomes[item.outcomes[0].user_name == this.props.user.username ? 0 : 1].score_value < 0 }
+            value= { item.outcomes[item.outcomes[0].user_name == this.props.user.username ? 0 : 1].score_value }
             date= { item.date }/>);
 
     _renderItemTournament = ({item, index}) => (
@@ -126,8 +124,6 @@ class FeedScreen extends Component {
     }
 
     render() {
-
-        console.log(JSON.stringify(this.props.user));
         const { navigate } = this.props.navigation;
         const rows = this.state.stats;
         return (
@@ -174,6 +170,8 @@ feedScreenStyle = StyleSheet.create({
 })
 
 const mapStateToProps = ({ authReducer }) => {
+    console.log('FeedScreen - mapStateToProps ' + JSON.stringify(authReducer));
+    console.log('FeedScreen - mapStateToProps ' + JSON.stringify(this.props));
     const { user } = authReducer;
     return { user };
 };

@@ -8,43 +8,65 @@ export default class GameRow extends Component {
     name1: PropTypes.string,
     name2: PropTypes.string,
     tournament: PropTypes.string,
-    //result: PropTypes.number,
+    result: PropTypes.bool,
     value: PropTypes.number,
     date: PropTypes.number,
   }
+
+  shortenDateText(dateText) {
+
+      let keyval_value = {'a':'1'};
+
+      let keyval_unit = {
+          ' seconds':'s',' second':'s',
+          ' minutes':'m',' minute':'m',
+          ' hours':'h',' hour':'h',
+          ' days':'d',' day':'d',
+          ' weeks':'w',' week':'w',
+          ' months':'mo',' month':'mo',
+          ' years':'y',' year':'y',
+      };
+
+      for ( key in keyval_unit) {
+          dateText = dateText.replace(key,keyval_unit[key]);
+      }
+
+      for ( key in keyval_value) {
+          dateText = dateText.replace(key,keyval_value[key]);
+      }
+      return dateText;
+  }
+
   render = () => {
-    const { name1, name2, tournament, /*result,*/ value,  date} = this.props;
+    const { name1, name2, tournament, result, value,  date} = this.props;
 
     let strName1 = '🏆' + ` ${name1} ` + '🏆';
     let strName2 = `${name2} `;
 
     return (
 
-        <View style={ styles.container }>
+        <View style={ result ? styles.container : styles.container_loose }>
             <View style={ {flex: 4, flexDirection: 'column'} }>
-                <Text >
-                    <Text style={ styles.dateText }>
-                        { Moment(date).fromNow()}
-                    </Text>
-                    <Text style={ styles.tournamentText }>
-                        {' - ' + tournament}
-                    </Text>
+                <Text style={ result ? styles.tournamentText : styles.tournamentText_loose }>
+                    { tournament }
                 </Text>
-
+                <Text style={ result ? styles.dateText : styles.dateText_loose }>
+                    { this.shortenDateText(Moment(date).fromNow(true))}
+                </Text>
                 <View style={ styles.resultContainer }>
-                    <Text style={ styles.nameText }>
+                    <Text style={ result ? styles.nameText : styles.nameText_loose }>
                         { strName1  }
                     </Text>
                     <Text style={ styles.VSText }>
                         { '🆚' }
                     </Text>
-                    <Text style={ styles.nameText }>
+                    <Text style={ result ? styles.nameText : styles.nameText_loose }>
                         { strName2 }
                     </Text>
                 </View>
             </View>
             <View style={ {flex: 1, justifyContent: 'center', flexDirection: 'column'} }>
-                <Text style={ styles.scoreText }>
+                <Text style={ result ? styles.scoreText : styles.scoreText_loose }>
                     { value.toFixed(0) }
                 </Text>
             </View>
@@ -69,9 +91,16 @@ styles = StyleSheet.create({
     container: {
         padding: 8,
         margin: 1,
-        height: 128,
+        height: 164,
         flexDirection: 'row',
         backgroundColor: 'white'
+    },
+    container_loose: {
+        padding: 8,
+        margin: 1,
+        height: 164,
+        flexDirection: 'row',
+        backgroundColor: 'black'
     },
     resultContainer: {
         flex: 1,
@@ -80,22 +109,42 @@ styles = StyleSheet.create({
         flexDirection: 'column',
     },
     dateText: {
-        fontSize: 14,
+        fontSize: 12,
         fontWeight: 'normal',
-        color: 'grey',
-        color: 'lightslategrey',
+        color: 'black',
+        textAlignVertical: 'center'
+    },
+    dateText_loose: {
+        fontSize: 12,
+        fontWeight: 'normal',
+        color: 'white',
         textAlignVertical: 'center'
     },
     tournamentText: {
-        fontSize: 16,
+        fontSize: 18,
         fontWeight: 'bold',
-        color: 'darkslategrey',
+        color: 'black',
+        textAlignVertical: 'center'
+    },
+    tournamentText_loose: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: 'white',
         textAlignVertical: 'center'
     },
     nameText: {
         fontSize: 16,
+        margin: 8,
         fontWeight: 'normal',
-        color: 'dimgrey',
+        color: 'black',
+        textAlign: 'center',
+        textAlignVertical: 'center'
+    },
+    nameText_loose: {
+        fontSize: 16,
+        margin: 8,
+        fontWeight: 'normal',
+        color: 'white',
         textAlign: 'center',
         textAlignVertical: 'center'
     },
@@ -109,7 +158,14 @@ styles = StyleSheet.create({
     scoreText: {
         fontSize: 36,
         fontWeight: 'bold',
-        color: 'grey',
+        color: 'black',
+        textAlign: 'center',
+        textAlignVertical: 'center'
+    },
+    scoreText_loose: {
+        fontSize: 36,
+        fontWeight: 'bold',
+        color: 'white',
         textAlign: 'center',
         textAlignVertical: 'center'
     }

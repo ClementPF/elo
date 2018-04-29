@@ -10,6 +10,8 @@ import TournamentRow from '../components/TournamentRow';
 import EmptyResultsButton from '../components/EmptyResultsButton';
 import SearchableSectionList from '../components/SearchableSectionList';
 
+import { connect } from 'react-redux';
+
 class GameFormTournamentScreen extends Component {
 
   static propTypes = {
@@ -27,7 +29,6 @@ class GameFormTournamentScreen extends Component {
   constructor(props) {
       super(props);
       this.state = {
-          user : {},
           topTournaments : [],
           allTournaments : [],
           tournamentName: '',
@@ -37,19 +38,27 @@ class GameFormTournamentScreen extends Component {
 
   componentWillMount(){
 
-    console.log("componentWillMount");
+    console.log("GameFormTournamentScreen - componentWillMount");
 
-    getUser().then((response) => {
-      this.setState({
-          user: response.data
-      });
-      this.loadLists();
-    })
   }
 
-  loadLists(){
+  componentWillReceiveProps(nextProps) {
 
-      getTournamentsForUser(this.state.user.username).then((response) => {
+      console.log("GameFormTournamentScreen - componentWillReceiveProps " + JSON.stringify(nextProps));
+      console.log("GameFormTournamentScreen - componentWillReceiveProps this.props= " + JSON.stringify(this.props));
+      if (nextProps.error && !this.props.error) {
+          this.props.alertWithType('error', 'Error', nextProps.error);
+      }
+
+      if(nextProps.user != null){
+          this.loadLists(nextProps.user);
+      }
+  }
+
+
+  loadLists(user){
+
+      getTournamentsForUser(user.username).then((response) => {
         this.setState({
             topTournaments: response.data,
         });
@@ -66,7 +75,7 @@ class GameFormTournamentScreen extends Component {
         })
         .catch((error) => {
           console.log('failed to get stats for user ' + error);
-        }).done();
+      }).done();
   }
 
   handleChangeTournamentText = (text) => {
@@ -97,9 +106,9 @@ class GameFormTournamentScreen extends Component {
   );
 
   _onRefresh() {
-    console.log('refreshing ')
+    console.log('refreshing ' + this.props.user.username)
     this.setState({refreshing: true});
-    this.loadLists();
+    this.loadLists(this.props.user);
 }
 
 
@@ -147,4 +156,20 @@ gameFormStyle = StyleSheet.create({
     }
 })
 
-export default GameFormTournamentScreen;
+const mapStateToProps = state => {
+    console.log('GameFormTournamentScreen - mapStateToProps  ' + JSON.stringify(state));
+
+  let user = state.authReducer.user;
+  return {
+    user: user
+  };
+};
+
+/*
+const mapStateToProps = ({ authReducer }) => {
+    console.log('GameFormTournamentScreen - mapStateToProps  ' + JSON.stringify(authReducer));
+    const { user } = authReducer;
+    return { user };
+};*/
+
+export default connect(mapStateToProps)(GameFormTournamentScreen);
