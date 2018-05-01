@@ -11,7 +11,7 @@ function logtest(fb_token) {
 }
 
 function loginUser(fb_token)     {
-  return Axios.post(API_ENDPOINTS.AUTH, {
+  return Axios.post(`${API_ENDPOINTS.AUTH}/token`, {
     fb_access_token: fb_token
   });
 }
@@ -21,7 +21,13 @@ function testTokenValidity(token) {
   return Axios.get(API_ENDPOINTS.USER);
 }
 
+function refreshToken(token){
+  Axios.defaults.headers.common['Authorization'] = 'Bearer ';
+    return Axios.post(`${API_ENDPOINTS.AUTH}/refresh`, {
+        access_token:'plop',
+        refresh_token: token
+    });
+}
 
 
-
-export {loginUser,testTokenValidity};
+export {loginUser,testTokenValidity, refreshToken};
