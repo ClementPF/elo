@@ -1,6 +1,6 @@
 {
   "name": "elo",
-  "version": "0.1.2",
+  "version": "1.1.5",
   "private": true,
   "devDependencies": {
     "babel-eslint": "^8.2.3",
