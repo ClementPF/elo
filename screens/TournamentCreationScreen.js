@@ -17,6 +17,7 @@ static navigationOptions = ({ navigation }) => {
     const  params = navigation.state.params;
     return {
         title: 'Create a Tournament',
+        headerTintColor: 'white'
     };
 };
 

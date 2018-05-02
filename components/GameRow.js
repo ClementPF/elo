@@ -43,35 +43,43 @@ export default class GameRow extends Component {
     let strName1 = '🏆' + ` ${name1} ` + '🏆';
     let strName2 = `${name2} `;
 
+    // FORCE TO WHITE
+    let customBlackWhiteStyle = true;
+
     return (
 
-        <View style={ result ? styles.container : styles.container_loose }>
-            <View style={ {flex: 4, flexDirection: 'column'} }>
-                <Text style={ result ? styles.tournamentText : styles.tournamentText_loose }>
-                    { tournament }
-                </Text>
-                <Text style={ result ? styles.dateText : styles.dateText_loose }>
-                    { this.shortenDateText(Moment(date).fromNow(true))}
-                </Text>
-                <View style={ styles.resultContainer }>
-                    <Text style={ result ? styles.nameText : styles.nameText_loose }>
-                        { strName1  }
-                    </Text>
-                    <Text style={ styles.VSText }>
-                        { '🆚' }
-                    </Text>
-                    <Text style={ result ? styles.nameText : styles.nameText_loose }>
-                        { strName2 }
+        <View style={ customBlackWhiteStyle ? styles.container : styles.container_loose }>
+            <View style={ {flex: 1, flexDirection: 'column', alignItems: 'center'} }>
+                <View style={ {flex: 1, flexDirection: 'row', alignItems: 'center'} }>
+                    <View style={ {flex: 1, flexDirection: 'column'} }>
+                        <Text style={ customBlackWhiteStyle ? styles.tournamentText : styles.tournamentText_loose }>
+                            { tournament }
+                        </Text>
+                    </View>
+                    <View style={ {flexDirection: 'column'} }>
+                        <Text style={ customBlackWhiteStyle ? styles.dateText : styles.dateText_loose }>
+                            { this.shortenDateText(Moment(date).fromNow(true))}
+                        </Text>
+                    </View>
+                </View>
+                <View style={ {flex: 4, flexDirection: 'row',alignItems: 'center'} }>
+                    <View style={ styles.resultContainer }>
+                        <Text style={ customBlackWhiteStyle ? styles.nameText : styles.nameText_loose }>
+                            { strName1  }
+                        </Text>
+                        <Text style={ styles.VSText }>
+                            { 'VS' }
+                        </Text>
+                        <Text style={ customBlackWhiteStyle ? styles.nameText : styles.nameText_loose }>
+                            { strName2 }
+                        </Text>
+                    </View>
+                    <Text style={ customBlackWhiteStyle ? styles.scoreText : styles.scoreText_loose }>
+                        { value.toFixed(0) }
                     </Text>
                 </View>
-            </View>
-            <View style={ {flex: 1, justifyContent: 'center', flexDirection: 'column'} }>
-                <Text style={ result ? styles.scoreText : styles.scoreText_loose }>
-                    { value.toFixed(0) }
-                </Text>
-            </View>
+        </View>
       </View>
-
         /*
         <ListItem
             title={ Moment(date).format('DD MMM') }
@@ -112,7 +120,9 @@ styles = StyleSheet.create({
         fontSize: 12,
         fontWeight: 'normal',
         color: 'black',
-        textAlignVertical: 'center'
+        textAlignVertical: 'center',
+        textAlign: 'right',
+        alignSelf: 'flex-end',
     },
     dateText_loose: {
         fontSize: 12,

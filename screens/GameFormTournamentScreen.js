@@ -23,6 +23,7 @@ class GameFormTournamentScreen extends Component {
       const  params = navigation.state.params;
       return {
           title: "Select Tournament",
+          headerTintColor: 'white'
       };
   };
 

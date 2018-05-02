@@ -14,7 +14,10 @@ class GameFormConfirmationScreen extends Component {
 
     static navigationOptions = ({navigation}) => {
         const params = navigation.state.params;
-        return {title: navigation.state.params.name};
+        return {
+            title: navigation.state.params.name,
+            headerTintColor: 'white'
+        };
     };
 
     constructor(props) {

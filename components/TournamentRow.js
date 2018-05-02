@@ -41,13 +41,13 @@ stylesTournament = StyleSheet.create({
     sportText: {
         fontSize: 12,
         fontWeight: 'bold',
-        color: 'grey',
+        color: 'black',
         textAlign: 'right'
     },
     tournamentText: {
         fontSize: 16,
         fontWeight: 'normal',
-        color: 'grey',
+        color: 'black',
         textAlign: 'left'
     }
 })

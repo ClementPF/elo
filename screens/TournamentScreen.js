@@ -19,7 +19,7 @@ static propTypes = {
 static navigationOptions = ({ navigation }) => {
     const  params = navigation.state.params;
     return {
-        title: params.name,
+        title: params.tournamentDisplayName,
         headerTintColor: 'white'
     };
 };
@@ -30,7 +30,8 @@ constructor(props) {
         refreshing: false,
         stats: [],
         games: [],
-        tournamentName: props.navigation.state.params.name
+        tournamentName: props.navigation.state.params.tournamentName,
+        tournamentDisplayName: props.navigation.state.params.tournamentDisplayName
     };
 }
 
@@ -57,7 +58,7 @@ _renderItemGame = ({item}) => (
   <GameRow
       name1= { item.outcomes[item.outcomes[0].result == "WIN" ? 0 : 1].user_name}
       name2= { item.outcomes[item.outcomes[0].result != "WIN" ? 0 : 1].user_name }
-      tournament= { item.tournament_name }
+      tournament= { item.tournament_display_name }
       result= { "WIN" }
       value= { item.outcomes[0].score_value > 0 ? item.outcomes[0].score_value : item.outcomes[1].score_value }
       date= { item.date }

@@ -22,6 +22,7 @@ static navigationOptions = ({ navigation }) => {
         const { params = {} } = navigation.state;
         return {
             title: 'Explore Tournaments',
+            headerTintColor: 'white',
             headerRight: <Button icon
                 icon={{name: 'add'}}
                 buttonStyle= { {
@@ -78,7 +79,7 @@ componentWillMount(){
       this.props.tournamentName = rowID.name;
 
       console.log("Tournament selected named : " + rowID.name);
-      this.props.navigation.navigate('Tournament', { name: rowID.name })
+      this.props.navigation.navigate('Tournament', { tournamentName: rowID.name, tournamentDisplayName: rowID.display_name })
    }
 
    _keyExtractor = (item, index) => item.id;
@@ -109,7 +110,7 @@ componentWillMount(){
       return (
          <View style={{flex:1}} >
             <SearchBar
-               lightTheme={true} round
+               lightTheme={false}
                onChangeText={this.handleChangeTournamentText}
                placeholder={this.state.tournamentName} />
 

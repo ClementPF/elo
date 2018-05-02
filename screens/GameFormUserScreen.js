@@ -21,6 +21,7 @@ class GameFormUserScreen extends Component {
         const  params = navigation.state.params;
         return {
             title: navigation.state.params.tournament.name,
+            headerTintColor: 'white'
         };
     };
 
