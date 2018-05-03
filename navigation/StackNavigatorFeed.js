@@ -3,9 +3,9 @@ import { TouchableOpacity } from 'react-native';
 import { StackNavigator} from 'react-navigation'
 
 import FeedScreen from '../screens/FeedScreen';
-import SettingsScreen from '../screens/SettingsScreen';
 import TournamentScreen from '../screens/TournamentScreen';
 import TournamentsScreen from '../screens/TournamentsScreen';
+import UserScreen from '../screens/UserScreen';
 
 const stackNavFeed = StackNavigator({
     Feed: {
@@ -14,8 +14,8 @@ const stackNavFeed = StackNavigator({
     Tournament: {
         screen: TournamentScreen
     },
-    Settings: {
-        screen: SettingsScreen
+    User: {
+        screen: UserScreen
     }
     }
     ,

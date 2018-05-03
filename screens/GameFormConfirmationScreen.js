@@ -4,6 +4,7 @@ import {View, Text, StatusBar} from 'react-native';
 import {Button, Card, ListItem} from 'react-native-elements'
 import {postGameForTournament} from '../api/tournament'
 import DropdownAlert from 'react-native-dropdownalert';
+import { invalidateData } from '../redux/actions/RefreshAction';
 
 class GameFormConfirmationScreen extends Component {
 
@@ -42,6 +43,8 @@ class GameFormConfirmationScreen extends Component {
                 winner: this.state.winner,
                 game: response.data
             });
+            console.log("GameFormConfirmation - invalidating data");
+            invalidateData();
         }).catch((error) => {
             this.onError(error);
         }).done();

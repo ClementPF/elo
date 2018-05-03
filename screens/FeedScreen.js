@@ -16,6 +16,7 @@ import UserStatRow from '../components/UserStatRow';
 import EmptyResultsButton from '../components/EmptyResultsButton';
 import Moment from 'moment';
 import { getUser } from '../redux/actions';
+import { invalidateData } from '../redux/actions/RefreshAction';
 import { connect } from 'react-redux';
 
 import {NavigationActions} from 'react-navigation';
@@ -51,24 +52,32 @@ class FeedScreen extends Component {
 
     componentWillReceiveProps(nextProps) {
 
-                console.log("FeedScreen - componentWillReceiveProps " + nextProps.user.username);
         if (nextProps.error && !this.props.error) {
             this.props.alertWithType('error', 'Error', nextProps.error);
         }
 
         if(nextProps.user != null){
-            getStatsForUser(nextProps.user.username).then((response) => {
-                    this.setState({stats: response.data});
-                }).catch((error) => {
-                    console.log('failed to get stats for user ' + error);
-                }).done();
-
-                getGamesForUser(nextProps.user.username).then((response) => {
-                    this.setState({games: response.data});
-                }).catch((error) => {
-                    console.log('failed to get stats for user ' + error);
-                }).done();
+            console.log("FeedScreen - componentWillReceiveProps " + nextProps.user.username);
+            this.fetchData(nextProps.user.username);
         }
+        if(nextProps.invalidateData == true){
+            console.log("FeedScreen - componentWillReceiveProps " + nextProps.invalidateData == true ? ' invalidateData true' : ' invalidateData false');
+            this.fetchData(this.props.user.username);
+        }
+    }
+
+    fetchData(username){
+        getStatsForUser(username).then((response) => {
+                this.setState({stats: response.data});
+            }).catch((error) => {
+                console.log('failed to get stats for user ' + error);
+            }).done();
+
+            getGamesForUser(username).then((response) => {
+                this.setState({games: response.data});
+            }).catch((error) => {
+                console.log('failed to get stats for user ' + error);
+            }).done();
     }
 
     textForGameResult(game) {
@@ -97,7 +106,7 @@ class FeedScreen extends Component {
 
     _renderItemTournament = ({item, index}) => (
         <TouchableOpacity
-            onPress= { () => this.props.navigation.navigate('Tournament', { tournamentName: item.tournament_name, tournamentDisplayName: item.tournament_display_name}) }>
+            onPress= { () => this.props.navigation.navigate('Tournament', { userStats: item,tournamentName: item.tournament_name, tournamentDisplayName: item.tournament_display_name}) }>
         <UserStatRow
             tournament={ item.tournament_display_name }
             position={ 1 }
@@ -108,19 +117,7 @@ class FeedScreen extends Component {
         console.log('refreshing ')
         this.setState({refreshing: true});
 
-        getStatsForUser(this.props.user.username).then((response) => {
-            this.setState({stats: response.data});
-        }).catch((error) => {
-            console.log('failed to get stats for user ' + error);
-        }).then(() => {
-            this.setState({refreshing: false});
-        });
-
-        getGamesForUser(this.props.user.username).then((response) => {
-            this.setState({games: response.data});
-        }).catch((error) => {
-            console.log('failed to get stats for user ' + error);
-        }).done();
+        this.fetchData(this.props.user.username);
     }
 
     render() {
@@ -132,20 +129,20 @@ class FeedScreen extends Component {
                 <StatusBar translucent={ false } barStyle="light-content" />
                 <SectionList
                     style = { feedScreenStyle.list }
-                    data={ [...this.state.stats, ...this.state.games]}
-                    keyExtractor={(item, index) => item + index}
-                    renderItem={({ item, index, section }) => <Text key={index}>{item}</Text>}
-                    renderSectionHeader={({ section: { title } }) => <Text style={ feedScreenStyle.sectionHeaderText }>{title}</Text>}
-                    sections={[
+                    data={ [...this.state.stats, ...this.state.games] }
+                    keyExtractor={ (item, index) => item + index }
+                    renderItem={ ({ item, index, section }) => <Text key={ index }>{ item }</Text> }
+                    renderSectionHeader={ ({ section: { title } }) => <Text style={ feedScreenStyle.sectionHeaderText }>{title}</Text> }
+                    sections={ [
                         { title: 'YOUR TOURNAMENTS', data: this.state.stats, renderItem: this._renderItemTournament },
                         { title: 'YOUR HISTORY', data: this.state.games, renderItem: this._renderItemGame }
-                        ]}
-                    refreshing={this.state.refreshing}
-                    onRefresh={this._onRefresh.bind(this)}
+                        ] }
+                    refreshing={ this.state.refreshing }
+                    onRefresh={ this._onRefresh.bind(this) }
                     ListEmptyComponent={
                         <EmptyResultsButton
                             title="Havn't played yet, create a tournament or enter a game"
-                            onPress={ () => { this.props.navigation.navigate('Tournaments');}}/>
+                            onPress={ () => { this.props.navigation.navigate('Tournaments');} }/>
                         }/>
             </View>
         );
@@ -169,11 +166,12 @@ feedScreenStyle = StyleSheet.create({
     }
 })
 
-const mapStateToProps = ({ authReducer }) => {
+const mapStateToProps = ({ authReducer, refreshReducer }) => {
     console.log('FeedScreen - mapStateToProps ' + JSON.stringify(authReducer));
     console.log('FeedScreen - mapStateToProps ' + JSON.stringify(this.props));
     const { user } = authReducer;
-    return { user };
+    const { invalidateData } = refreshReducer;
+    return { user, invalidateData };
 };
 
-export default connect(mapStateToProps, { getUser })(FeedScreen);
+export default connect(mapStateToProps, { getUser, invalidateData })(FeedScreen);
