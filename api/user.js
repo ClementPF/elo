@@ -9,8 +9,12 @@ function getStatsForUser(username) {
   return Axios.get(`${API_ENDPOINTS.USER}/${username}/stats`);
 }
 
-function getGamesForUser(username) {
-  return Axios.get(`${API_ENDPOINTS.USER}/${username}/games`);
+function getGamesForUser(username,tournamentName) {
+    console.log('getGamesForUser ' + username + tournamentName);
+    if(tournamentName === undefined)
+        return Axios.get(`${API_ENDPOINTS.USER}/${username}/games`);
+    else
+        return Axios.get(`${API_ENDPOINTS.USER}/${username}/games?tournamentName=${tournamentName}`);
 }
 
 function getTournamentsForUser(username) {

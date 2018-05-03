@@ -1,10 +1,11 @@
 import React, { Component }  from 'react';
 import PropTypes from 'prop-types';
-import { View, SectionList, StatusBar, Text } from 'react-native';
-import { Icon, List , ListItem} from 'react-native-elements';
+import { View, SectionList, StatusBar, Text, TouchableOpacity } from 'react-native';
+import { Icon, List, Card} from 'react-native-elements';
 import GameRow from '../components/GameRow';
 import RankRow from '../components/RankRow';
 import EmptyResultsButton from '../components/EmptyResultsButton';
+import TournamentRow from '../components/TournamentRow';
 
 import { getStatsForTournament, getGamesForTournament } from '../api/tournament';
 
@@ -26,10 +27,12 @@ static navigationOptions = ({ navigation }) => {
 
 constructor(props) {
     super(props);
+
     this.state = {
         refreshing: false,
         stats: [],
         games: [],
+        userStats: props.navigation.state.params.userStats,
         tournamentName: props.navigation.state.params.tournamentName,
         tournamentDisplayName: props.navigation.state.params.tournamentDisplayName
     };
@@ -56,21 +59,25 @@ _keyExtractor = (item, index) => item.id;
 
 _renderItemGame = ({item}) => (
   <GameRow
-      name1= { item.outcomes[item.outcomes[0].result == "WIN" ? 0 : 1].user_name}
-      name2= { item.outcomes[item.outcomes[0].result != "WIN" ? 0 : 1].user_name }
+      name1= { item.outcomes[item.outcomes[0].result == 'WIN' ? 0 : 1].user_name }
+      name2= { item.outcomes[item.outcomes[0].result != 'WIN' ? 0 : 1].user_name }
       tournament= { item.tournament_display_name }
-      result= { "WIN" }
+      result= { true }
       value= { item.outcomes[0].score_value > 0 ? item.outcomes[0].score_value : item.outcomes[1].score_value }
       date= { item.date }
   />
  );
 
 _renderItemRank = ({item, index}) => (
-    <RankRow
-        name= { item.username }
-        position= { index + 1 }
-        score= { item.score }
-    />
+
+    <TouchableOpacity
+        onPress= { () => this.props.navigation.navigate('User', { userStats: item, userName: item.username, tournamentName: item.tournament_name, tournamentDisplayName: item.tournament_display_name }) }>
+        <RankRow
+            name= { item.username }
+            position= { index + 1 }
+            score= { item.score }
+        />
+    </TouchableOpacity>
 );
 
 
@@ -98,26 +105,29 @@ componentWillReceiveProps(nextProps) {
 }
 
   render() {
+      const userStats = this.state.userStats;
 
+        console.log('userStats : ' + JSON.stringify(userStats));
     return (
         <View style={{flex: 1}}>
-            <StatusBar translucent={false} barStyle="light-content" />
+            <StatusBar translucent={ false } barStyle="light-content" />
+
                     <SectionList
                       style = { feedScreenStyle.list }
-                      data={ [...this.state.stats, ...this.state.games]}
-                      keyExtractor={(item, index) => item + index}
-                      renderItem={({ item, index, section }) => <Text key={index}>{item}</Text>}
-                      renderSectionHeader={({ section: { title } }) => <Text style={ feedScreenStyle.sectionHeaderText }>{title}</Text>}
-                      sections={[
+                      data={ [...this.state.stats, ...this.state.games] }
+                      keyExtractor={ ( item, index) => item + index }
+                      renderItem={ ({ item, index, section }) => <Text key={ index }>{ item }</Text> }
+                      renderSectionHeader={ ({ section: { title } }) => <Text style={ feedScreenStyle.sectionHeaderText }>{title}</Text> }
+                      sections={ [
                         { title: 'RANKING', data: this.state.stats, renderItem: this._renderItemRank },
                         { title: 'HISTORY', data: this.state.games, renderItem: this._renderItemGame }
-                      ]}
-                      refreshing={this.state.refreshing}
-                      onRefresh={this._onRefresh.bind(this)}
+                      ] }
+                      refreshing={ this.state.refreshing }
+                      onRefresh={ this._onRefresh.bind(this) }
                       ListEmptyComponent={
                         <EmptyResultsButton
                           title="Havn't played yet, create a tournament or enter a game"
-                          onPress={ () => { this.props.navigation.navigate('Tournaments');}}/>
+                          onPress={ () => { this.props.navigation.navigate('Tournaments');} }/>
                     }/>
 
         </View>

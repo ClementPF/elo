@@ -62,6 +62,9 @@ class Login extends Component {
                     });
                 });
             } else {
+                this.setState({
+                    'loading': false
+                });
                 console.log('No Previous session found ');
             }
         }).done();

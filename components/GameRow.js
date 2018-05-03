@@ -15,7 +15,7 @@ export default class GameRow extends Component {
 
   shortenDateText(dateText) {
 
-      let keyval_value = {'a':'1'};
+      let keyval_value = {'a':'1', ' few':''};
 
       let keyval_unit = {
           ' seconds':'s',' second':'s',

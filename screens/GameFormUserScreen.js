@@ -103,7 +103,7 @@ render() {
     return (
         <View style={{flex:1}} >
             <SearchBar
-                lightTheme={true} round
+                lightTheme={false}
                 onChangeText={this.handleChangeUserText}
                 placeholder={this.state.winnerName} />
 
