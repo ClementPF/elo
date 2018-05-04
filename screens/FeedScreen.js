@@ -69,12 +69,14 @@ class FeedScreen extends Component {
     fetchData(username){
         getStatsForUser(username).then((response) => {
                 this.setState({stats: response.data});
+                this.setState({refreshing: false});
             }).catch((error) => {
                 console.log('failed to get stats for user ' + error);
             }).done();
 
             getGamesForUser(username).then((response) => {
                 this.setState({games: response.data});
+                this.setState({refreshing: false});
             }).catch((error) => {
                 console.log('failed to get stats for user ' + error);
             }).done();
@@ -111,12 +113,14 @@ class FeedScreen extends Component {
             tournament={ item.tournament_display_name }
             position={ 1 }
             score={ item.score }/>
-    </TouchableOpacity>);
+    </TouchableOpacity>
+);
 
     _onRefresh() {
         console.log('refreshing ')
         this.setState({refreshing: true});
 
+        this.props.invalidateData();
         this.fetchData(this.props.user.username);
     }
 

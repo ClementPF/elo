@@ -41,6 +41,11 @@ class GameFormTournamentScreen extends Component {
 
     console.log("GameFormTournamentScreen - componentWillMount");
 
+    // this line is to load the lists if the user props has been already loaded.
+    // ie: resetting navigation after a game is added
+    if(this.props.user != null){
+        this.loadLists(this.props.user);
+    }
   }
 
   componentWillReceiveProps(nextProps) {

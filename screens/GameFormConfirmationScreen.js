@@ -6,6 +6,10 @@ import {postGameForTournament} from '../api/tournament'
 import DropdownAlert from 'react-native-dropdownalert';
 import { invalidateData } from '../redux/actions/RefreshAction';
 
+import { connect } from 'react-redux';
+
+import { NavigationActions } from 'react-navigation';
+
 class GameFormConfirmationScreen extends Component {
 
     static propTypes = {
@@ -16,7 +20,7 @@ class GameFormConfirmationScreen extends Component {
     static navigationOptions = ({navigation}) => {
         const params = navigation.state.params;
         return {
-            title: navigation.state.params.name,
+            title: '',
             headerTintColor: 'white'
         };
     };
@@ -38,13 +42,23 @@ class GameFormConfirmationScreen extends Component {
 
         postGameForTournament(this.state.tournament.name, this.state.winner.username).then((response) => {
             console.log(JSON.stringify(response.data.outcomes[0].score_value));
-            this.props.navigation.navigate('GameFormResult', {
-                tournament: this.state.tournament,
+
+            const resetAction = NavigationActions.reset({
+              index: 1,
+              actions: [
+                NavigationActions.navigate({ routeName: 'GameFormTournament' }),
+                NavigationActions.navigate({
+                  routeName: 'GameFormResult',
+                  params : {
+                    tournament: this.state.tournament,
                 winner: this.state.winner,
-                game: response.data
-            });
+                game: response.data}})
+              ]
+            })
+            this.props.navigation.dispatch(resetAction);
+
             console.log("GameFormConfirmation - invalidating data");
-            invalidateData();
+            this.props.invalidateData();
         }).catch((error) => {
             this.onError(error);
         }).done();
@@ -90,4 +104,9 @@ class GameFormConfirmationScreen extends Component {
     }
 }
 
-export default GameFormConfirmationScreen;
+const mapStateToProps = ({ refreshReducer }) => {
+    const { invalidateData } = refreshReducer;
+    return { invalidateData };
+};
+
+export default connect(mapStateToProps, { invalidateData })(GameFormConfirmationScreen);
