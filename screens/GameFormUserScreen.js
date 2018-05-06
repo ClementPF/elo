@@ -20,7 +20,7 @@ class GameFormUserScreen extends Component {
     static navigationOptions = ({ navigation }) => {
         const  params = navigation.state.params;
         return {
-            title: navigation.state.params.tournament.name,
+            title: 'Select the winner',
             headerTintColor: 'white'
         };
     };

@@ -163,19 +163,12 @@ gameFormStyle = StyleSheet.create({
 })
 
 const mapStateToProps = state => {
-    console.log('GameFormTournamentScreen - mapStateToProps  ' + JSON.stringify(state));
+    console.log('GameFormTournamentScreen - mapStateToProps');
 
   let user = state.authReducer.user;
   return {
     user: user
   };
 };
-
-/*
-const mapStateToProps = ({ authReducer }) => {
-    console.log('GameFormTournamentScreen - mapStateToProps  ' + JSON.stringify(authReducer));
-    const { user } = authReducer;
-    return { user };
-};*/
 
 export default connect(mapStateToProps)(GameFormTournamentScreen);

@@ -6,6 +6,8 @@ import { FormLabel, FormInput, Button } from 'react-native-elements'
 import DropdownAlert from 'react-native-dropdownalert';
 import { postTournament } from '../api/tournament';
 
+import { invalidateData } from '../redux/actions/RefreshAction';
+import { connect } from 'react-redux';
 import { NavigationActions } from 'react-navigation';
 
 class TournamentCreationScreen extends Component {
@@ -41,18 +43,14 @@ componentWillReceiveProps(nextProps) {
 }
 
 _createTournament = () => {
-  console.log("Creating Tournament for " + this.state.tournamentName + " " + this.state.sportName);
 
-  this.dropdown.alertWithType('info', 'Great !', this.state.tournamentName + ' have been successfully created, good luck !.');
-
-/*
-  postTournament(this.state.tournamentName, this.state.sportName)
-    .then((response) => {
-          console.log("Successfully Created Tournament for " + this.state.tournamentName + " " + this.state.sportName);
-    })
-    .catch((error) => {
-      console.log('failed to create tournament ' + error);
-    }).done();*/
+    postTournament(this.state.tournamentName, this.state.sportName).then((response) => {
+        console.log('Successfully Created Tournament for ' + this.state.tournamentName + ' ' + this.state.sportName);
+        this.dropdown.alertWithType('info', 'Great !', this.state.tournamentName + ' have been successfully created, good luck !.');
+        this.props.invalidateData();
+    }).catch((error) => {
+        console.log('failed to create tournament ' + error);
+    }).done();
 };
 
 onClose(data){
@@ -105,4 +103,11 @@ this.props.navigation.dispatch(resetAction)
   }
 }
 
-export default TournamentCreationScreen;
+
+const mapStateToProps = ({ refreshReducer }) => {
+    console.log('TournamentCreationScreen - mapStateToProps ');
+    const { invalidateData } = refreshReducer;
+    return { invalidateData };
+};
+
+export default connect(mapStateToProps, { invalidateData })(TournamentCreationScreen);

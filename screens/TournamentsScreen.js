@@ -5,14 +5,15 @@ import { Icon, SearchBar, Button , ListItem} from 'react-native-elements'
 import SearchableSectionList from '../components/SearchableSectionList';
 import EmptyResultsButton from '../components/EmptyResultsButton';
 import TournamentRow from '../components/TournamentRow';
-
+import { invalidateData } from '../redux/actions/RefreshAction';
+import { connect } from 'react-redux';
 
 import { getTournaments } from '../api/tournament';
 import { getSports } from '../api/sport';
 
 import { NavigationActions } from 'react-navigation';
 
-class TournamentScreen extends Component {
+class TournamentsScreen extends Component {
 static propTypes = {
   navigation: PropTypes.object,
   dispatch: PropTypes.func
@@ -44,15 +45,7 @@ constructor(props) {
 
 componentWillMount(){
 
-  console.log("TournamentScreen - componentWillMount");
-  getTournaments().then((response) => {
-        this.setState({
-            tournaments: response.data
-        });
-      })
-      .catch((error) => {
-        console.log('failed to get tournaments : ' +  + error);
-      }).done();
+  this.fetchData();
     }
 
     handleChangeTournamentText = (text) => {
@@ -62,15 +55,28 @@ componentWillMount(){
     }
 
     componentWillReceiveProps(nextProps) {
+        console.log("TournamentScreen - componentWillReceiveProps" + JSON.stringify(nextProps));
       if (nextProps.error && !this.props.error) {
         this.props.alertWithType('error', 'Error', nextProps.error);
       }
+
+      if(nextProps.invalidateData == true){
+          console.log("TournamentsScreen - componentWillReceiveProps " + nextProps.invalidateData == true ? ' invalidateData true' : ' invalidateData false');
+          this.fetchData();
+      }
     }
 
-    saveDetails() {
-        alert('Save Details');
+    fetchData(){
+        getTournaments().then((response) => {
+              this.setState({
+                  tournaments: response.data,
+                  refreshing: false
+              });
+            })
+            .catch((error) => {
+              console.log('failed to get tournaments : ' +  + error);
+            }).done();
     }
-
 
   _onPressRow = (rowID, rowData)  => {
 
@@ -94,16 +100,7 @@ componentWillMount(){
    );
 
    _onRefresh() {
-     console.log('refreshing ')
-     getTournaments().then((response) => {
-           this.setState({
-               tournaments: response.data
-           });
-           this.setState({refreshing: false});
-         })
-         .catch((error) => {
-           console.log('failed to get tournaments : ' +  + error);
-         }).done();
+     this.fetchData();
  }
 
    render() {
@@ -137,11 +134,10 @@ componentWillMount(){
      }
 }
 
-const mapStateToProps = (state) => {
-  const tournamentName = state.games.tournamentName;
-
-  return {
-  };
+const mapStateToProps = ({ refreshReducer }) => {
+    console.log('TournamenstScreen - mapStateToProps ');
+    const { invalidateData } = refreshReducer;
+    return { invalidateData };
 };
 
-export default TournamentScreen;
+export default connect(mapStateToProps, { invalidateData })(TournamentsScreen);
