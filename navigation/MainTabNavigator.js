@@ -10,7 +10,7 @@ import Colors from '../constants/Colors';
 import stackNavFeed from './StackNavigatorFeed';
 import stackNavGameForm from './StackNavigatorGameForm';
 import stackNavTournaments from './StackNavigatorTournaments';
-import cameraScreen from '../screens/CameraScreen';
+import barCodeScreen from '../screens/BarCodeScreen';
 
 export default TabNavigator(
     {
@@ -20,7 +20,7 @@ export default TabNavigator(
                 tabBarLabel: "Feeed",
             }
         },TabCamera: {
-            screen: cameraScreen,
+            screen: barCodeScreen,
             navigationOptions: {
                 tabBarLabel: "camera",
             }

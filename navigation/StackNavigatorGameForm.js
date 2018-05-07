@@ -4,6 +4,9 @@ import { StackNavigator} from 'react-navigation'
 
 import GameFormUserScreen from '../screens/GameFormUserScreen';
 import GameFormTournamentScreen from '../screens/GameFormTournamentScreen';
+import GameFormWinnerLooserScreen from '../screens/GameFormWinnerLooserScreen';
+import GameFormQRCodeScreen from '../screens/GameFormQRCodeScreen';
+//import GameFormQRScannerScreen from '../screens/GameFormQRScannerScreen';
 import GameFormResultScreen from '../screens/GameFormResultScreen';
 import GameFormConfirmationScreen from '../screens/GameFormConfirmationScreen';
 
@@ -11,6 +14,15 @@ const stackNavGameForm = StackNavigator({
       GameFormTournament: {
          screen: GameFormTournamentScreen
       },
+      GameFormWinnerLooser: {
+         screen: GameFormWinnerLooserScreen
+      },
+      GameFormQRCode: {
+         screen: GameFormQRCodeScreen
+     },/*
+      GameFormQRScanner: {
+         screen: GameFormQRScannerScreen
+     },*/
       GameFormUser: {
          screen: GameFormUserScreen
       },

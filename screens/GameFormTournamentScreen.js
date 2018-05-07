@@ -103,7 +103,7 @@ class GameFormTournamentScreen extends Component {
    _keyExtractor = (item, index) => item.id;
 
    _renderItemTournament = ({item, index}) => (
-      <TouchableOpacity onPress = { () => this.props.navigation.navigate('GameFormUser', { tournament: item })}>
+      <TouchableOpacity onPress = { () => this.props.navigation.navigate('GameFormWinnerLooser', { tournament: item })}>
            <TournamentRow
                tournament= { item.display_name }
                sport= { item.sport.name }
