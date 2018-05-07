@@ -46,10 +46,8 @@ class FeedScreen extends Component {
     }
 
     componentWillMount() {
-
         console.log("FeedScreen - componentWillMount");
         this.props.getUser();
-
     }
 
     componentWillReceiveProps(nextProps) {

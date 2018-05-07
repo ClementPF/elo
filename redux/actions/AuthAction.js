@@ -12,6 +12,40 @@ import {
 } from '../../constants';*/
 
 Axios.defaults.baseURL = API_CONF.BASE_URL;
+
+export function getUser() {
+  return function action(dispatch) {
+    dispatch({ type: GET_USER_START })
+
+        console.log("AuthAction - action");
+    const request = Axios.get(`${API_ENDPOINTS.USER}`);
+
+    return request.then(
+      response => dispatch(getUserSuccess(response.data)),
+      err => dispatch(getUserError(err.message))
+    );
+  }
+}
+
+export function getUserSuccess(user) {
+
+            console.log("getUserSuccess - action");
+	return {
+		type: GET_USER_SUCCESS,
+		payload: user
+	};
+}
+
+export function getUserError(error) {
+
+            console.log("getUserError - action");
+	return {
+		type: GET_USER_FAIL,
+		payload: error
+	};
+}
+
+/*
 export const getUser = () => {
   return (dispatch) => {
       Axios.get(`${API_ENDPOINTS.USER}`)
@@ -28,4 +62,4 @@ export const getUser = () => {
         });
       });
   };
-};
+};*/
