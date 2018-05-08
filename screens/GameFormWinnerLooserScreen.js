@@ -17,7 +17,7 @@ class GameFormWinnerLooserScreen extends Component {
     static navigationOptions = ({ navigation }) => {
         const  params = navigation.state.params;
         return {
-            title: 'Who are you ?',
+            title: '',
         };
     };
 
