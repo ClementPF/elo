@@ -20,7 +20,7 @@ class GameFormConfirmationScreen extends Component {
     static navigationOptions = ({navigation}) => {
         const params = navigation.state.params;
         return {
-            title: '',
+            title: "Confirmation",
             headerTintColor: 'white'
         };
     };
@@ -46,7 +46,7 @@ class GameFormConfirmationScreen extends Component {
             const resetAction = NavigationActions.reset({
               index: 1,
               actions: [
-                NavigationActions.navigate({ routeName: 'GameFormTournament' }),
+                NavigationActions.navigate({ routeName: 'GameFormWinnerLooser' }),
                 NavigationActions.navigate({
                   routeName: 'GameFormResult',
                   params : {
@@ -82,20 +82,29 @@ class GameFormConfirmationScreen extends Component {
                     <Text style={{
                         fontSize: 16,
                         fontWeight: 'normal',
-                        color: 'darkgrey',
+                        color: 'black',
                         textAlign: 'center',
                         textAlignVertical: 'center'}}>
-                        Tournament : {this.state.tournament.name} </Text>
+                        Tournament : {this.state.tournament.display_name} </Text>
                     <Text style={{
                         fontSize: 16,
                         fontWeight: 'normal',
-                        color: 'darkgrey',
+                        color: 'black',
                         textAlign: 'center',
                         textAlignVertical: 'center'}}
                         > Winner : {this.state.winner.username} </Text>
                 </Card>
                 <Button title='Darn it, I lost!'
-                    onPress={this.submitGame}/>
+                    onPress={this.submitGame}
+                    buttonStyle={{
+                        backgroundColor: "tomato",
+                        height: 45,
+                        borderColor: "transparent",
+                        marginTop: 8,
+                        borderWidth: 0,
+                        borderRadius: 5
+                        }}
+                    />
                 <DropdownAlert
                     ref={ref => this.dropdown = ref}
                     onClose={data => this.onClose(data)} />

@@ -6,6 +6,8 @@ import GameRow from '../components/GameRow';
 import RankRow from '../components/RankRow';
 import EmptyResultsButton from '../components/EmptyResultsButton';
 import TournamentRow from '../components/TournamentRow';
+import { invalidateData } from '../redux/actions/RefreshAction';
+import { connect } from 'react-redux';
 
 import { getStatsForTournament, getGamesForTournament } from '../api/tournament';
 
@@ -41,18 +43,7 @@ constructor(props) {
 componentWillMount(){
 
     console.log("componentWillMount for tournament " + this.state.tournamentName);
-
-    getStatsForTournament(this.state.tournamentName).then((response) => {
-        this.setState({stats: response.data})
-    }).catch((error) => {
-        console.log('failed to get stats for tournament : ' + + error);
-    }).done();
-
-    getGamesForTournament(this.state.tournamentName).then((response) => {
-        this.setState({games: response.data})
-    }).catch((error) => {
-        console.log('failed to get games for tournament : ' + + error);
-    }).done();
+    this.fetchData();
 }
 
 _keyExtractor = (item, index) => item.id;
@@ -80,34 +71,40 @@ _renderItemRank = ({item, index}) => (
     </TouchableOpacity>
 );
 
+fetchData(){
+    getStatsForTournament(this.state.tournamentName).then((response) => {
+      this.setState({stats: response.data})
+    }).catch((error) => {
+      console.log('failed to get stats for tournament : ' + + error);
+    }).done();
+
+    getGamesForTournament(this.state.tournamentName).then((response) => {
+      this.setState({games: response.data})
+      this.setState({refreshing: false});
+    }).catch((error) => {
+      console.log('failed to get games for tournament : ' + + error);
+    }).done();
+}
 
 _onRefresh() {
   console.log('refreshing ')
   this.setState({refreshing: true});
-  getStatsForTournament(this.state.tournamentName).then((response) => {
-    this.setState({stats: response.data})
-  }).catch((error) => {
-    console.log('failed to get stats for tournament : ' + + error);
-  }).done();
-
-  getGamesForTournament(this.state.tournamentName).then((response) => {
-    this.setState({games: response.data})
-    this.setState({refreshing: false});
-  }).catch((error) => {
-    console.log('failed to get games for tournament : ' + + error);
-  }).done();
+  this.fetchData();
 }
 
 componentWillReceiveProps(nextProps) {
+    console.log("TournamentScreen - componentWillReceiveProps " + JSON.stringify(nextProps));
   if (nextProps.error && !this.props.error) {
     this.props.alertWithType('error', 'Error', nextProps.error);
+  }
+  if(nextProps.invalidateData == true){
+      console.log("TournamentScreen - componentWillReceiveProps " + nextProps.invalidateData == true ? ' invalidateData true' : ' invalidateData false');
+      this.fetchData();
   }
 }
 
   render() {
       const userStats = this.state.userStats;
-
-        console.log('userStats : ' + JSON.stringify(userStats));
     return (
         <View style={{flex: 1}}>
             <StatusBar translucent={ false } barStyle="light-content" />
@@ -135,11 +132,10 @@ componentWillReceiveProps(nextProps) {
   }
 }
 
-const mapStateToProps = (state) => {
-  const tournamentName = state.games.tournamentName;
-
-  return {
-  };
+const mapStateToProps = ({ refreshReducer }) => {
+    console.log('TournamentScreen - mapStateToProps ');
+    const { invalidateData } = refreshReducer;
+    return { invalidateData };
 };
 
-export default TournamentScreen;
+export default connect(mapStateToProps, { invalidateData })(TournamentScreen);

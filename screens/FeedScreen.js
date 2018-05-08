@@ -8,7 +8,8 @@ import {
     StatusBar,
     TouchableOpacity,
     RefreshControl,
-    StyleSheet
+    StyleSheet,
+    ActivityIndicator
 } from 'react-native';
 import {Icon, List, ListItem, Button} from 'react-native-elements';
 import GameRow from '../components/GameRow';
@@ -37,6 +38,7 @@ class FeedScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            loading: true,
             refreshing: false,
             stats: [],
             games: [],
@@ -44,10 +46,8 @@ class FeedScreen extends Component {
     }
 
     componentWillMount() {
-
         console.log("FeedScreen - componentWillMount");
         this.props.getUser();
-
     }
 
     componentWillReceiveProps(nextProps) {
@@ -70,6 +70,7 @@ class FeedScreen extends Component {
         getStatsForUser(username).then((response) => {
                 this.setState({stats: response.data});
                 this.setState({refreshing: false});
+                this.setState({loading: false});
             }).catch((error) => {
                 console.log('failed to get stats for user ' + error);
             }).done();
@@ -77,6 +78,7 @@ class FeedScreen extends Component {
             getGamesForUser(username).then((response) => {
                 this.setState({games: response.data});
                 this.setState({refreshing: false});
+                this.setState({loading: false});
             }).catch((error) => {
                 console.log('failed to get stats for user ' + error);
             }).done();
@@ -127,25 +129,40 @@ class FeedScreen extends Component {
     render() {
         const { navigate } = this.props.navigation;
         const rows = this.state.stats;
+
+        if(this.state.loading){
+            return (
+                <View style={ { flex: 1,
+                    justifyContent: 'center'} }>
+                    <ActivityIndicator  size="small" color="white"/>
+                </View>
+            );
+        }
+
+        const sectionListData = [];
+        if(this.state.stats.length > 0){
+            sectionListData.push({ title: 'YOUR TOURNAMENTS', data: this.state.stats, renderItem: this._renderItemTournament });
+        }if(this.state.games.length > 0){
+            sectionListData.push({ title: 'YOUR HISTORY', data: this.state.games, renderItem: this._renderItemGame });
+        }
+
+        console.log('render:' +sectionListData.length + this.state.stats.length + this.state.games.length);
+
         return (
             <View
                 style = { feedScreenStyle.container }>
                 <StatusBar translucent={ false } barStyle="light-content" />
                 <SectionList
                     style = { feedScreenStyle.list }
-                    data={ [...this.state.stats, ...this.state.games] }
                     keyExtractor={ (item, index) => item + index }
                     renderItem={ ({ item, index, section }) => <Text key={ index }>{ item }</Text> }
                     renderSectionHeader={ ({ section: { title } }) => <Text style={ feedScreenStyle.sectionHeaderText }>{title}</Text> }
-                    sections={ [
-                        { title: 'YOUR TOURNAMENTS', data: this.state.stats, renderItem: this._renderItemTournament },
-                        { title: 'YOUR HISTORY', data: this.state.games, renderItem: this._renderItemGame }
-                        ] }
+                    sections={ sectionListData }
                     refreshing={ this.state.refreshing }
                     onRefresh={ this._onRefresh.bind(this) }
                     ListEmptyComponent={
                         <EmptyResultsButton
-                            title="Havn't played yet, create a tournament or enter a game"
+                            title= { 'Hey, welcome to the SHARKULATOR,\n Your feed is empty so far, \n go play a game, treat yourself,\n you deserve it Champ.' }
                             onPress={ () => { this.props.navigation.navigate('Tournaments');} }/>
                         }/>
             </View>
@@ -171,8 +188,7 @@ feedScreenStyle = StyleSheet.create({
 })
 
 const mapStateToProps = ({ authReducer, refreshReducer }) => {
-    console.log('FeedScreen - mapStateToProps ' + JSON.stringify(authReducer));
-    console.log('FeedScreen - mapStateToProps ' + JSON.stringify(this.props));
+    console.log('FeedScreen - mapStateToProps ');
     const { user } = authReducer;
     const { invalidateData } = refreshReducer;
     return { user, invalidateData };

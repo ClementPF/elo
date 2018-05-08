@@ -17,7 +17,7 @@ import EmptyResultsButton from '../components/EmptyResultsButton';
 import Moment from 'moment';
 import { getUser } from '../redux/actions';
 import { connect } from 'react-redux';
-
+import { invalidateData } from '../redux/actions/RefreshAction';
 import {NavigationActions} from 'react-navigation';
 
 import { getStatsForUser, getGamesForUser} from '../api/user';
@@ -50,6 +50,18 @@ class UserScreen extends Component {
 
         console.log('UserScreen - componentWillMount');
         this.fetchData();
+    }
+
+    componentWillReceiveProps(nextProps) {
+        console.log("UserScreen - componentWillReceiveProps " + JSON.stringify(nextProps));
+      if (nextProps.error && !this.props.error) {
+        this.props.alertWithType('error', 'Error', nextProps.error);
+      }
+
+      if(nextProps.invalidateData == true){
+          console.log("UserScreen - componentWillReceiveProps " + nextProps.invalidateData == true ? ' invalidateData true' : ' invalidateData false');
+          this.fetchData();
+      }
     }
 
     fetchData (){
@@ -114,7 +126,6 @@ class UserScreen extends Component {
     _onRefresh() {
         console.log('refreshing ')
         this.setState({refreshing: true});
-
         this.fetchData();
     }
 
@@ -164,11 +175,11 @@ UserScreenStyle = StyleSheet.create({
     }
 })
 
-const mapStateToProps = ({ authReducer }) => {
-    console.log('UserScreen - mapStateToProps ' + JSON.stringify(authReducer));
-    console.log('UserScreen - mapStateToProps ' + JSON.stringify(this.props));
+const mapStateToProps = ({ authReducer, refreshReducer }) => {
+    console.log('UserScreen - mapStateToProps ');
     const { user } = authReducer;
-    return { user };
+    const { invalidateData } = refreshReducer;
+    return { user, invalidateData };
 };
 
-export default connect(mapStateToProps, { getUser })(UserScreen);
+export default connect(mapStateToProps, { getUser,invalidateData })(UserScreen);

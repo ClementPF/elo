@@ -6,10 +6,13 @@ import { Ionicons } from '@expo/vector-icons';
 import RootNavigation from './navigation/RootNavigation';
 
 import { Provider } from 'react-redux'
+import configureStore from "./redux/store/configureStore";
 import { createStore, applyMiddleware, compose } from 'redux'
 import ReduxThunk from 'redux-thunk';
 import reducers from './redux/reducers';
 import { getUser } from './redux/actions';
+
+const store = configureStore();
 
 export default class App extends React.Component {
     state = {
@@ -43,11 +46,6 @@ export default class App extends React.Component {
     };
 
     render() {
-        const store = createStore(
-          reducers,
-          {},
-          compose(applyMiddleware(ReduxThunk))
-        );
         return (
             <Provider store={ store }>
                 <View style={ styles.container }>

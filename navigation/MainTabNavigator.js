@@ -16,7 +16,7 @@ export default TabNavigator(
         TabFeed: {
             screen: stackNavFeed,
             navigationOptions: {
-                tabBarLabel: "Feed",
+                tabBarLabel: "Feeed",
             }
         },
         TabGameForm: {
@@ -45,6 +45,9 @@ export default TabNavigator(
                             : 'md-information-circle';
                         break;
                     case 'TabTournaments':
+                      iconName = 'ios-trophy';
+                    break;
+                    case 'TabCamera':
                       iconName = 'ios-trophy';
                     break;
                     case 'TabGameForm':
