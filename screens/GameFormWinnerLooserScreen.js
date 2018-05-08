@@ -29,8 +29,6 @@ class GameFormWinnerLooserScreen extends Component {
   }
 
   componentWillMount(){
-
-    console.log("componentWillMount");
   }
 
 

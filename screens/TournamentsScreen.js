@@ -104,6 +104,7 @@ componentWillMount(){
  }
 
    render() {
+       
       return (
          <View style={{flex:1}} >
             <SearchBar
@@ -119,14 +120,12 @@ componentWillMount(){
                    keyExtractor={(item, index) => item + index}
                    renderItem={({ item, index, section }) => <Text key={index}>{item}</Text>}
                    renderSectionHeader={({ section: { title } }) => <Text style={ feedScreenStyle.sectionHeaderText }>{title}</Text>}
-                   sections={[
-                   { title: 'ALL TOURNAMENTS', data: this.state.tournaments, renderItem: this._renderItemTournament },
-                   ]}
+                   sections={ [{ title: 'ALL TOURNAMENTS', data: this.state.tournaments, renderItem: this._renderItemTournament }] }
                    refreshing={this.state.refreshing}
                    onRefresh={this._onRefresh.bind(this)}
                    ListEmptyComponent={
                    <EmptyResultsButton
-                   title="Looks pretty empty in here, why don't you create a tournament and start praying on some fish"
+                   title="Cant' find what you're looking for? why don't you create a new tournament and start praying on some fishes"
                    onPress={ () => { this.props.navigation.navigate('TournamentCreation');}} />
                }/>
          </View>

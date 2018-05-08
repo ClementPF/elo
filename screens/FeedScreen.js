@@ -40,6 +40,7 @@ class FeedScreen extends Component {
         this.state = {
             loading: true,
             refreshing: false,
+            invalidateData: false,
             stats: [],
             games: [],
         };
@@ -52,16 +53,17 @@ class FeedScreen extends Component {
 
     componentWillReceiveProps(nextProps) {
 
+        console.log("FeedScreen - componentWillReceiveProps " + JSON.stringify(nextProps));
+
         if (nextProps.error && !this.props.error) {
             this.props.alertWithType('error', 'Error', nextProps.error);
         }
 
         if(nextProps.user != null){
-            console.log("FeedScreen - componentWillReceiveProps " + nextProps.user.username);
             this.fetchData(nextProps.user.username);
         }
         if(nextProps.invalidateData == true){
-            console.log("FeedScreen - componentWillReceiveProps " + nextProps.invalidateData == true ? ' invalidateData true' : ' invalidateData false');
+            this.setState({'invalidateData':false});
             this.fetchData(this.props.user.username);
         }
     }
@@ -96,7 +98,6 @@ class FeedScreen extends Component {
     }
 
     _renderItem = ({item, index}) => {
-        console.log("FeedScreen - _renderItem " + index);
     }
 
     _renderItemGame = ({item, index}) => (
@@ -146,8 +147,6 @@ class FeedScreen extends Component {
             sectionListData.push({ title: 'YOUR HISTORY', data: this.state.games, renderItem: this._renderItemGame });
         }
 
-        console.log('render:' +sectionListData.length + this.state.stats.length + this.state.games.length);
-
         return (
             <View
                 style = { feedScreenStyle.container }>
@@ -188,10 +187,8 @@ feedScreenStyle = StyleSheet.create({
 })
 
 const mapStateToProps = ({ authReducer, refreshReducer }) => {
-    console.log('FeedScreen - mapStateToProps ');
-    const { user } = authReducer;
-    const { invalidateData } = refreshReducer;
-    return { user, invalidateData };
+    console.log('FeedScreen - mapStateToProps authReducer:' + JSON.stringify(authReducer) + ' refreshReducer : ' + JSON.stringify(refreshReducer));
+    return { user : authReducer.user, invalidateData: refreshReducer.invalidateData};
 };
 
 export default connect(mapStateToProps, { getUser, invalidateData })(FeedScreen);

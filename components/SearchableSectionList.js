@@ -28,6 +28,10 @@ export default class SearchableSectionlist extends Component {
                 ? new RegExp(`\\b${searchTerm}`, "gi").test(item[searchProperty])
                 : new RegExp(`${searchTerm}`, "gi").test(item[searchProperty])
           );
+          if(filteredSections[i].data.length == 0){
+              filteredSections.splice(i, 1);
+              i--;
+          }
           i++;
         }
 

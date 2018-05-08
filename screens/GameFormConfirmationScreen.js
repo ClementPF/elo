@@ -34,7 +34,6 @@ class GameFormConfirmationScreen extends Component {
     }
 
     componentWillMount() {
-        console.log("componentWillMount");
     }
 
     submitGame = (text) => {
