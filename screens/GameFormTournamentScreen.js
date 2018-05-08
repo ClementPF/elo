@@ -22,6 +22,7 @@ class GameFormTournamentScreen extends Component {
   static navigationOptions = ({ navigation }) => {
       const  params = navigation.state.params;
       return {
+          isWinner: null,
           title: "Select Tournament",
           headerTintColor: 'white'
       };
@@ -33,7 +34,8 @@ class GameFormTournamentScreen extends Component {
           topTournaments : [],
           allTournaments : [],
           tournamentName: '',
-          refreshing: false
+          refreshing: false,
+          isWinner: props.navigation.state.params.isWinner
       };
   }
 
@@ -102,8 +104,16 @@ class GameFormTournamentScreen extends Component {
 
    _keyExtractor = (item, index) => item.id;
 
+   onPress(item){
+       if(this.state.isWinner == true){
+           this.props.navigation.navigate('GameFormQRCode', { tournament: item, winner: this.props.user })
+       }else{
+           this.props.navigation.navigate('GameFormQRScanner', { tournament: item })
+       }
+   }
+
    _renderItemTournament = ({item, index}) => (
-      <TouchableOpacity onPress = { () => this.props.navigation.navigate('GameFormWinnerLooser', { tournament: item })}>
+      <TouchableOpacity onPress = { () => this.onPress(item) }>
            <TournamentRow
                tournament= { item.display_name }
                sport= { item.sport.name }

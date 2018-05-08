@@ -17,19 +17,14 @@ class GameFormWinnerLooserScreen extends Component {
     static navigationOptions = ({ navigation }) => {
         const  params = navigation.state.params;
         return {
-            title: navigation.state.params.tournament.name,
+            title: 'Who are you ?',
         };
     };
 
   constructor(props) {
       super(props);
       this.state = {
-          user : {},
-          topPlayers : [],
-          allPlayers : [],
-          winnerName: '',
-          refreshing: false,
-          tournament: props.navigation.state.params.tournament,
+          text: "The game is over and it was a good game ? Doesn't matter, now it's time to find out how many points it was worth. \n Did you win or loose ?"
       };
   }
 
@@ -50,12 +45,18 @@ class GameFormWinnerLooserScreen extends Component {
 
 render() {
     return (
-        <View style={{flex:1}} >
+        <View style={{flex:1,
+            justifyContent: 'center', alignItems: 'center', }} >
+            <Text style= { { 'padding':16,  'justifyContent' : 'center', 'textAlign' : 'center',
+                fontSize: 16,
+                fontWeight: 'bold',
+                color: 'white',} }> {this.state.text} </Text>
+
             <Button
-              title="WINNER"
+              title="WIN"
               titleStyle={{ fontWeight: "700" }}
               buttonStyle={{
-              backgroundColor: "rgba(92, 99,216, 1)",
+              backgroundColor: "tomato",
               width: 300,
               height: 45,
               borderColor: "transparent",
@@ -63,16 +64,17 @@ render() {
               borderRadius: 5
               }}
               style={{ marginTop: 20 }}
-              onPress={ () => { this.props.navigation.navigate('GameFormQRCode', {
+              onPress={ () => { this.props.navigation.navigate('GameFormTournament', {
                   tournament: this.state.tournament,
-                  winner: this.state.tournament
+                  winner: this.props.user,
+                  isWinner: true
               });}}
             />
             <Button
-              title="LOOSER"
+              title="LOOSE"
               titleStyle={{ fontWeight: "700" }}
               buttonStyle={{
-              backgroundColor: "rgba(92, 99,216, 1)",
+              backgroundColor: "tomato",
               width: 300,
               height: 45,
               borderColor: "transparent",
@@ -80,6 +82,11 @@ render() {
               borderRadius: 5
               }}
               style={{ marginTop: 20 }}
+              onPress={ () => { this.props.navigation.navigate('GameFormTournament', {
+                  tournament: this.state.tournament,
+                  winner: this.props.user,
+                  isWinner: false
+              });}}
             />
         </View>
     );

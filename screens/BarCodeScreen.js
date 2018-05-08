@@ -5,6 +5,11 @@ import { BarCodeScanner, Permissions } from 'expo';
 export default class BarcodeScannerExample extends React.Component {
   state = {
     hasCameraPermission: null,
+    qrCodeRead: false,
+  }
+
+  constructor(props) {
+      super(props);
   }
 
   async componentWillMount() {
@@ -31,7 +36,13 @@ export default class BarcodeScannerExample extends React.Component {
     }
   }
 
+
   _handleBarCodeRead = ({ type, data }) => {
-    alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+      //if(!this.state.qrCodeRead){
+            let jsonData = JSON.parse(data);
+          this.setState({qrCodeRead: true});
+          console.log(`Bar code with type ${type} and data ${data} !`);
+          this.props.navigation.navigate('GameFormConfirmation', { tournament: jsonData.tournament , winner: jsonData.winner})
+      //}
   }
 }

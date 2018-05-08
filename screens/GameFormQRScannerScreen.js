@@ -1,88 +1,80 @@
-import React, {Component} from 'react';
-import PropTypes from 'prop-types';
-import {View, Text, StatusBar, StyleSheet, SectionList, TouchableOpacity} from 'react-native';
-import {Button, SearchBar, Icon, ListItem} from 'react-native-elements';
-import SearchableFlatList from '../components/SearchableFlatList';
-import {getTournaments, getUsersForTournament} from '../api/tournament';
-import {getTournamentsForUser} from '../api/user';
-import {getUser, getUsers} from '../api/user';
-import UserStatRow from '../components/UserStatRow';
-import EmptyResultsButton from '../components/EmptyResultsButton';
-import SearchableSectionList from '../components/SearchableSectionList';
-import { Camera, Permissions } from 'expo';
-import QRCodeScanner from 'react-native-qrcode-scanner';
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import { BarCodeScanner, Permissions } from 'expo';
+import DropdownAlert from 'react-native-dropdownalert';
 
-class GameFormQRScannerScreen extends Component {
-
-  static propTypes = {
-    navigation: PropTypes.object,
-    dispatch: PropTypes.func,
-  };
-
-    static navigationOptions = ({ navigation }) => {
-        const  params = navigation.state.params;
-        return {
-            title: navigation.state.params.tournament.name,
-        };
-    };
+export default class GameFormQRScannerScreen extends React.Component {
+  state = {
+    hasCameraPermission: null,
+    qrCodeRead: false,
+  }
 
   constructor(props) {
       super(props);
       this.state = {
-          user : {},
-          topPlayers : [],
-          allPlayers : [],
-          winnerName: '',
-          refreshing: false,
-          tournament: props.navigation.state.params.tournament,
-          hasCameraPermission: null,
-          type: Camera.Constants.Type.back,
+          tournament: props.navigation.state.params.tournament
       };
   }
 
-  async componentWillMount(){
+  static navigationOptions = ({ navigation }) => {
+      const  params = navigation.state.params;
+      return {
+          title: "Scan the QR code",
+          headerTintColor: 'white'
+      };
+  };
 
-    console.log("componentWillMount");
-    //const { status } = await Permissions.askAsync(Permissions.CAMERA);
-    this.setState({ hasCameraPermission: status === 'granted' });
+
+  async componentWillMount() {
+    const { status } = await Permissions.askAsync(Permissions.CAMERA);
+    this.setState({hasCameraPermission: status === 'granted'});
+    }
+
+    onClose(data) {
+        // data = {type, title, message, action}
+        // action means how the alert was closed.
+        // returns: automatic, programmatic, tap, pan or cancel
+    }
+
+    onError = error => {
+        if (error) {
+            this.dropdown.alertWithType('error', 'Error', error);
+        }
+    };
+
+  render() {
+    const { hasCameraPermission } = this.state;
+
+    if (hasCameraPermission === null) {
+      return <Text>Requesting for camera permission</Text>;
+    } else if (hasCameraPermission === false) {
+      return <Text>No access to camera</Text>;
+    } else {
+      return (
+        <View style={{ flex: 1 }}>
+          <BarCodeScanner
+            onBarCodeRead={this._handleBarCodeRead}
+            style={StyleSheet.absoluteFill}
+          />
+         <DropdownAlert
+             ref={ref => this.dropdown = ref}
+             onClose={data => this.onClose(data)} />
+        </View>
+      );
+    }
   }
 
 
-  _onPressRow = (rowID, rowData)  => {
-
-   console.log("Selected user :" + rowID.username);
-
-   this.props.navigation.navigate('GameFormConfirmation', { tournament: this.state.tournament , winner: rowID})
- }
-
-
-
-render() {
-   const { hasCameraPermission } = this.state;
-   if (hasCameraPermission === null) {
-     return <View />;
-   } else if (hasCameraPermission === false) {
-     return <Text>No access to camera</Text>;
-   } else {
-      return (
-          <View style={{flex:1}} >
-          <QRCodeScanner
-            onRead={this.onSuccess.bind(this)}
-            topContent={
-              <Text style={styles.centerText}>
-                Go to <Text style={styles.textBold}>wikipedia.org/wiki/QR_code</Text> on your computer and scan the QR code.
-              </Text>
-            }
-            bottomContent={
-              <TouchableOpacity style={styles.buttonTouchable}>
-                <Text style={styles.buttonText}>OK. Got it!</Text>
-              </TouchableOpacity>
-            }
-          />
-          </View>
-      );
-    }
+  _handleBarCodeRead = ({ type, data }) => {
+      if(!this.state.qrCodeRead){
+          let jsonData = JSON.parse(data);
+          if(jsonData.tournament.name != this.state.tournament.name){
+              this.onError("It looks like you havn't selected the same tournament, get your fishes together guys!")
+          }else{
+              this.setState({qrCodeRead: true});
+              console.log(`Bar code with type ${type} and data ${data} !`);
+              this.props.navigation.navigate('GameFormConfirmation', { tournament: jsonData.tournament , winner: jsonData.winner})
+          }
+      }
+  }
 }
-}
-
-export default GameFormQRScannerScreen;

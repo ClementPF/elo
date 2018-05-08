@@ -9,7 +9,8 @@ import {getUser, getUsers} from '../api/user';
 import UserStatRow from '../components/UserStatRow';
 import EmptyResultsButton from '../components/EmptyResultsButton';
 import SearchableSectionList from '../components/SearchableSectionList';
-import QRCode from 'react-native-qrcode';
+import QRCode from 'react-native-qrcode-svg';
+import { connect } from 'react-redux';
 
 class GameFormQRCodeScreen extends Component {
 
@@ -22,18 +23,17 @@ class GameFormQRCodeScreen extends Component {
         const  params = navigation.state.params;
         return {
             title: navigation.state.params.tournament.name,
+            headerTintColor: 'white'
         };
     };
 
   constructor(props) {
       super(props);
       this.state = {
-          user : {},
-          topPlayers : [],
-          allPlayers : [],
           winnerName: '',
-          refreshing: false,
           tournament: props.navigation.state.params.tournament,
+          text: "Check you out, you won!\n Well it's not a win until you get them sweet points. Make sure the looser scan this QR code and submit the game."
+
       };
   }
 
@@ -54,20 +54,36 @@ class GameFormQRCodeScreen extends Component {
 
 render() {
     let logoFromFile = require('../assets/images/icon.png');
+    let jsonObj = {'winner': this.props.user,
+                    'tournament': this.state.tournament};
+
+    console.log("QR Code obj : " + JSON.stringify(jsonObj));
     return (
         <View style={{flex:1,
             backgroundColor:'white',
             padding:40,
-        alignItems: 'center'}} >
+            justifyContent: 'center',
+            alignItems: 'center'}} >
+
+        <Text style= { { 'padding':16,  'justifyContent' : 'center', 'textAlign' : 'center',
+            fontSize: 16,
+            fontWeight: 'bold',
+            color: 'black',} }> {this.state.text} </Text>
+
         <QRCode
-          value={'http://facebook.github.io/react-native/'}
+          value={JSON.stringify(jsonObj)}
           size={200}
-          bgColor='purple'
-          fgColor='white'/>
+          logo = {logoFromFile}/>
       </View>
     //    </View>
     );
 }
 }
 
-export default GameFormQRCodeScreen;
+const mapStateToProps = ({ authReducer }) => {
+    console.log('GameFormQRCodeScreen - mapStateToProps ');
+    const { user } = authReducer;
+    return { user };
+};
+
+export default connect(mapStateToProps)(GameFormQRCodeScreen);
