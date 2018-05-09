@@ -104,7 +104,12 @@ componentWillMount(){
  }
 
    render() {
-       
+
+         var sections = [
+             { title: 'ALL TOURNAMENTS', data: this.state.tournaments, renderItem: this._renderItemTournament }
+         ];
+         sections = sections.filter(section => section.data.length > 0);
+
       return (
          <View style={{flex:1}} >
             <SearchBar
@@ -120,7 +125,7 @@ componentWillMount(){
                    keyExtractor={(item, index) => item + index}
                    renderItem={({ item, index, section }) => <Text key={index}>{item}</Text>}
                    renderSectionHeader={({ section: { title } }) => <Text style={ feedScreenStyle.sectionHeaderText }>{title}</Text>}
-                   sections={ [{ title: 'ALL TOURNAMENTS', data: this.state.tournaments, renderItem: this._renderItemTournament }] }
+                   sections={ sections }
                    refreshing={this.state.refreshing}
                    onRefresh={this._onRefresh.bind(this)}
                    ListEmptyComponent={

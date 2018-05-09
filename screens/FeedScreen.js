@@ -140,12 +140,12 @@ class FeedScreen extends Component {
             );
         }
 
-        const sectionListData = [];
-        if(this.state.stats.length > 0){
-            sectionListData.push({ title: 'YOUR TOURNAMENTS', data: this.state.stats, renderItem: this._renderItemTournament });
-        }if(this.state.games.length > 0){
-            sectionListData.push({ title: 'YOUR HISTORY', data: this.state.games, renderItem: this._renderItemGame });
-        }
+      var sections = [
+          { title: 'YOUR TOURNAMENTS', data: this.state.stats, renderItem: this._renderItemTournament },
+          { title: 'YOUR HISTORY', data: this.state.games, renderItem: this._renderItemGame }
+      ];
+      sections = sections.filter(section => section.data.length > 0);
+
 
         return (
             <View
@@ -156,7 +156,7 @@ class FeedScreen extends Component {
                     keyExtractor={ (item, index) => item + index }
                     renderItem={ ({ item, index, section }) => <Text key={ index }>{ item }</Text> }
                     renderSectionHeader={ ({ section: { title } }) => <Text style={ feedScreenStyle.sectionHeaderText }>{title}</Text> }
-                    sections={ sectionListData }
+                    sections={ sections }
                     refreshing={ this.state.refreshing }
                     onRefresh={ this._onRefresh.bind(this) }
                     ListEmptyComponent={

@@ -100,6 +100,12 @@ class GameFormUserScreen extends Component {
 
 
 render() {
+    var sections = [
+    { title: 'TOP PLAYERS', data: this.state.topPlayers, renderItem: this._renderItem },
+    { title: 'ALL PLAYERS', data: this.state.allPlayers, renderItem: this._renderItem },
+    ];
+    sections = sections.filter(section => section.data.length > 0);
+
     return (
         <View style={{flex:1}} >
             <SearchBar
@@ -115,10 +121,7 @@ render() {
                 keyExtractor={(item, index) => item + index}
                 renderItem={({ item, index, section }) => <Text key={index}>{item}</Text>}
                 renderSectionHeader={({ section: { title } }) => <Text style={ feedScreenStyle.sectionHeaderText }>{title}</Text>}
-                sections={[
-                { title: 'TOP PLAYERS', data: this.state.topPlayers, renderItem: this._renderItem },
-                { title: 'ALL PLAYERS', data: this.state.allPlayers, renderItem: this._renderItem },
-                ]}
+                sections={ sections }
                 refreshing={this.state.refreshing}
                 onRefresh={this._onRefresh.bind(this)}
                 ListEmptyComponent={

@@ -6,20 +6,10 @@ export default class SearchableSectionlist extends Component {
   static INCLUDES = "includes";
   static WORDS = "words";
 
-  getFilteredResults() {
-    let { data, sections, type, searchProperty, searchTerm } = this.props;
-    return data.filter(
-      item =>
-        type && type === SearchableFlatlist.WORDS
-          ? new RegExp(`\\b${searchTerm}`, "gi").test(item[searchProperty])
-          : new RegExp(`${searchTerm}`, "gi").test(item[searchProperty])
-    );
-  }
-
   getFilteredSections(){
       let { data, sections, type, searchProperty, searchTerm } = this.props;
 
-      const filteredSections = sections;
+      var filteredSections = sections;
       var i = 0;
       for (let section of sections) {
           filteredSections[i].data = section.data.filter(
@@ -28,18 +18,16 @@ export default class SearchableSectionlist extends Component {
                 ? new RegExp(`\\b${searchTerm}`, "gi").test(item[searchProperty])
                 : new RegExp(`${searchTerm}`, "gi").test(item[searchProperty])
           );
-          if(filteredSections[i].data.length == 0){
-              filteredSections.splice(i, 1);
-              i--;
-          }
           i++;
         }
+
+        filteredSections = filteredSections.filter(section => section.data.length > 0);
 
         return filteredSections;
   }
 
   render() {
-    return <SectionList {...this.props} data={this.getFilteredResults() } sections={this.getFilteredSections()} />;
+    return <SectionList {...this.props} sections={this.getFilteredSections()} />;
   }
 }
 

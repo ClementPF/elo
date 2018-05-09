@@ -132,20 +132,23 @@ class UserScreen extends Component {
     render() {
         const { navigate } = this.props.navigation;
         const rows = this.state.stats;
+
+          var sections = [
+              { title: 'STATS', data: this.state.stats, renderItem: this._renderItemStats },
+              { title: 'GAME HISTORY', data: this.state.games, renderItem: this._renderItemGame }
+          ];
+          sections = sections.filter(section => section.data.length > 0);
+
         return (
             <View
                 style = { UserScreenStyle.container }>
                 <StatusBar translucent={ false } barStyle= "light-content" />
                 <SectionList
                     style = { UserScreenStyle.list }
-                    data={ [...this.state.stats, ...this.state.games] }
                     keyExtractor={ (item, index) => item + index }
                     renderItem={ ({ item, index, section }) => <Text key={ index }>{ item }</Text> }
                     renderSectionHeader={ ({ section: { title } }) => <Text style={ UserScreenStyle.sectionHeaderText }>{title}</Text> }
-                    sections={ [
-                        { title: 'STATS', data: this.state.stats, renderItem: this._renderItemStats },
-                        { title: 'GAME HISTORY', data: this.state.games, renderItem: this._renderItemGame }
-                        ] }
+                    sections={ sections }
                     refreshing={ this.state.refreshing }
                     onRefresh={ this._onRefresh.bind(this) }
                     ListEmptyComponent={

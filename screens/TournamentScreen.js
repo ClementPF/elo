@@ -105,26 +105,29 @@ componentWillReceiveProps(nextProps) {
 
   render() {
       const userStats = this.state.userStats;
-    return (
+
+      var sections = [
+          { title: 'RANKING', data: this.state.stats, renderItem: this._renderItemRank },
+          { title: 'HISTORY', data: this.state.games, renderItem: this._renderItemGame }
+      ];
+      sections = sections.filter(section => section.data.length > 0);
+
+      return (
         <View style={{flex: 1}}>
             <StatusBar translucent={ false } barStyle="light-content" />
 
                     <SectionList
                       style = { feedScreenStyle.list }
-                      data={ [...this.state.stats, ...this.state.games] }
                       keyExtractor={ ( item, index) => item + index }
                       renderItem={ ({ item, index, section }) => <Text key={ index }>{ item }</Text> }
                       renderSectionHeader={ ({ section: { title } }) => <Text style={ feedScreenStyle.sectionHeaderText }>{title}</Text> }
-                      sections={ [
-                        { title: 'RANKING', data: this.state.stats, renderItem: this._renderItemRank },
-                        { title: 'HISTORY', data: this.state.games, renderItem: this._renderItemGame }
-                      ] }
+                      sections={ sections }
                       refreshing={ this.state.refreshing }
                       onRefresh={ this._onRefresh.bind(this) }
                       ListEmptyComponent={
                         <EmptyResultsButton
-                          title="Havn't played yet, create a tournament or enter a game"
-                          onPress={ () => { this.props.navigation.navigate('Tournaments');} }/>
+                          title="No Games have been played for this tournament, let's change that."
+                          onPress={ () => { this.props.navigation.navigate('GameFormWinnerLooser');} }/>
                     }/>
 
         </View>

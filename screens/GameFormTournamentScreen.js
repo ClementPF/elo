@@ -152,7 +152,7 @@ render() {
                 onRefresh={this._onRefresh.bind(this)}
                 ListEmptyComponent={
                 <EmptyResultsButton
-                title="Havn't played yet, create a tournament or enter a game"
+                title="Cant' find what you're looking for? why don't you create a new tournament and start praying on some fishes"
                 onPress={ () => { this.props.navigation.navigate('Tournaments');}}/>
             }/>
         </View>
