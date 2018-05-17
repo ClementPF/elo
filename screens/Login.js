@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {View, Image, Text, FlatList, StatusBar, AsyncStorage} from 'react-native';
 import {SocialIcon} from 'react-native-elements';
-import {loginUser, testTokenValidity, refreshToken} from '../api/login';
+import {loginUserWithFacebook, loginUserWithGoogle, testTokenValidity, refreshToken} from '../api/login';
 import Axios from 'axios';
 import DropdownAlert from 'react-native-dropdownalert';
 
@@ -20,7 +20,7 @@ class Login extends Component {
     constructor() {
         super()
         this.state = {
-            welcome_text: 'Welcome to the SHARKULATOR fellow shark, before starting praying on some fishes \nplease Sign in with Facebook.',
+            welcome_text: 'Welcome to the SHARKULATOR fellow shark, before starting praying on some fishes \nplease Sign in.',
             appVersion: '0.0.0'
         }
     }
@@ -28,7 +28,7 @@ class Login extends Component {
     componentWillMount() {
         var packageMod = require('../package.json');
         this.setState(
-            {'appVersion': packageMod.version,
+            {'appVersion': packageMod.version + "b" + packageMod.buildNumber,
             'loading': true
         });
 
@@ -48,12 +48,10 @@ class Login extends Component {
                 }).catch((error) => {
                     this.onError('Previous session is invalid \n' + error);
                     refreshToken(tokens.refresh_token).then((response) => {
-                        this.dropdown.alertWithType('info', 'Info', 'User Token Refreshed Successfully');
-                        Axios.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.access_token;
-                        AsyncStorage.setItem('@Store:token', JSON.stringify(response.data));
-
-                        this.dropdown.alertWithType('info', 'Info', 'Valid Session Found');
-                        this.navigateToHome();
+                        this.setState({
+                            'loading': false
+                        });
+                        this.onLoggedIn(response.data);
                     }).catch((error) => {
                         this.onError('Previous refresh is invalid \n' + error);
                         this.setState({
@@ -75,15 +73,12 @@ class Login extends Component {
         if (nextProps.error && !this.props.error) {
             this.props.alertWithType('error', 'Error', nextProps.error);
         }
-        if (nextProps.signedIn) {
-            this.props.navigation.navigate('Home', {title: 'Home'});
-        }
     }
 
     componentWillUnmount() {
     }
 
-    async logIn() {
+    async signInWithFacebookAsync() {
 
         const {type, token} = await Expo.Facebook.logInWithReadPermissionsAsync('1169707689780759', {
             permissions: ['email', 'public_profile']
@@ -92,18 +87,46 @@ class Login extends Component {
         if (type === 'success') {
             console.log('FB login success - token : ' + token);
 
-            loginUser(token).then((response) => {
-                this.dropdown.alertWithType('info', 'Info', 'User Logged in Successfully');
-                Axios.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.access_token;
-                AsyncStorage.setItem('@Store:token', JSON.stringify(response.data));
-
-                console.log('Storing ' + response.data);
-                this.navigateToHome();
+            loginUserWithFacebook(token).then((response) => {
+                this.onLoggedIn(response.data);
             }).catch((error) => {
                 this.onError('User failed to log in ' + error);
             });
         };
     };
+
+
+    async signInWithGoogleAsync() {
+      try {
+        const result = await Expo.Google.logInAsync({
+          androidClientId: "975514203843-4bkrrov84hiepp4a6r8ngci9j1o8lnhk.apps.googleusercontent.com",
+          iosClientId: "975514203843-jriblf35irfbh0e8e49ojeq2q4egtc98.apps.googleusercontent.com",
+          iosStandaloneAppClientId: "975514203843-lqrmjc5041qkk2kgh43r1gefvearpv0l.apps.googleusercontent.com",
+          scopes: ['profile', 'email'],
+        });
+
+        if (result.type === 'success') {
+            loginUserWithGoogle(result.idToken).then((response) => {
+                this.onLoggedIn(response.data);
+            }).catch((error) => {
+                this.onError('User failed to log in ' + error);
+            });
+        } else {
+          return {cancelled: true};
+        }
+      } catch(e) {
+        return {error: true};
+      }
+  }
+
+    onLoggedIn(data){
+        this.dropdown.alertWithType('info', 'Info', 'User Logged in Successfully');
+        Axios.defaults.headers.common['Authorization'] = 'Bearer ' + data.access_token;
+        AsyncStorage.setItem('@Store:token', JSON.stringify(data));
+
+        console.log('Storing ' + data);
+        this.navigateToHome();
+    }
 
     // This function will navigate to the Home screen and remove the login from the stack
     navigateToHome() {
@@ -127,10 +150,6 @@ class Login extends Component {
         // returns: automatic, programmatic, tap, pan or cancel
     }
 
-    handlePress = () => {
-        this.logIn();
-    };
-
     render() {
         if(this.state.loading){
             return (
@@ -142,31 +161,36 @@ class Login extends Component {
             )
         }
         return (
-
-          <View style= { { 'backgroundColor' : 'white', 'flex' : 1 } }>
-            <StatusBar translucent={ false } barStyle="dark-content"/>
-            <View style= { {'justifyContent' : 'center', 'flex' : 5,
+            <View style= { { 'backgroundColor' : 'white', 'flex' : 1 } }>
+                <StatusBar translucent={ false } barStyle="dark-content"/>
+                <View style= { {'justifyContent' : 'center', 'flex' : 4,
                 alignItems: 'center' } }>
-                <Image style={{width: 256, height: 256}}
-                     source={require('../assets/images/icon.png')} />
-             </View>
-             <View style= { { 'flex' : 1 } }>
-                <Text style= { { 'padding':16,  'justifyContent' : 'center', 'textAlign' : 'center',
+                    <Image style={{width: 256, height: 256}}
+                    source={require('../assets/images/icon.png')} />
+                </View>
+                <View style= { { 'flex' : 1 } }>
+                    <Text style= { { 'padding':16,  'justifyContent' : 'center', 'textAlign' : 'center',
                     fontSize: 16,
                     fontWeight: 'bold',
                     color: 'darkslategrey',} }> {this.state.welcome_text} </Text>
+                </View>
+                <View style= { { 'flex' : 2,
+                    flexDirection: 'column', } }>
+                    <SocialIcon title="Sign In With Facebook"
+                        button={ true }
+                        onPress={ () => { this.signInWithFacebookAsync() } }
+                        type="facebook"/>
+                    <SocialIcon title="Sign In With Google"
+                        button={ true }
+                        onPress={ () => { this.signInWithGoogleAsync() } }
+                        type="google-plus-official"/>
+                </View>
+                <Text style= { {'textAlign' : 'center', position: 'absolute', bottom: 0, width: '100%'} }> { 'Version : ' + this.state.appVersion + (API_CONF.BASE_URL == API_CONF.BASE_LOCAL_URL ? "L" : "R")} </Text>
 
+                <DropdownAlert
+                ref={ref => this.dropdown = ref}
+                onClose={data => this.onClose(data)} />
             </View>
-             <View style= { { 'flex' : 2,
-            flexDirection: 'column',
-            justifyContent: 'space-between', } }>
-                <SocialIcon title="Sign In With Facebook" button={ true } onPress={ this.handlePress } type="facebook"/>
-                <Text style= { {'textAlign' : 'center'} }> { 'Version : ' + this.state.appVersion + (API_CONF.BASE_URL == API_CONF.BASE_LOCAL_URL ? "L" : "R")} </Text>
-            </View>
-           <DropdownAlert
-               ref={ref => this.dropdown = ref}
-               onClose={data => this.onClose(data)} />
-          </View>
     );
   }
 }

@@ -10,9 +10,17 @@ function logtest(fb_token) {
   console.log(fb_token);
 }
 
-function loginUser(fb_token)     {
+function loginUserWithFacebook(fb_token)     {
   return Axios.post(`${API_ENDPOINTS.AUTH}/token`, {
-    fb_access_token: fb_token
+    provider_access_token: fb_token,
+    token_provider: "facebook"
+  });
+}
+
+function loginUserWithGoogle(google_token)     {
+  return Axios.post(`${API_ENDPOINTS.AUTH}/token`, {
+    provider_access_token: google_token,
+    token_provider: "google"
   });
 }
 
@@ -30,4 +38,4 @@ function refreshToken(token){
 }
 
 
-export {loginUser,testTokenValidity, refreshToken};
+export {loginUserWithFacebook, loginUserWithGoogle,testTokenValidity, refreshToken};
