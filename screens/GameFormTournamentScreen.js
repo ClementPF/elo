@@ -116,6 +116,7 @@ class GameFormTournamentScreen extends Component {
       <TouchableOpacity onPress = { () => this.onPress(item) }>
            <TournamentRow
                tournament= { item.display_name }
+               tournament_id_name= { item.name }
                sport= { item.sport.name }
            />
        </TouchableOpacity>
@@ -175,7 +176,7 @@ gameFormStyle = StyleSheet.create({
 const mapStateToProps = state => {
     console.log('GameFormTournamentScreen - mapStateToProps');
 
-  let user = state.authReducer.user;
+  let user = state.userReducer.user;
   return {
     user: user
   };

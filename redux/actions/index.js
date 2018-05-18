@@ -11,4 +11,4 @@ import axios from 'axios';
 //   return response;
 // });
 
-export * from './AuthAction';
+export * from './UserAction';
