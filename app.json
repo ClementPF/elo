@@ -18,13 +18,13 @@
       "assetExts": ["ttf"]
     },
     "ios": {
-        "buildNumber": "11",
+        "buildNumber": "13",
         "bundleIdentifier": "com.elo.sharkulator",
         "supportsTablet": true,
         "config": {
             "usesNonExemptEncryption": false,
             "googleSignIn": {
-                "reservedClientId": "com.googleusercontent.apps.975514203843-lqrmjc5041qkk2kgh43r1gefvearpv0l"
+                "reservedClientId": "plop"
             }
         }
     },
@@ -32,8 +32,8 @@
       "package": "com.elo.sharkulator",
       "config": {
           "googleSignIn": {
-              "apiKey": "AIzaSyBrUCmrE1soRpQ1S47KYhJkZiqhirusH1o",
-              "certificateHash": "1746BECB2497593B3296903145793BC0BE8C426B"
+              "apiKey": "AIzaSyDGaTXzr7qH5BAAxaUpiIZ5-89X3P1yaHs",
+              "certificateHash": "90988E0E97C34C9C94C0947A23DF779F97CA4F5F"
           }
       }
     }

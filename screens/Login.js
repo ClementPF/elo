@@ -99,9 +99,11 @@ class Login extends Component {
     async signInWithGoogleAsync() {
       try {
         const result = await Expo.Google.logInAsync({
+            behavior:"web",
           androidClientId: "975514203843-4bkrrov84hiepp4a6r8ngci9j1o8lnhk.apps.googleusercontent.com",
           iosClientId: "975514203843-jriblf35irfbh0e8e49ojeq2q4egtc98.apps.googleusercontent.com",
-          iosStandaloneAppClientId: "975514203843-lqrmjc5041qkk2kgh43r1gefvearpv0l.apps.googleusercontent.com",
+          iosStandaloneAppClientId: "975514203843-4iitkt007snetchd63d8v6e96vu7qnle.apps.googleusercontent.com",
+          androidStandaloneAppClientId: "975514203843-kqho0mtodfj50penbqrt1voq9hs34j57.apps.googleusercontent.com",
           scopes: ['profile', 'email'],
         });
 
