@@ -52,7 +52,7 @@ _renderItemGame = ({item}) => (
   <GameRow
       name1= { item.outcomes[item.outcomes[0].result == 'WIN' ? 0 : 1].user_name }
       name2= { item.outcomes[item.outcomes[0].result != 'WIN' ? 0 : 1].user_name }
-      tournament= { item.tournament.display_name }
+      tournament= { item.tournament_display_name }
       result= { true }
       value= { item.outcomes[0].score_value > 0 ? item.outcomes[0].score_value : item.outcomes[1].score_value }
       date= { item.date }
@@ -62,7 +62,7 @@ _renderItemGame = ({item}) => (
 _renderItemRank = ({item, index}) => (
 
     <TouchableOpacity
-        onPress= { () => this.props.navigation.navigate('User', { userStats: item, userName: item.username, tournamentName: item.tournament.name, tournamentDisplayName: item.tournament.display_name }) }>
+        onPress= { () => this.props.navigation.navigate('User', { userStats: item, userName: item.username, tournamentName: item.tournament_name, tournamentDisplayName: item.tournament_display_name }) }>
         <RankRow
             name= { item.username }
             position= { index + 1 }

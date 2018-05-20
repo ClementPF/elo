@@ -82,7 +82,7 @@ render() {
             }
             />
             <Button
-              title="LOOSE"
+              title="LOSE"
               titleStyle={{ fontWeight: "700" }}
               buttonStyle={{
               backgroundColor: "tomato",
@@ -93,11 +93,18 @@ render() {
               borderRadius: 5
               }}
               style={{ marginTop: 20 }}
-              onPress={ () => { this.props.navigation.navigate('GameFormTournament', {
-                  tournament: this.state.tournament,
-                  winner: this.props.user,
-                  isWinner: false
-              });}}
+              onPress={ () => {
+                  if (this.props.tournament != null) {
+                      this.props.navigation.navigate('GameFormQRScanner', {
+                          tournament: this.props.tournament,
+                          isWinner: false});
+                  }else {
+                      this.props.navigation.navigate('GameFormTournament', {
+                          winner: this.props.user,
+                          isWinner: false});
+                      }
+                  }
+              }
             />
         </View>
     );

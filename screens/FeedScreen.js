@@ -108,7 +108,7 @@ class FeedScreen extends Component {
 
     _renderItemTournament = ({item, index}) => (
         <TouchableOpacity
-            onPress= { () => this.props.navigation.navigate('Tournament', { userStats: item,tournamentName: item.tournament.name, tournamentDisplayName: item.tournament.display_name}) }>
+            onPress= { () => this.props.navigation.navigate('Tournament', { userStats: item,tournamentName: item.tournament_name, tournamentDisplayName: item.tournament_display_name}) }>
         <UserStatRow
             tournament={ item.tournament_display_name }
             position={ 1 }

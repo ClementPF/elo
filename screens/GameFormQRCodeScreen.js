@@ -23,7 +23,7 @@ class GameFormQRCodeScreen extends Component {
     static navigationOptions = ({ navigation }) => {
         const  params = navigation.state.params;
         return {
-            title: navigation.state.params.tournament.name,
+            title: 'Winner',
             headerTintColor: 'white'
         };
     };
@@ -43,7 +43,6 @@ class GameFormQRCodeScreen extends Component {
     console.log("GameFormQRCodeScreen - componentWillMount");
   }
 
-
     componentWillReceiveProps(nextProps) {
 
       console.log("GameFormQRCodeScreen - componentWillReceiveProps " + JSON.stringify(nextProps));
@@ -59,6 +58,12 @@ class GameFormQRCodeScreen extends Component {
       }
     }
 
+// called when navigating back from tournament selection
+returnData(data) {
+  this.setState({tournament: data});
+}
+
+
 render() {
     let logoFromFile = require('../assets/images/icon.png');
     let jsonObj = {'winner': this.props.user,
@@ -68,13 +73,14 @@ render() {
     return (
         <View style={{flex:1,
             backgroundColor:'white',
-            padding:8,
             justifyContent: 'center',
             alignItems: 'center'}} >
 
                 <View style={{
                     width:'100%',
-                    flexDirection: 'row',}}>
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                marginTop: 8}}>
 
                     <TournamentRow
                         tournament= { this.state.tournament.display_name }
@@ -82,17 +88,25 @@ render() {
                         sport= { this.state.tournament.sport.name }
                         />
                     <Button
-                        icon
                         icon={ {name: 'edit'} }
+                        title= {'EDIT'}
                         buttonStyle= { {
                         backgroundColor: "tomato",
                         borderColor: "transparent",
                         borderWidth: 0,
                         borderRadius: 10
                         } }
-                        //onPress={onPress}
+                        onPress={ () => {
+                            this.props.navigation.navigate('GameFormTournament',  {returnData: this.returnData.bind(this)});
+                            }
+                        }
                         />
                 </View>
+                <View style={{
+                    width:'100%',
+                    height:1,
+                    backgroundColor: 'black',}}/>
+
 
             <View style={{flex:1,
             backgroundColor:'white',
