@@ -204,7 +204,7 @@ export default class CameraScreen extends React.Component {
 
   renderNoPermissions() {
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 10 }}>
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', margin: 10 }}>
         <Text style={{ color: 'white' }}>
           Camera permissions not granted - cannot open camera preview.
         </Text>
@@ -237,7 +237,7 @@ export default class CameraScreen extends React.Component {
             backgroundColor: 'transparent',
             flexDirection: 'row',
             justifyContent: 'space-around',
-            paddingTop: Constants.statusBarHeight / 2,
+            marginTop: Constants.statusBarHeight / 2,
           }}>
           <TouchableOpacity style={styles.flipButton} onPress={this.toggleFacing.bind(this)}>
             <Text style={styles.flipText}> FLIP </Text>
@@ -268,7 +268,7 @@ export default class CameraScreen extends React.Component {
         <View
           style={{
             flex: 0.1,
-            paddingBottom: isIPhoneX ? 20 : 0,
+            marginBottom: isIPhoneX ? 20 : 0,
             backgroundColor: 'transparent',
             flexDirection: 'row',
             alignSelf: 'flex-end',
@@ -336,7 +336,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderColor: 'white',
     borderWidth: 1,
-    padding: 5,
+    margin: 5,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -367,7 +367,7 @@ const styles = StyleSheet.create({
     top: 0,
   },
   face: {
-    padding: 10,
+    margin: 10,
     borderWidth: 2,
     borderRadius: 2,
     position: 'absolute',

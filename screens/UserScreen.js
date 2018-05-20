@@ -165,11 +165,11 @@ UserScreenStyle = StyleSheet.create({
     container: {
     },
     list: {
-        paddingRight: 16,
-        paddingLeft: 16
+        marginRight: 16,
+        marginLeft: 16
     },
     sectionHeaderText: {
-        padding: 8,
+        margin: 8,
         fontSize: 28,
         fontWeight: 'normal',
         color: 'white',

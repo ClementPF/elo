@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { SectionList } from "react-native";
+import { SectionList, StyleSheet, } from "react-native";
 import PropTypes from "prop-types";
 
 export default class SearchableSectionlist extends Component {
@@ -27,9 +27,27 @@ export default class SearchableSectionlist extends Component {
   }
 
   render() {
-    return <SectionList {...this.props} sections={this.getFilteredSections()} />;
+    return <SectionList {...this.props}
+        sections={this.getFilteredSections()}
+    />;
   }
 }
+
+
+searchableSectionList = StyleSheet.create({
+    list: {
+        marginRight: 8,
+        marginLeft: 8
+    },
+    sectionHeaderText: {
+        padding: 8,
+        fontSize: 28,
+        fontWeight: 'normal',
+        color: 'white',
+        textAlign: 'center',
+        backgroundColor: 'black'
+    }
+})
 
 SearchableSectionlist.propTypes = {
   data: PropTypes.array.isRequired,

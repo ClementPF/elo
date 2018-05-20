@@ -1,12 +1,13 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {View, Text, StatusBar, StyleSheet, SectionList, TouchableOpacity} from 'react-native';
-import {Button, SearchBar, Icon} from 'react-native-elements';
+import {Button, Icon} from 'react-native-elements';
 import SearchableFlatList from '../components/SearchableFlatList';
 import {getTournaments} from '../api/tournament';
 import {getTournamentsForUser} from '../api/user';
 import {getUser} from '../api/user';
 import TournamentRow from '../components/TournamentRow';
+import SearchBar from '../components/SearchBar';
 import EmptyResultsButton from '../components/EmptyResultsButton';
 import SearchableSectionList from '../components/SearchableSectionList';
 
@@ -134,18 +135,21 @@ render() {
     return (
         <View style={{flex:1}} >
             <SearchBar
+                style = { {
+                    marginLeft : 16,
+                    marginRight: 16 } }
                 lightTheme={false}
                 onChangeText={this.handleChangeTournamentText}
                 placeholder={this.state.tournamentName} />
 
             <SearchableSectionList
-                style = { feedScreenStyle.list }
+                style = { searchableSectionList.list }
                 data={ [...this.state.topTournaments, ...this.state.allTournaments] }
                    searchProperty={"display_name"}
                    searchTerm={this.state.tournamentName}
                 keyExtractor={(item, index) => item + index}
                 renderItem={({ item, index, section }) => <Text key={index}>{item}</Text>}
-                renderSectionHeader={({ section: { title } }) => <Text style={ feedScreenStyle.sectionHeaderText }>{title}</Text>}
+                renderSectionHeader={({ section: { title } }) => <Text style={ searchableSectionList.sectionHeaderText }>{title}</Text>}
                 sections={[
                 { title: 'RECENT TOURNAMENTS', data: this.state.topTournaments, renderItem: this._renderItemTournament },
                 { title: 'ALL TOURNAMENTS', data: this.state.allTournaments, renderItem: this._renderItemTournament },
@@ -165,8 +169,8 @@ render() {
 gameFormStyle = StyleSheet.create({
     listHeader: {
         backgroundColor: 'white',
-        padding:4,
-        paddingHorizontal:8,
+        margin:4,
+        marginHorizontal:8,
         color:'slategrey',
             fontSize: 16,
             fontWeight: 'bold',

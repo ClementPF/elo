@@ -171,7 +171,7 @@ class Login extends Component {
                     source={require('../assets/images/icon.png')} />
                 </View>
                 <View style= { { 'flex' : 1 } }>
-                    <Text style= { { 'padding':16,  'justifyContent' : 'center', 'textAlign' : 'center',
+                    <Text style= { { 'margin':16,  'justifyContent' : 'center', 'textAlign' : 'center',
                     fontSize: 16,
                     fontWeight: 'bold',
                     color: 'darkslategrey',} }> {this.state.welcome_text} </Text>

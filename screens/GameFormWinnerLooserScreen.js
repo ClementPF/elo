@@ -50,23 +50,15 @@ render() {
         <View style={{flex:1,
             justifyContent: 'center', alignItems: 'center', }} >
 
-            <Text style= { { 'padding':16,  'justifyContent' : 'center', 'textAlign' : 'center',
+            <Text style= { { 'margin':16,  'justifyContent' : 'center', 'textAlign' : 'center',
                 fontSize: 16,
                 fontWeight: 'bold',
                 color: 'white',} }> {this.state.text} </Text>
 
             <Button
               title="WIN"
-              titleStyle={{ fontWeight: "700" }}
-              buttonStyle={{
-              backgroundColor: "tomato",
-              width: 300,
-              height: 45,
-              borderColor: "transparent",
-              borderWidth: 0,
-              borderRadius: 5
-              }}
-              style={{ marginTop: 20 }}
+              titleStyle={ { fontWeight: "700" } }
+              buttonStyle={ gameFormStyle.button }
               onPress={ () => {
                 if (this.props.tournament != null) {
                     this.props.navigation.navigate('GameFormQRCode', {
@@ -83,16 +75,8 @@ render() {
             />
             <Button
               title="LOSE"
-              titleStyle={{ fontWeight: "700" }}
-              buttonStyle={{
-              backgroundColor: "tomato",
-              width: 300,
-              height: 45,
-              borderColor: "transparent",
-              borderWidth: 0,
-              borderRadius: 5
-              }}
-              style={{ marginTop: 20 }}
+              titleStyle={ { fontWeight: "700" } }
+              buttonStyle={ gameFormStyle.button }
               onPress={ () => {
                   if (this.props.tournament != null) {
                       this.props.navigation.navigate('GameFormQRScanner', {
@@ -111,6 +95,18 @@ render() {
 }
 }
 
+
+gameFormStyle = StyleSheet.create({
+    button: {
+        backgroundColor: "tomato",
+        width: 300,
+        height: 45,
+        borderColor: "transparent",
+        borderWidth: 0,
+        borderRadius: 5,
+        margin: 8
+    }
+})
 
 const mapStateToProps = ({ userReducer }) => {
     console.log('GameFormQRCodeScreen - mapStateToProps userReducer:' + JSON.stringify(userReducer));

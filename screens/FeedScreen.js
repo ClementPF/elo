@@ -154,7 +154,7 @@ class FeedScreen extends Component {
                     style = { feedScreenStyle.list }
                     keyExtractor={ (item, index) => item + index }
                     renderItem={ ({ item, index, section }) => <Text key={ index }>{ item }</Text> }
-                    renderSectionHeader={ ({ section: { title } }) => <Text style={ feedScreenStyle.sectionHeaderText }>{title}</Text> }
+                    renderSectionHeader={ ({ section: { title } }) => <Text style={ searchableSectionList.sectionHeaderText }>{title}</Text> }
                     sections={ sections }
                     refreshing={ this.state.refreshing }
                     onRefresh={ this._onRefresh.bind(this) }
@@ -172,11 +172,11 @@ feedScreenStyle = StyleSheet.create({
     container: {
     },
     list: {
-        paddingRight: 16,
-        paddingLeft: 16
+        marginRight: 8,
+        marginLeft: 8
     },
     sectionHeaderText: {
-        padding: 8,
+        margin: 8,
         fontSize: 28,
         fontWeight: 'normal',
         color: 'white',

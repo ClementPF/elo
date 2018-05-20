@@ -1,10 +1,11 @@
 import React, { Component }  from 'react';
 import PropTypes from 'prop-types';
 import { View, StatusBar, Text, TouchableOpacity } from 'react-native';
-import { Icon, SearchBar, Button , ListItem} from 'react-native-elements'
+import { Icon, Button , ListItem} from 'react-native-elements'
 import SearchableSectionList from '../components/SearchableSectionList';
 import EmptyResultsButton from '../components/EmptyResultsButton';
 import TournamentRow from '../components/TournamentRow';
+import SearchBar from '../components/SearchBar';
 import { invalidateData } from '../redux/actions/RefreshAction';
 import { connect } from 'react-redux';
 
@@ -112,20 +113,22 @@ componentWillMount(){
          sections = sections.filter(section => section.data.length > 0);
 
       return (
-         <View style={{flex:1}} >
+         <View style={{flex:1 } } >
             <SearchBar
-               lightTheme={false}
+                style = { {
+                        marginLeft : 16,
+                        marginRight: 16 } }
                onChangeText={this.handleChangeTournamentText}
                placeholder={this.state.tournamentName} />
 
                <SearchableSectionList
-                   style = { feedScreenStyle.list }
+                   style = { searchableSectionList.list }
                    data={ [this.state.tournaments] }
-                      searchProperty={"display_name"}
-                      searchTerm={this.state.tournamentName}
+                   searchProperty={"display_name"}
+                   searchTerm={this.state.tournamentName}
                    keyExtractor={(item, index) => item + index}
                    renderItem={({ item, index, section }) => <Text key={index}>{item}</Text>}
-                   renderSectionHeader={({ section: { title } }) => <Text style={ feedScreenStyle.sectionHeaderText }>{title}</Text>}
+                   renderSectionHeader={({ section: { title } }) => <Text style={ searchableSectionList.sectionHeaderText }>{title}</Text>}
                    sections={ sections }
                    refreshing={this.state.refreshing}
                    onRefresh={this._onRefresh.bind(this)}
