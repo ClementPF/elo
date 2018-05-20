@@ -5,24 +5,29 @@ import PropTypes from 'prop-types';
 export default class TournamentRow extends Component {
   static propTypes = {
     tournament: PropTypes.string,
+    tournament_id_name: PropTypes.string,
     sport: PropTypes.string,
     score: PropTypes.number,
     position: PropTypes.number
   }
   render = () => {
-    const { tournament, sport, score, position} = this.props;
+    const { tournament,tournament_id_name, sport, score, position} = this.props;
 
     return (
-
         <View style={ stylesTournament.container }>
-
+            <View style={ {flex: 1,
+                flexDirection: 'column',} }>
                 <Text style={ stylesTournament.tournamentText }>
                     { tournament }
                 </Text>
-                <Text style={ stylesTournament.sportText }>
-                    {  sport }
+                <Text style={ stylesTournament.tournamentSubtitleText }>
+                    { '@' + tournament_id_name }
                 </Text>
-      </View>
+            </View>
+            <Text style={ stylesTournament.sportText }>
+                {  sport }
+            </Text>
+        </View>
     );
   }
 }
@@ -32,7 +37,7 @@ stylesTournament = StyleSheet.create({
         padding: 8,
         margin: 1,
         flex: 1,
-        height: 48,
+        height: 68,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -45,9 +50,18 @@ stylesTournament = StyleSheet.create({
         textAlign: 'right'
     },
     tournamentText: {
-        fontSize: 16,
+    flex: 3,
+        fontSize: 18,
         fontWeight: 'normal',
         color: 'black',
+        textAlign: 'left',
+    },
+    tournamentSubtitleText: {
+    flex: 2,
+        marginLeft:8,
+        fontSize: 12,
+        fontWeight: 'normal',
+        color: 'grey',
         textAlign: 'left'
     }
 })

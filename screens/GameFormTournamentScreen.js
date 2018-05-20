@@ -105,17 +105,19 @@ class GameFormTournamentScreen extends Component {
    _keyExtractor = (item, index) => item.id;
 
    onPress(item){
-       if(this.state.isWinner == true){
-           this.props.navigation.navigate('GameFormQRCode', { tournament: item, winner: this.props.user })
-       }else{
-           this.props.navigation.navigate('GameFormQRScanner', { tournament: item })
-       }
+       //if(this.state.isWinner == true){
+           this.props.navigation.state.params.returnData(item);
+           this.props.navigation.goBack();
+       //}else{
+        //   this.props.navigation.navigate('GameFormQRScanner', { tournament: item })
+     //  }
    }
 
    _renderItemTournament = ({item, index}) => (
       <TouchableOpacity onPress = { () => this.onPress(item) }>
            <TournamentRow
                tournament= { item.display_name }
+               tournament_id_name= { item.name }
                sport= { item.sport.name }
            />
        </TouchableOpacity>
@@ -175,7 +177,7 @@ gameFormStyle = StyleSheet.create({
 const mapStateToProps = state => {
     console.log('GameFormTournamentScreen - mapStateToProps');
 
-  let user = state.authReducer.user;
+  let user = state.userReducer.user;
   return {
     user: user
   };

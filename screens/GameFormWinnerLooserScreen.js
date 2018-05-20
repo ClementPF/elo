@@ -4,8 +4,12 @@ import {View, Text, StatusBar, StyleSheet, SectionList, TouchableOpacity} from '
 import {Button, SearchBar, Icon, ListItem} from 'react-native-elements';
 import SearchableFlatList from '../components/SearchableFlatList';
 import UserStatRow from '../components/UserStatRow';
-import EmptyResultsButton from '../components/EmptyResultsButton';
+import TournamentRow from '../components/TournamentRow';
 import SearchableSectionList from '../components/SearchableSectionList';
+
+import { fetchUser, fetchGamesForUser } from '../redux/actions';
+import { invalidateData } from '../redux/actions/RefreshAction';
+import { connect } from 'react-redux';
 
 class GameFormWinnerLooserScreen extends Component {
 
@@ -45,6 +49,7 @@ render() {
     return (
         <View style={{flex:1,
             justifyContent: 'center', alignItems: 'center', }} >
+
             <Text style= { { 'padding':16,  'justifyContent' : 'center', 'textAlign' : 'center',
                 fontSize: 16,
                 fontWeight: 'bold',
@@ -62,14 +67,22 @@ render() {
               borderRadius: 5
               }}
               style={{ marginTop: 20 }}
-              onPress={ () => { this.props.navigation.navigate('GameFormTournament', {
-                  tournament: this.state.tournament,
-                  winner: this.props.user,
-                  isWinner: true
-              });}}
+              onPress={ () => {
+                if (this.props.tournament != null) {
+                    this.props.navigation.navigate('GameFormQRCode', {
+                        tournament: this.props.tournament,
+                        winner: this.props.user,
+                        isWinner: true});
+                }else {
+                    this.props.navigation.navigate('GameFormTournament', {
+                        winner: this.props.user,
+                        isWinner: true});
+                    }
+                }
+            }
             />
             <Button
-              title="LOOSE"
+              title="LOSE"
               titleStyle={{ fontWeight: "700" }}
               buttonStyle={{
               backgroundColor: "tomato",
@@ -80,15 +93,30 @@ render() {
               borderRadius: 5
               }}
               style={{ marginTop: 20 }}
-              onPress={ () => { this.props.navigation.navigate('GameFormTournament', {
-                  tournament: this.state.tournament,
-                  winner: this.props.user,
-                  isWinner: false
-              });}}
+              onPress={ () => {
+                  if (this.props.tournament != null) {
+                      this.props.navigation.navigate('GameFormQRScanner', {
+                          tournament: this.props.tournament,
+                          isWinner: false});
+                  }else {
+                      this.props.navigation.navigate('GameFormTournament', {
+                          winner: this.props.user,
+                          isWinner: false});
+                      }
+                  }
+              }
             />
         </View>
     );
 }
 }
 
-export default GameFormWinnerLooserScreen;
+
+const mapStateToProps = ({ userReducer }) => {
+    console.log('GameFormQRCodeScreen - mapStateToProps userReducer:' + JSON.stringify(userReducer));
+    return {
+        user : userReducer.user,
+        tournament: ( userReducer.games != null && userReducer.games.length > 0 ) ? userReducer.games[0].tournament : null};
+};
+
+export default connect(mapStateToProps, { fetchUser, fetchGamesForUser })(GameFormWinnerLooserScreen);

@@ -40,7 +40,7 @@ class GameFormResultScreen extends Component {
                     <GameRow
                         name1= { this.state.game.outcomes[0].user_name }
                         name2= { this.state.game.outcomes[1].user_name }
-                        tournament= { this.state.game.tournament_name }
+                        tournament= { this.state.game.tournament.name }
                         result= { this.state.game.outcomes[1].result == 'WIN' }
                         value= { this.state.game.outcomes[0].score_value }
                         date= { this.state.game.date }

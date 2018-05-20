@@ -18,7 +18,7 @@
       "assetExts": ["ttf"]
     },
     "ios": {
-        "buildNumber": "13",
+        "buildNumber": "14",
         "bundleIdentifier": "com.elo.sharkulator",
         "supportsTablet": true,
         "config": {

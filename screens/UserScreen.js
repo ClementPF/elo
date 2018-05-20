@@ -178,9 +178,9 @@ UserScreenStyle = StyleSheet.create({
     }
 })
 
-const mapStateToProps = ({ authReducer, refreshReducer }) => {
+const mapStateToProps = ({ userReducer, refreshReducer }) => {
     console.log('UserScreen - mapStateToProps ');
-    const { user } = authReducer;
+    const { user } = userReducer;
     const { invalidateData } = refreshReducer;
     return { user, invalidateData };
 };

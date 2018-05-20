@@ -16,13 +16,13 @@ import GameRow from '../components/GameRow';
 import UserStatRow from '../components/UserStatRow';
 import EmptyResultsButton from '../components/EmptyResultsButton';
 import Moment from 'moment';
-import { getUser } from '../redux/actions';
+import { fetchUser, fetchGamesForUser } from '../redux/actions';
 import { invalidateData } from '../redux/actions/RefreshAction';
 import { connect } from 'react-redux';
 
 import {NavigationActions} from 'react-navigation';
 
-import { getStatsForUser, getGamesForUser} from '../api/user';
+import { getStatsForUser } from '../api/user';
 
 class FeedScreen extends Component {
     static propTypes = {
@@ -48,7 +48,7 @@ class FeedScreen extends Component {
 
     componentWillMount() {
         console.log("FeedScreen - componentWillMount");
-        this.props.getUser();
+        this.props.fetchUser();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -59,8 +59,11 @@ class FeedScreen extends Component {
             this.props.alertWithType('error', 'Error', nextProps.error);
         }
 
-        if(nextProps.user != null){
+        if(this.props.user != nextProps.user && nextProps.user != null){
             this.fetchData(nextProps.user.username);
+        }
+        if(this.props.games != nextProps.games && nextProps.games != null){
+            this.setState({games: nextProps.games});
         }
         if(nextProps.invalidateData == true){
             this.setState({'invalidateData':false});
@@ -77,13 +80,7 @@ class FeedScreen extends Component {
                 console.log('failed to get stats for user ' + error);
             }).done();
 
-            getGamesForUser(username).then((response) => {
-                this.setState({games: response.data});
-                this.setState({refreshing: false});
-                this.setState({loading: false});
-            }).catch((error) => {
-                console.log('failed to get stats for user ' + error);
-            }).done();
+            this.props.fetchGamesForUser(username);
     }
 
     textForGameResult(game) {
@@ -104,7 +101,7 @@ class FeedScreen extends Component {
         <GameRow
             name1= { item.outcomes[item.outcomes[0].result == "WIN" ? 0 : 1].user_name }
             name2= { item.outcomes[item.outcomes[0].result != "WIN" ? 0 : 1].user_name }
-            tournament={ item.tournament_display_name }
+            tournament={ item.tournament.display_name }
             result= { item.outcomes[item.outcomes[0].user_name == this.props.user.username ? 0 : 1].score_value < 0 }
             value= { item.outcomes[item.outcomes[0].user_name == this.props.user.username ? 0 : 1].score_value }
             date= { item.date }/>);
@@ -140,11 +137,13 @@ class FeedScreen extends Component {
             );
         }
 
+        console.log(JSON.stringify(this.props.games));
+        console.log(JSON.stringify(this.state.games));
       var sections = [
           { title: 'YOUR TOURNAMENTS', data: this.state.stats, renderItem: this._renderItemTournament },
           { title: 'YOUR HISTORY', data: this.state.games, renderItem: this._renderItemGame }
       ];
-      sections = sections.filter(section => section.data.length > 0);
+      sections = sections.filter(section => section.data.length > 0 );
 
 
         return (
@@ -186,9 +185,12 @@ feedScreenStyle = StyleSheet.create({
     }
 })
 
-const mapStateToProps = ({ authReducer, refreshReducer }) => {
-    console.log('FeedScreen - mapStateToProps authReducer:' + JSON.stringify(authReducer) + ' refreshReducer : ' + JSON.stringify(refreshReducer));
-    return { user : authReducer.user, invalidateData: refreshReducer.invalidateData};
+const mapStateToProps = ({ userReducer, refreshReducer }) => {
+    console.log('FeedScreen - mapStateToProps userReducer:' + JSON.stringify(userReducer) + ' refreshReducer : ' + JSON.stringify(refreshReducer));
+    return {
+        user : userReducer.user,
+        games: userReducer.games,
+        invalidateData: refreshReducer.invalidateData};
 };
 
-export default connect(mapStateToProps, { getUser, invalidateData })(FeedScreen);
+export default connect(mapStateToProps, { fetchUser, fetchGamesForUser, invalidateData })(FeedScreen);
