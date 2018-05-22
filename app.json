@@ -5,7 +5,7 @@
     "slug": "sharkulator-3",
     "privacy": "public",
     "sdkVersion": "27.0.0",
-    "version": "1.2.3",
+    "version": "1.2.4",
     "orientation": "portrait",
     "primaryColor": "#cccccc",
     "icon": "./assets/images/icon.png",
@@ -18,7 +18,7 @@
       "assetExts": ["ttf"]
     },
     "ios": {
-        "buildNumber": "17",
+        "buildNumber": "1",
         "bundleIdentifier": "com.elo.sharkulator",
         "supportsTablet": true,
         "config": {

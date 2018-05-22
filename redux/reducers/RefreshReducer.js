@@ -4,7 +4,7 @@ import {
 } from '../actions/types';
 
 const INITIAL_STATE = {
-    invalidateData: false,
+    isDataStale: false,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -12,10 +12,10 @@ export default (state = INITIAL_STATE, action) => {
     case INVALIDATE_DATA:
     console.log("redux INVALIDATE_DATA")
       return { ...state,
-        invalidateData: true};
+        isDataStale: true};
     case DATA_INVALIDATED:
         return { ...state,
-            invalidateData: false};
+            isDataStale: false};
     default:
       return state;
   }

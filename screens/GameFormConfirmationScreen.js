@@ -4,7 +4,7 @@ import {View, Text, StatusBar} from 'react-native';
 import {Button, Card, ListItem} from 'react-native-elements'
 import {postGameForTournament} from '../api/tournament'
 import DropdownAlert from 'react-native-dropdownalert';
-import { invalidateData } from '../redux/actions/RefreshAction';
+import { invalidateData, dataInvalidated } from '../redux/actions/RefreshAction';
 
 import { connect } from 'react-redux';
 
@@ -14,7 +14,9 @@ class GameFormConfirmationScreen extends Component {
 
     static propTypes = {
         navigation: PropTypes.object,
-        dispatch: PropTypes.func
+        dispatch: PropTypes.func,
+        invalidateData: PropTypes.func,
+        dataInvalidated: PropTypes.func,
     };
 
     static navigationOptions = ({navigation}) => {
@@ -57,7 +59,10 @@ class GameFormConfirmationScreen extends Component {
             this.props.navigation.dispatch(resetAction);
 
             console.log("GameFormConfirmation - invalidating data");
+            //this.props.invalidateData().then(() => this.props.dataInvalidated());
+
             this.props.invalidateData();
+            this.props.dataInvalidated();
         }).catch((error) => {
             this.onError(error);
         }).done();
@@ -118,7 +123,7 @@ const mapStateToProps = ({ userReducer, refreshReducer }) => {
         //console.log('GameFormConfirmationScreen - mapStateToProps userReducer:' + JSON.stringify(userReducer) + ' refreshReducer : ' + JSON.stringify(refreshReducer));
         return {
             user : userReducer.user,
-            invalidateData: refreshReducer.invalidateData};
+            invalidateData: refreshReducer.isDataStale};
 };
 
-export default connect(mapStateToProps, { invalidateData })(GameFormConfirmationScreen);
+export default connect(mapStateToProps, { invalidateData, dataInvalidated })(GameFormConfirmationScreen);

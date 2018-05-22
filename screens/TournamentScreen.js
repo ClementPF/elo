@@ -117,10 +117,10 @@ componentWillReceiveProps(nextProps) {
             <StatusBar translucent={ false } barStyle="light-content" />
 
                     <SectionList
-                      style = { feedScreenStyle.list }
+                      style = { searchableSectionList.list }
                       keyExtractor={ ( item, index) => item + index }
                       renderItem={ ({ item, index, section }) => <Text key={ index }>{ item }</Text> }
-                      renderSectionHeader={ ({ section: { title } }) => <Text style={ feedScreenStyle.sectionHeaderText }>{title}</Text> }
+                      renderSectionHeader={ ({ section: { title } }) => <Text style={ searchableSectionList.sectionHeaderText }>{title}</Text> }
                       sections={ sections }
                       refreshing={ this.state.refreshing }
                       onRefresh={ this._onRefresh.bind(this) }

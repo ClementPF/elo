@@ -207,10 +207,10 @@ class UserScreen extends Component {
                     style = { UserScreenStyle.container }>
                     <StatusBar translucent={ false } barStyle= "light-content" />
                     <SectionList
-                        style = { UserScreenStyle.list }
+                        style = { searchableSectionList.list }
                         keyExtractor={ (item, index) => item + index }
                         renderItem={ ({ item, index, section }) => <Text key={ index }>{ item }</Text> }
-                        renderSectionHeader={ ({ section: { title } }) => title == null ? null : <Text style={ UserScreenStyle.sectionHeaderText }>{title}</Text> }
+                        renderSectionHeader={ ({ section: { title } }) => title == null ? null : <Text style={ searchableSectionList.sectionHeaderText }>{title}</Text> }
                         sections={ sections }
                         refreshing={ this.state.refreshing }
                         onRefresh={ this._onRefresh.bind(this) }
@@ -228,18 +228,6 @@ class UserScreen extends Component {
 UserScreenStyle = StyleSheet.create({
     container: {
     },
-    list: {
-        marginRight: 16,
-        marginLeft: 16
-    },
-    sectionHeaderText: {
-        padding: 8,
-        fontSize: 28,
-        fontWeight: 'normal',
-        color: 'white',
-        textAlign: 'center',
-        backgroundColor: 'black'
-    }
 })
 
 const mapStateToProps = ({ userReducer, refreshReducer }) => {
