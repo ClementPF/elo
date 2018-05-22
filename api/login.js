@@ -1,6 +1,8 @@
 import Axios from 'axios';
 import {API_CONF, API_ENDPOINTS} from './config.js';
 
+import { AsyncStorage } from 'react-native';
+
 Axios.defaults.baseURL = API_CONF.BASE_URL;
 Axios.defaults.headers.common['Authorization'] = '';
 Axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
@@ -18,8 +20,6 @@ function loginUserWithFacebook(fb_token) {
 }
 
 function loginUserWithGoogle(google_token) {
-
-
   return Axios.post(`${API_ENDPOINTS.AUTH}/token`, {
     provider_access_token: google_token,
     token_provider: "google"
@@ -27,6 +27,7 @@ function loginUserWithGoogle(google_token) {
 }
 
 function testTokenValidity(token) {
+    console.log('testTokenValidity ');
   Axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
   return Axios.get(API_ENDPOINTS.USER);
 }
@@ -39,5 +40,13 @@ function refreshToken(token){
     });
 }
 
+function logoutUser() {
+    Axios.defaults.headers.common['Authorization'] = '';
 
-export {loginUserWithFacebook, loginUserWithGoogle,testTokenValidity, refreshToken};
+    console.log('Loging out ');
+
+    return AsyncStorage.removeItem('@Store:token');
+}
+
+
+export {loginUserWithFacebook, loginUserWithGoogle,testTokenValidity, refreshToken, logoutUser};

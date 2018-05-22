@@ -4,7 +4,7 @@ import {View, Text, StatusBar} from 'react-native';
 import {Button, Card, ListItem} from 'react-native-elements'
 import {postGameForTournament} from '../api/tournament'
 import DropdownAlert from 'react-native-dropdownalert';
-import { invalidateData } from '../redux/actions/RefreshAction';
+import { invalidateData, dataInvalidated } from '../redux/actions/RefreshAction';
 
 import { connect } from 'react-redux';
 
@@ -14,7 +14,9 @@ class GameFormConfirmationScreen extends Component {
 
     static propTypes = {
         navigation: PropTypes.object,
-        dispatch: PropTypes.func
+        dispatch: PropTypes.func,
+        invalidateData: PropTypes.func,
+        dataInvalidated: PropTypes.func,
     };
 
     static navigationOptions = ({navigation}) => {
@@ -37,9 +39,9 @@ class GameFormConfirmationScreen extends Component {
     }
 
     submitGame = (text) => {
-        console.log("adding game for " + this.state.winner.username + " " + this.state.tournament.name);
+        console.log("adding game for " + this.state.winner.username + " " + this.state.tournament.name + " " + this.props.user.username);
 
-        postGameForTournament(this.state.tournament.name, this.state.winner.username).then((response) => {
+        postGameForTournament(this.state.tournament.name, this.state.winner.username, this.props.user.username).then((response) => {
             console.log(JSON.stringify(response.data.outcomes[0].score_value));
 
             const resetAction = NavigationActions.reset({
@@ -57,13 +59,18 @@ class GameFormConfirmationScreen extends Component {
             this.props.navigation.dispatch(resetAction);
 
             console.log("GameFormConfirmation - invalidating data");
+            //this.props.invalidateData().then(() => this.props.dataInvalidated());
+
             this.props.invalidateData();
+            this.props.dataInvalidated();
         }).catch((error) => {
             this.onError(error);
         }).done();
     };
 
     onError = error => {
+
+            console.log("GameFormConfirmation - " + JSON.stringify(error));
         if (error) {
             this.dropdown.alertWithType('error', 'Error', error.message);
         }
@@ -112,9 +119,11 @@ class GameFormConfirmationScreen extends Component {
     }
 }
 
-const mapStateToProps = ({ refreshReducer }) => {
-    const { invalidateData } = refreshReducer;
-    return { invalidateData };
+const mapStateToProps = ({ userReducer, refreshReducer }) => {
+        //console.log('GameFormConfirmationScreen - mapStateToProps userReducer:' + JSON.stringify(userReducer) + ' refreshReducer : ' + JSON.stringify(refreshReducer));
+        return {
+            user : userReducer.user,
+            invalidateData: refreshReducer.isDataStale};
 };
 
-export default connect(mapStateToProps, { invalidateData })(GameFormConfirmationScreen);
+export default connect(mapStateToProps, { invalidateData, dataInvalidated })(GameFormConfirmationScreen);

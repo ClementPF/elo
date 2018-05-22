@@ -1,21 +1,31 @@
 import {
   INVALIDATE_DATA,
+  DATA_INVALIDATED,
 } from './types';
 
 export function invalidateData() {
   return function action(dispatch) {
-     return dispatch({ type: INVALIDATE_DATA })
+     //return dispatch({ type: INVALIDATE_DATA })
 
     console.log("RefreshAction - action");
 
     //return dispatch(invalidateDataSuccess())
+
+    return dispatch({ type: INVALIDATE_DATA })
+  }
+}
+
+export function dataInvalidated() {
+  return function action(dispatch) {
+    console.log("RefreshAction - action");
+    return dispatch({ type: DATA_INVALIDATED })
   }
 }
 
 export function invalidateDataSuccess() {
     console.log("invalidateDataSuccess - action");
 	return {
-		type: INVALIDATE_DATA
+		type: DATA_INVALIDATED
 	};
 }
 

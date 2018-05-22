@@ -27,7 +27,11 @@ import { getStatsForUser } from '../api/user';
 class FeedScreen extends Component {
     static propTypes = {
         navigation: PropTypes.object,
-        dispatch: PropTypes.func
+        dispatch: PropTypes.func,
+        isDataStale: PropTypes.bool,
+        games: PropTypes.array,
+        user: PropTypes.object,
+        fetchGamesForUser: PropTypes.func,
     }
 
     static navigationOptions = ({navigation}) => {
@@ -40,38 +44,40 @@ class FeedScreen extends Component {
         this.state = {
             loading: true,
             refreshing: false,
-            invalidateData: false,
             stats: [],
             games: [],
         };
     }
 
     componentWillMount() {
-        console.log("FeedScreen - componentWillMount");
+        console.log('FeedScreen - componentWillMount');
         this.props.fetchUser();
     }
 
     componentWillReceiveProps(nextProps) {
-
-        console.log("FeedScreen - componentWillReceiveProps " + JSON.stringify(nextProps));
 
         if (nextProps.error && !this.props.error) {
             this.props.alertWithType('error', 'Error', nextProps.error);
         }
 
         if(this.props.user != nextProps.user && nextProps.user != null){
+            console.log('FeedScreen - componentWillReceiveProps ' + JSON.stringify(nextProps.user));
             this.fetchData(nextProps.user.username);
         }
         if(this.props.games != nextProps.games && nextProps.games != null){
+            console.log('FeedScreen - componentWillReceiveProps ' + nextProps.games.length);
             this.setState({games: nextProps.games});
         }
-        if(nextProps.invalidateData == true){
-            this.setState({'invalidateData':false});
+        if(nextProps.isDataStale == true){
+            console.log('FeedScreen - componentWillReceiveProps ' + JSON.stringify(nextProps.isDataStale));
             this.fetchData(this.props.user.username);
         }
     }
 
     fetchData(username){
+
+            console.log('fetching data for  ' + JSON.stringify(username));
+
         getStatsForUser(username).then((response) => {
                 this.setState({stats: response.data});
                 this.setState({refreshing: false});
@@ -84,11 +90,11 @@ class FeedScreen extends Component {
     }
 
     textForGameResult(game) {
-        var player_one = game.outcomes[0].user_name;
-        var player_two = game.outcomes[1].user_name;
-        var result = game.outcomes[0].result;
+        let player_one = game.outcomes[0].user_name;
+        let player_two = game.outcomes[1].user_name;
+        let result = game.outcomes[0].result;
 
-        var str = `${player_one} ${result} against ${player_two}`;
+        let str = `${player_one} ${result} against ${player_two}`;
         //var str = Moment(game.date).format('d MMM');
 
         return str;
@@ -99,8 +105,8 @@ class FeedScreen extends Component {
 
     _renderItemGame = ({item, index}) => (
         <GameRow
-            name1= { item.outcomes[item.outcomes[0].result == "WIN" ? 0 : 1].user_name }
-            name2= { item.outcomes[item.outcomes[0].result != "WIN" ? 0 : 1].user_name }
+            name1= { item.outcomes[item.outcomes[0].result == 'WIN' ? 0 : 1].user_name }
+            name2= { item.outcomes[item.outcomes[0].result != 'WIN' ? 0 : 1].user_name }
             tournament={ item.tournament.display_name }
             result= { item.outcomes[item.outcomes[0].user_name == this.props.user.username ? 0 : 1].score_value < 0 }
             value= { item.outcomes[item.outcomes[0].user_name == this.props.user.username ? 0 : 1].score_value }
@@ -119,8 +125,6 @@ class FeedScreen extends Component {
     _onRefresh() {
         console.log('refreshing ')
         this.setState({refreshing: true});
-
-        this.props.invalidateData();
         this.fetchData(this.props.user.username);
     }
 
@@ -132,13 +136,11 @@ class FeedScreen extends Component {
             return (
                 <View style={ { flex: 1,
                     justifyContent: 'center'} }>
-                    <ActivityIndicator  size="small" color="white"/>
+                    <ActivityIndicator  size='small' color='white'/>
                 </View>
             );
         }
 
-        console.log(JSON.stringify(this.props.games));
-        console.log(JSON.stringify(this.state.games));
       var sections = [
           { title: 'YOUR TOURNAMENTS', data: this.state.stats, renderItem: this._renderItemTournament },
           { title: 'YOUR HISTORY', data: this.state.games, renderItem: this._renderItemGame }
@@ -186,11 +188,18 @@ feedScreenStyle = StyleSheet.create({
 })
 
 const mapStateToProps = ({ userReducer, refreshReducer }) => {
-    console.log('FeedScreen - mapStateToProps userReducer:' + JSON.stringify(userReducer) + ' refreshReducer : ' + JSON.stringify(refreshReducer));
+    console.log('FeedScreen - mapStateToProps userReducer:' + JSON.stringify(userReducer.user != null ? userReducer.user : 'userReducer') + ' refreshReducer : ' + JSON.stringify(refreshReducer));
+
+    // if(this.props != null){ // avoid NPE on first run
+    // console.log('FeedScreen - mapStateToProps userReducer:' +
+    //     (userReducer.games != null ? (userReducer.games.length + ' games' : 'no games') : 'No games received : ') +
+    //     + (this.props.games != null ? ' there was ' + this.props.games.length : 'no') + ' in props '
+    //     + (this.state.games != null ? ' there was ' + this.state.games.length : 'no') + ' in state ' );
+    // }
     return {
         user : userReducer.user,
         games: userReducer.games,
-        invalidateData: refreshReducer.invalidateData};
+        isDataStale: refreshReducer.isDataStale};
 };
 
 export default connect(mapStateToProps, { fetchUser, fetchGamesForUser, invalidateData })(FeedScreen);

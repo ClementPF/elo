@@ -10,6 +10,8 @@ import Colors from '../constants/Colors';
 import stackNavFeed from './StackNavigatorFeed';
 import stackNavGameForm from './StackNavigatorGameForm';
 import stackNavTournaments from './StackNavigatorTournaments';
+import stackNavSettings from './StackNavigatorSettings';
+import stackNaveUserProfile from './StackNavigatorUserProfile';
 
 export default TabNavigator(
     {
@@ -17,6 +19,12 @@ export default TabNavigator(
             screen: stackNavFeed,
             navigationOptions: {
                 tabBarLabel: "Feeed",
+            }
+        },
+        TabUserProfile: {
+            screen: stackNaveUserProfile,
+            navigationOptions: {
+                tabBarLabel: "Me",
             }
         },
         TabGameForm: {
@@ -29,6 +37,12 @@ export default TabNavigator(
             screen: stackNavTournaments,
             navigationOptions: {
                 tabBarLabel: "Tournaments",
+            }
+        },
+        TabSettings: {
+            screen: stackNavSettings,
+            navigationOptions: {
+                tabBarLabel: "Settings",
             }
         }
     },
@@ -47,11 +61,14 @@ export default TabNavigator(
                     case 'TabTournaments':
                       iconName = 'ios-trophy';
                     break;
-                    case 'TabCamera':
-                      iconName = 'ios-trophy';
+                    case 'TabUserProfile':
+                      iconName = 'md-person';
                     break;
                     case 'TabGameForm':
                         iconName = 'md-add-circle';
+                        break;
+                    case 'TabSettings':
+                        iconName = 'md-settings';
                         break;
                 }
                 return (

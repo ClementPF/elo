@@ -41,19 +41,25 @@ class Login extends Component {
 
                 testTokenValidity(tokens.access_token).then((response) => {
                     //this.dropdown.alertWithType('info', 'Info', 'Valid Session Found');
+
+                    console.log('Valid Session Found ');
                     this.setState({
                         'loading': false
                     });
                     this.navigateToHome();
                 }).catch((error) => {
-                    this.onError('Previous session is invalid \n' + error);
+                    //this.onError('Previous session is invalid \n' + error);
+
+                    console.log('Previous session is invalid ');
                     refreshToken(tokens.refresh_token).then((response) => {
                         this.setState({
                             'loading': false
                         });
                         this.onLoggedIn(response.data);
                     }).catch((error) => {
-                        this.onError('Previous refresh is invalid \n' + error);
+                        //this.onError('Previous refresh is invalid \n' + error);
+
+                        console.log('Previous session is invalid ' + error);
                         this.setState({
                             'loading': false
                         });

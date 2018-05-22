@@ -115,7 +115,8 @@ componentWillMount(){
       return (
          <View style={{flex:1 } } >
             <SearchBar
-                style = { {
+
+                    style = { {
                         marginLeft : 16,
                         marginRight: 16 } }
                onChangeText={this.handleChangeTournamentText}

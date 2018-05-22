@@ -21,7 +21,7 @@ function getGamesForTournament(tournamentName) {
   return Axios.get(`${API_ENDPOINTS.TOURNAMENT}/${tournamentName}/games`);
 }
 
-function postGameForTournament(tournamentName, winnerName) {
+function postGameForTournament(tournamentName, winnerName, looserName) {
   return Axios.post(`${API_ENDPOINTS.TOURNAMENT}/${tournamentName}/games`,
       {
    'outcomes': [
@@ -31,11 +31,12 @@ function postGameForTournament(tournamentName, winnerName) {
      },
      {
        'result': 'LOSS',
-       'user_name': 'this_has_to_be_changed_in_react'
+       'user_name': looserName
      }
    ],
- 'tournament_name': tournamentName
-
+   'tournament':{
+     'name': tournamentName
+   }
  })
 ;}
 
