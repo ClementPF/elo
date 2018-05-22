@@ -109,7 +109,7 @@ gameFormStyle = StyleSheet.create({
 })
 
 const mapStateToProps = ({ userReducer }) => {
-    console.log('GameFormQRCodeScreen - mapStateToProps userReducer:' + JSON.stringify(userReducer));
+    //console.log('GameFormWinnerLooserScreen - mapStateToProps userReducer:' + JSON.stringify(userReducer));
     return {
         user : userReducer.user,
         tournament: ( userReducer.games != null && userReducer.games.length > 0 ) ? userReducer.games[0].tournament : null};

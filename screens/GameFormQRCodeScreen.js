@@ -45,7 +45,7 @@ class GameFormQRCodeScreen extends Component {
 
     componentWillReceiveProps(nextProps) {
 
-      console.log("GameFormQRCodeScreen - componentWillReceiveProps " + JSON.stringify(nextProps));
+      //console.log("GameFormQRCodeScreen - componentWillReceiveProps " + JSON.stringify(nextProps));
 
       if (nextProps.error && !this.props.error) {
           this.props.alertWithType('error', 'Error', nextProps.error);
@@ -131,7 +131,7 @@ render() {
 
 
 const mapStateToProps = ({ userReducer }) => {
-    console.log('GameFormQRCodeScreen - mapStateToProps userReducer:' + JSON.stringify(userReducer));
+    //console.log('GameFormQRCodeScreen - mapStateToProps userReducer:' + JSON.stringify(userReducer));
     return {
         user : userReducer.user,
         games: userReducer.games,};

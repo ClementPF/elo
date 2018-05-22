@@ -37,9 +37,9 @@ class GameFormConfirmationScreen extends Component {
     }
 
     submitGame = (text) => {
-        console.log("adding game for " + this.state.winner.username + " " + this.state.tournament.name);
+        console.log("adding game for " + this.state.winner.username + " " + this.state.tournament.name + " " + this.props.user.username);
 
-        postGameForTournament(this.state.tournament.name, this.state.winner.username).then((response) => {
+        postGameForTournament(this.state.tournament.name, this.state.winner.username, this.props.user.username).then((response) => {
             console.log(JSON.stringify(response.data.outcomes[0].score_value));
 
             const resetAction = NavigationActions.reset({
@@ -64,6 +64,8 @@ class GameFormConfirmationScreen extends Component {
     };
 
     onError = error => {
+
+            console.log("GameFormConfirmation - " + JSON.stringify(error));
         if (error) {
             this.dropdown.alertWithType('error', 'Error', error.message);
         }
@@ -112,9 +114,11 @@ class GameFormConfirmationScreen extends Component {
     }
 }
 
-const mapStateToProps = ({ refreshReducer }) => {
-    const { invalidateData } = refreshReducer;
-    return { invalidateData };
+const mapStateToProps = ({ userReducer, refreshReducer }) => {
+        //console.log('GameFormConfirmationScreen - mapStateToProps userReducer:' + JSON.stringify(userReducer) + ' refreshReducer : ' + JSON.stringify(refreshReducer));
+        return {
+            user : userReducer.user,
+            invalidateData: refreshReducer.invalidateData};
 };
 
 export default connect(mapStateToProps, { invalidateData })(GameFormConfirmationScreen);

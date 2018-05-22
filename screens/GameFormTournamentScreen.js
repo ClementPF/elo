@@ -25,7 +25,7 @@ class GameFormTournamentScreen extends Component {
       return {
           isWinner: null,
           title: "Select Tournament",
-          headerTintColor: 'white'
+          headerTintColor: 'white',
       };
   };
 
@@ -106,12 +106,14 @@ class GameFormTournamentScreen extends Component {
    _keyExtractor = (item, index) => item.id;
 
    onPress(item){
-       //if(this.state.isWinner == true){
+       if(this.props.navigation.state.params.returnData !== undefined){
            this.props.navigation.state.params.returnData(item);
            this.props.navigation.goBack();
-       //}else{
-        //   this.props.navigation.navigate('GameFormQRScanner', { tournament: item })
-     //  }
+       }else if(this.state.isWinner == false){
+           this.props.navigation.navigate('GameFormQRScanner', { tournament: item })
+       }else if(this.state.isWinner == true){
+           this.props.navigation.navigate('GameFormQRCode', { tournament: item })
+       }
    }
 
    _renderItemTournament = ({item, index}) => (

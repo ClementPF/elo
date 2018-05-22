@@ -53,7 +53,7 @@ class FeedScreen extends Component {
 
     componentWillReceiveProps(nextProps) {
 
-        console.log("FeedScreen - componentWillReceiveProps " + JSON.stringify(nextProps));
+        //console.log("FeedScreen - componentWillReceiveProps " + JSON.stringify(nextProps));
 
         if (nextProps.error && !this.props.error) {
             this.props.alertWithType('error', 'Error', nextProps.error);
@@ -137,8 +137,6 @@ class FeedScreen extends Component {
             );
         }
 
-        console.log(JSON.stringify(this.props.games));
-        console.log(JSON.stringify(this.state.games));
       var sections = [
           { title: 'YOUR TOURNAMENTS', data: this.state.stats, renderItem: this._renderItemTournament },
           { title: 'YOUR HISTORY', data: this.state.games, renderItem: this._renderItemGame }
@@ -186,7 +184,7 @@ feedScreenStyle = StyleSheet.create({
 })
 
 const mapStateToProps = ({ userReducer, refreshReducer }) => {
-    console.log('FeedScreen - mapStateToProps userReducer:' + JSON.stringify(userReducer) + ' refreshReducer : ' + JSON.stringify(refreshReducer));
+    //console.log('FeedScreen - mapStateToProps userReducer:' + JSON.stringify(userReducer) + ' refreshReducer : ' + JSON.stringify(refreshReducer));
     return {
         user : userReducer.user,
         games: userReducer.games,

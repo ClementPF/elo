@@ -89,7 +89,7 @@ export default class StatsCard extends Component {
 
 statsCardStyle = StyleSheet.create({
     container: {
-        margin: 8,
+        padding: 8,
         margin: 1,
         backgroundColor: 'white'
     }

@@ -34,7 +34,7 @@ export default class GameFormQRScannerScreen extends React.Component {
 
     componentWillReceiveProps(nextProps) {
 
-        console.log('GameFormQRCodeScreen - componentWillReceiveProps ' + JSON.stringify(nextProps));
+        //console.log('GameFormQRScannerScreen - componentWillReceiveProps ' + JSON.stringify(nextProps));
 
         if (nextProps.games != null && nextProps.games.length > 0) {
             this.setState({'tournament': this.props.games[0].tournament});
