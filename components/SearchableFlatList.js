@@ -15,7 +15,7 @@ export default class SearchableFlatlist extends Component {
     );
   }
   render() {
-    return <FlatList {...this.props} data={this.getFilteredResults()} />;
+    return <FlatList {...this.props} data={ this.getFilteredResults()} />;
   }
 }
 

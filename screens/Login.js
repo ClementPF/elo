@@ -13,22 +13,23 @@ class Login extends Component {
     static propTypes = {
         navigation: PropTypes.object,
         dispatch: PropTypes.func,
+        error: PropTypes.object,
         state: PropTypes.object,
         loading: PropTypes.bool
     }
 
     constructor() {
-        super()
+        super();
         this.state = {
             welcome_text: 'Welcome to the SHARKULATOR fellow shark, before starting praying on some fishes \nplease Sign in.',
             appVersion: '0.0.0'
-        }
+        };
     }
 
     componentWillMount() {
-        var packageMod = require('../package.json');
+        let packageMod = require('../package.json');
         this.setState(
-            {'appVersion': packageMod.version + "b" + packageMod.buildNumber,
+            {'appVersion': packageMod.version + 'b' + packageMod.buildNumber,
             'loading': true
         });
 
@@ -77,7 +78,7 @@ class Login extends Component {
     componentWillReceiveProps(nextProps) {
         console.log('componentWillReceiveProps' + nextProps);
         if (nextProps.error && !this.props.error) {
-            this.props.alertWithType('error', 'Error', nextProps.error);
+            this.onError( nextProps.error);
         }
     }
 
@@ -105,12 +106,12 @@ class Login extends Component {
     async signInWithGoogleAsync() {
       try {
         const result = await Expo.Google.logInAsync({
-            behavior:"web",
-          androidClientId: "975514203843-4bkrrov84hiepp4a6r8ngci9j1o8lnhk.apps.googleusercontent.com",
-          iosClientId: "975514203843-jriblf35irfbh0e8e49ojeq2q4egtc98.apps.googleusercontent.com",
-          iosStandaloneAppClientId: "975514203843-4iitkt007snetchd63d8v6e96vu7qnle.apps.googleusercontent.com",
-          androidStandaloneAppClientId: "975514203843-kqho0mtodfj50penbqrt1voq9hs34j57.apps.googleusercontent.com",
-          scopes: ['profile', 'email'],
+            behavior:'web',
+            androidClientId: '975514203843-4bkrrov84hiepp4a6r8ngci9j1o8lnhk.apps.googleusercontent.com',
+            iosClientId: '975514203843-jriblf35irfbh0e8e49ojeq2q4egtc98.apps.googleusercontent.com',
+            iosStandaloneAppClientId: '975514203843-4iitkt007snetchd63d8v6e96vu7qnle.apps.googleusercontent.com',
+            androidStandaloneAppClientId: '975514203843-kqho0mtodfj50penbqrt1voq9hs34j57.apps.googleusercontent.com',
+            scopes: ['profile', 'email'],
         });
 
         if (result.type === 'success') {
@@ -142,8 +143,8 @@ class Login extends Component {
             index: 0,
             key: null,
             actions: [NavigationActions.navigate({routeName: 'Main'})]
-        })
-        this.props.navigation.dispatch(resetAction)
+        });
+        this.props.navigation.dispatch(resetAction);
     }
 
     onError = error => {
@@ -163,41 +164,45 @@ class Login extends Component {
             return (
                 <View>
                     <DropdownAlert
-                       ref={ref => this.dropdown = ref}
-                       onClose={data => this.onClose(data)} />
+                       ref={ ref => this.dropdown = ref }
+                       onClose={ data => this.onClose(data) } />
                </View>
-            )
+           );
         }
         return (
             <View style= { { 'backgroundColor' : 'white', 'flex' : 1 } }>
-                <StatusBar translucent={ false } barStyle="dark-content"/>
-                <View style= { {'justifyContent' : 'center', 'flex' : 4,
+                <StatusBar
+                    translucent={ false }
+                    barStyle="dark-content"/>
+                <View
+                    style= { {'justifyContent' : 'center', 'flex' : 4,
                 alignItems: 'center' } }>
-                    <Image style={{width: 256, height: 256}}
-                    source={require('../assets/images/icon.png')} />
+                    <Image
+                        style={ {width: 256, height: 256} }
+                        source={ require('../assets/images/icon.png') } />
                 </View>
                 <View style= { { 'flex' : 1 } }>
                     <Text style= { { 'margin':16,  'justifyContent' : 'center', 'textAlign' : 'center',
                     fontSize: 16,
                     fontWeight: 'bold',
-                    color: 'darkslategrey',} }> {this.state.welcome_text} </Text>
+                    color: 'darkslategrey',} }> { this.state.welcome_text} </Text>
                 </View>
                 <View style= { { 'flex' : 2,
                     flexDirection: 'column', } }>
                     <SocialIcon title="Sign In With Facebook"
                         button={ true }
-                        onPress={ () => { this.signInWithFacebookAsync() } }
+                        onPress={ () => { this.signInWithFacebookAsync(); } }
                         type="facebook"/>
                     <SocialIcon title="Sign In With Google"
                         button={ true }
-                        onPress={ () => { this.signInWithGoogleAsync() } }
+                        onPress={ () => { this.signInWithGoogleAsync(); } }
                         type="google-plus-official"/>
                 </View>
-                <Text style= { {'textAlign' : 'center', position: 'absolute', bottom: 0, width: '100%'} }> { 'Version : ' + this.state.appVersion + (API_CONF.BASE_URL == API_CONF.BASE_LOCAL_URL ? "L" : "R")} </Text>
+                <Text style= { {'textAlign' : 'center', position: 'absolute', bottom: 0, width: '100%'} }> { 'Version : ' + this.state.appVersion + (API_CONF.BASE_URL == API_CONF.BASE_LOCAL_URL ? 'L' : 'R')} </Text>
 
                 <DropdownAlert
-                ref={ref => this.dropdown = ref}
-                onClose={data => this.onClose(data)} />
+                ref={ ref => this.dropdown = ref }
+                onClose={ data => this.onClose(data) } />
             </View>
     );
   }

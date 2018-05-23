@@ -16,8 +16,8 @@ export default class EmptyResultsButton extends Component {
               title= { title }
               icon={ {name: 'add'} }
               buttonStyle= { {
-                  backgroundColor: "tomato",
-                  borderColor: "transparent",
+                  backgroundColor: 'tomato',
+                  borderColor: 'transparent',
                   borderWidth: 0,
                   borderRadius: 10
               } }

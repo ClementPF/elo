@@ -28,7 +28,9 @@ class UserScreen extends Component {
     static propTypes = {
         navigation: PropTypes.object,
         dispatch: PropTypes.func,
-        user: PropTypes.object
+        error: PropTypes.object,
+        user: PropTypes.object,
+        isDataStale: PropTypes.bool,
     }
 
     static navigationOptions = ({navigation}) => {
@@ -61,7 +63,7 @@ class UserScreen extends Component {
     }
 
     componentWillMount() {
-        console.log('UserScreen - componentWillMount');
+        //console.log('UserScreen - componentWillMount');
         if(this.state.userName != null && this.state.tournamentName != null){
             //case of screen in feed or tournaments StackNavigator
             this.fetchData(this.state.userName, this.state.tournamentName);
@@ -69,17 +71,17 @@ class UserScreen extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log("UserScreen - componentWillReceiveProps " + JSON.stringify(nextProps));
+        //console.log('UserScreen - componentWillReceiveProps ' + JSON.stringify(nextProps));
       if (nextProps.error && !this.props.error) {
-        this.props.alertWithType('error', 'Error', nextProps.error);
+        this._onError(nextProps.error);
       }
       if(this.props.user != nextProps.user && nextProps.user != null){
-          console.log("UserScreen - componentWillReceiveProps " + JSON.stringify(nextProps.user));
+          //console.log('UserScreen - componentWillReceiveProps ' + JSON.stringify(nextProps.user));
           this.setState({user: nextProps.user, userName: nextProps.user.username});
           this.fetchData(nextProps.user.username, this.state.tournamentName);
       }
-      if(nextProps.invalidateData == true){
-          console.log("UserScreen - componentWillReceiveProps " + nextProps.invalidateData == true ? ' invalidateData true' : ' invalidateData false');
+      if(nextProps.isDataStale == true){
+          //console.log('UserScreen - componentWillReceiveProps '' + nextProps.invalidateData == true ? ' invalidateData true' : ' invalidateData false');
           this.fetchData(this.state.userName, this.state.tournamentName);
       }
     }
@@ -89,56 +91,31 @@ class UserScreen extends Component {
         Promise.all([
             getStatsForUser(username)
                 .then((response) => {
-                    var wins = 0;
-                    var games = 0;
+                    let wins = 0;
+                    let games = 0;
                     response.data.forEach(function(s) {
-                         wins =+ s.win_count;
-                         games =+ s.game_count;
+                         wins = wins + s.win_count;
+                         games = games + s.game_count;
                     });
                     this.setState({stats: response.data,
                         gameCount: games,
                         winCount: wins});})
                 .catch((error) => {
-                    console.log('failed to get stats for user ' + error);
+                    this._onError('failed to get stats for user ' + error);
                 }),
             getGamesForUser(username, tournamentName)
                 .then((response) => {
-                    this.setState({games: response.data})})
+                    this.setState({games: response.data});})
                 .catch((error) => {
-                    console.log('failed to get games for user ' + error);
+                    this._onError('failed to get games for user ' + error);
                 })
             ]).then(() => {
-                this.setState({loading: false, refreshing: false})
+                this.setState({loading: false, refreshing: false});
             });
-        /*
-        console.log('fetchData ' + username + ' ' + tournamentName);
-        getStatsForUser(username).then((response) => {
-                this.setState({stats: response.data, loading: false});
-            }).catch((error) => {
-                console.log('failed to get stats for user ' + error);
-            }).done();
-
-        getGamesForUser(username, tournamentName).then((response) => {
-            this.setState({games: response.data, loading: false});
-            this.setState({refreshing: false});
-        }).catch((error) => {
-            console.log('failed to get stats for user ' + error);
-        }).done();*/
-    }
-
-    textForGameResult(game) {
-        var player_one = game.outcomes[0].user_name;
-        var player_two = game.outcomes[1].user_name;
-        var result = game.outcomes[0].result;
-
-        var str = `${player_one} ${result} against ${player_two}`;
-        //var str = Moment(game.date).format('d MMM');
-
-        return str;
     }
 
     _renderItem = ({item, index}) => {
-        console.log('UserScreen - _renderItem ' + index);
+        //console.log('UserScreen - _renderItem ' + index);
     }
 
     _renderItemUser = ({item, index}) => (
@@ -154,7 +131,7 @@ class UserScreen extends Component {
         <GameRow
             name1= { item.outcomes[item.outcomes[0].result == 'WIN' ? 0 : 1].user_name }
             name2= { item.outcomes[item.outcomes[0].result != 'WIN' ? 0 : 1].user_name }
-            tournament={ item.tournament_display_name }
+            tournament={ item.tournament.display_name }
             result= { item.outcomes[item.outcomes[0].user_name == this.state.userName ? 0 : 1].score_value < 0 }
             value= { item.outcomes[item.outcomes[0].user_name == this.state.userName ? 0 : 1].score_value }
             date= { item.date }/>);
@@ -178,9 +155,20 @@ class UserScreen extends Component {
 );
 
     _onRefresh() {
-        console.log('refreshing ')
         this.setState({refreshing: true});
         this.fetchData();
+    }
+
+    _onError = error => {
+        if (error) {
+            this.dropdown.alertWithType('error', 'Error', error);
+        }
+    };
+
+    _onClose(data) {
+        // data = {type, title, message, action}
+        // action means how the alert was closed.
+        // returns: automatic, programmatic, tap, pan or cancel
     }
 
     render() {
@@ -195,7 +183,7 @@ class UserScreen extends Component {
             const { navigate } = this.props.navigation;
             const rows = this.state.stats;
             const userAsList = [this.props.user];
-            var sections = [
+            let sections = [
               { title: null, data: userAsList, renderItem: this._renderItemUser },
               { title: 'STATS', data: this.state.stats, renderItem: this._renderItemStats },
               { title: 'GAME HISTORY', data: this.state.games, renderItem: this._renderItemGame }
@@ -228,13 +216,12 @@ class UserScreen extends Component {
 UserScreenStyle = StyleSheet.create({
     container: {
     },
-})
+});
 
 const mapStateToProps = ({ userReducer, refreshReducer }) => {
-    console.log('UserScreen - mapStateToProps ');
-    const { user } = userReducer;
-    const { invalidateData } = refreshReducer;
-    return { user, invalidateData };
+    return {
+        user: userReducer.user,
+        isDataStale: refreshReducer.isDataStale };
 };
 
-export default connect(mapStateToProps, { getUser,invalidateData })(UserScreen);
+export default connect(mapStateToProps, { })(UserScreen);

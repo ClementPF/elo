@@ -5,33 +5,27 @@ import {
 
 export function invalidateData() {
   return function action(dispatch) {
-     //return dispatch({ type: INVALIDATE_DATA })
-
-    console.log("RefreshAction - action");
-
-    //return dispatch(invalidateDataSuccess())
-
-    return dispatch({ type: INVALIDATE_DATA })
-  }
+    //console.log('RefreshAction - action');
+    return invalidateDataSuccess();
+};
 }
 
 export function dataInvalidated() {
   return function action(dispatch) {
-    console.log("RefreshAction - action");
-    return dispatch({ type: DATA_INVALIDATED })
-  }
+    //console.log('RefreshAction - action');
+    return dispatch({ type: DATA_INVALIDATED });
+};
 }
 
 export function invalidateDataSuccess() {
-    console.log("invalidateDataSuccess - action");
+    //console.log('invalidateDataSuccess - action');
 	return {
 		type: DATA_INVALIDATED
 	};
 }
 
 export function invalidateDataError(error) {
-
-    console.log("invalidateDataError - action");
+    //console.log('invalidateDataError - action');
 	return {
 		type: INVALIDATE_DATA,
 		payload: error

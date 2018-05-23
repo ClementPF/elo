@@ -83,7 +83,7 @@ class GameFormUserScreen extends Component {
    _renderItem = ({item, i}) => (
 
        <TouchableOpacity
-       onPress={this._onPressRow.bind(i, item)}>
+       onPress={ this._onPressRow.bind(i, item)}>
             <UserStatRow
                 tournament= { item.first_name + ' ' + item.last_name }
                 position= { 1 }
@@ -107,27 +107,27 @@ render() {
     sections = sections.filter(section => section.data.length > 0);
 
     return (
-        <View style={{flex:1}} >
+        <View style={ {flex:1} } >
             <SearchBar
                 lightTheme={false}
-                onChangeText={this.handleChangeUserText}
-                placeholder={this.state.winnerName} />
+                onChangeText={ this.handleChangeUserText}
+                placeholder={ this.state.winnerName} />
 
             <SearchableSectionList
                 style = { feedScreenStyle.list }
                 data={ [...this.state.topPlayers, ...this.state.allPlayers] }
                    searchProperty={"username"}
-                   searchTerm={this.state.winnerName}
-                keyExtractor={(item, index) => item + index}
-                renderItem={({ item, index, section }) => <Text key={index}>{item}</Text>}
-                renderSectionHeader={({ section: { title } }) => <Text style={ feedScreenStyle.sectionHeaderText }>{title}</Text>}
+                   searchTerm={ this.state.winnerName}
+                keyExtractor={ (item, index) => item + index}
+                renderItem={ ({ item, index, section }) => <Text key={index}>{item}</Text>}
+                renderSectionHeader={ ({ section: { title } }) => <Text style={ feedScreenStyle.sectionHeaderText }>{title}</Text>}
                 sections={ sections }
-                refreshing={this.state.refreshing}
-                onRefresh={this._onRefresh.bind(this)}
+                refreshing={ this.state.refreshing}
+                onRefresh={ this._onRefresh.bind(this)}
                 ListEmptyComponent={
                 <EmptyResultsButton
                 title="No player here ? Go find some people and tell them how great the sharkulator is."
-                onPress={ () => { this.props.navigation.navigate('Tournaments');}}/>
+                onPress={ () => { this.props.navigation.navigate('Tournaments');} }/>
             }/>
         </View>
     );

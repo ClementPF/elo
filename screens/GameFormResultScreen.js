@@ -35,7 +35,7 @@ class GameFormResultScreen extends Component {
 
     render() {
         return (
-            <View style={{flex:1}}>
+            <View style={ {flex:1} }>
                 <Card title="RESULTS">
                     <GameRow
                         name1= { this.state.game.outcomes[0].user_name }

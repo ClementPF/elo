@@ -1,22 +1,21 @@
-import React, { Component } from "react";
-import { SectionList, StyleSheet, } from "react-native";
-import PropTypes from "prop-types";
+import React, { Component } from 'react';
+import { SectionList, StyleSheet, } from 'react-native';
+import PropTypes from 'prop-types';
 
 export default class SearchableSectionlist extends Component {
-  static INCLUDES = "includes";
-  static WORDS = "words";
+  static INCLUDES = 'includes';
+  static WORDS = 'words';
 
   getFilteredSections(){
       let { data, sections, type, searchProperty, searchTerm } = this.props;
-
-      var filteredSections = sections;
-      var i = 0;
+      let filteredSections = sections;
+      let i = 0;
       for (let section of sections) {
           filteredSections[i].data = section.data.filter(
             item =>
               type && type === SearchableFlatlist.WORDS
-                ? new RegExp(`\\b${searchTerm}`, "gi").test(item[searchProperty])
-                : new RegExp(`${searchTerm}`, "gi").test(item[searchProperty])
+                ? new RegExp(`\\b${searchTerm}`, 'gi').test(item[searchProperty])
+                : new RegExp(`${searchTerm}`, 'gi').test(item[searchProperty])
           );
           i++;
         }
@@ -27,12 +26,11 @@ export default class SearchableSectionlist extends Component {
   }
 
   render() {
-    return <SectionList {...this.props}
-        sections={this.getFilteredSections()}
+    return <SectionList { ...this.props }
+        sections={ this.getFilteredSections() }
     />;
   }
 }
-
 
 searchableSectionList = StyleSheet.create({
     list: {
@@ -47,7 +45,7 @@ searchableSectionList = StyleSheet.create({
         textAlign: 'center',
         backgroundColor: 'black'
     }
-})
+});
 
 SearchableSectionlist.propTypes = {
   data: PropTypes.array.isRequired,

@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Platform, StatusBar, StyleSheet, View } from 'react-native';
+import { Platform, StatusBar, StyleSheet, View, SafeAreaView } from 'react-native';
 import { AppLoading, Asset, Font } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import RootNavigation from './navigation/RootNavigation';
 
-import { Provider } from 'react-redux'
-import configureStore from "./redux/store/configureStore";
-import { createStore, applyMiddleware, compose } from 'redux'
+import { Provider } from 'react-redux';
+import configureStore from './redux/store/configureStore';
+import { createStore, applyMiddleware, compose } from 'redux';
 import ReduxThunk from 'redux-thunk';
 import reducers from './redux/reducers';
 import { getUser } from './redux/actions';
@@ -20,25 +20,7 @@ export default class App extends React.Component {
     };
 
     _loadResourcesAsync = async () => {
-        return Promise.all(/*[
-            Asset.loadAsync([
-                require('./assets/images/robot-dev.png'),
-                require('./assets/images/robot-prod.png'),
-            ]),
-            Font.loadAsync([
-                // This is the font that we are using for our tab bar
-                Ionicons.font,
-                // We include SpaceMono because we use it in HomeScreen.js. Feel free
-                // to remove this if you are not using it in your app
-                { 'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf') },
-            ]),
-        ]*/);
-    };
-
-    _handleLoadingError = error => {
-        // In this case, you might want to report the error to your error
-        // reporting service, for example Sentry
-        console.log(error);
+        return Promise.all();
     };
 
     _handleFinishLoading = () => {
@@ -48,11 +30,13 @@ export default class App extends React.Component {
     render() {
         return (
             <Provider store={ store }>
-                <View style={ styles.container }>
-                    { Platform.OS === 'ios' && <StatusBar barStyle="default" /> }
-                    { Platform.OS === 'android' && <View style={ styles.statusBarUnderlay } /> }
-                    <RootNavigation />
-                </View>
+                <SafeAreaView style={ styles.safeArea }>
+                    <View style={ styles.container }>
+                        { Platform.OS === 'ios' && <StatusBar barStyle="default" /> }
+                        { Platform.OS === 'android' && <View style={ styles.statusBarUnderlay } /> }
+                        <RootNavigation />
+                    </View>
+                </SafeAreaView>
             </Provider>
         );
     }
@@ -63,6 +47,10 @@ App.propTypes = {
 };
 
 const styles = StyleSheet.create({
+    safeArea: {
+        flex: 1,
+        backgroundColor: '#000'
+    },
     container: {
         flex: 1,
         backgroundColor: '#000',

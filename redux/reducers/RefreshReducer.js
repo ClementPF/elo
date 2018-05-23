@@ -10,7 +10,7 @@ const INITIAL_STATE = {
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case INVALIDATE_DATA:
-    console.log("redux INVALIDATE_DATA")
+    //console.log('redux INVALIDATE_DATA')
       return { ...state,
         isDataStale: true};
     case DATA_INVALIDATED:

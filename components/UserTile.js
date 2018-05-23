@@ -21,12 +21,12 @@ export default class UserTile extends Component {
             <View/>
             <Badge
                 value={wins}
-                textStyle={{ color: 'white' }}
+                textStyle={ { color: 'white' } }
             />
             <Avatar
                 medium
                 rounded
-                //source={{uri: "https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg"}}
+                //source={ {uri: "https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg"} }
                 title= { initials }
                 //icon={ {name: 'fish', color: 'tomato'} }
                 onPress={ () => console.log("Works!") }
@@ -34,7 +34,7 @@ export default class UserTile extends Component {
             />
             <Badge
                 value={games}
-                textStyle={{ color: 'white' }}
+                textStyle={ { color: 'white' } }
             />
             <View/>
         </View>

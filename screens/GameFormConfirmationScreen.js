@@ -17,12 +17,13 @@ class GameFormConfirmationScreen extends Component {
         dispatch: PropTypes.func,
         invalidateData: PropTypes.func,
         dataInvalidated: PropTypes.func,
+        user: PropTypes.object
     };
 
     static navigationOptions = ({navigation}) => {
         const params = navigation.state.params;
         return {
-            title: "Confirmation",
+            title: 'Confirmation',
             headerTintColor: 'white'
         };
     };
@@ -39,10 +40,10 @@ class GameFormConfirmationScreen extends Component {
     }
 
     submitGame = (text) => {
-        console.log("adding game for " + this.state.winner.username + " " + this.state.tournament.name + " " + this.props.user.username);
+        //console.log("adding game for " + this.state.winner.username + " " + this.state.tournament.name + " " + this.props.user.username);
 
         postGameForTournament(this.state.tournament.name, this.state.winner.username, this.props.user.username).then((response) => {
-            console.log(JSON.stringify(response.data.outcomes[0].score_value));
+            //console.log(JSON.stringify(response.data.outcomes[0].score_value));
 
             const resetAction = NavigationActions.reset({
               index: 1,
@@ -53,12 +54,12 @@ class GameFormConfirmationScreen extends Component {
                   params : {
                     tournament: this.state.tournament,
                 winner: this.state.winner,
-                game: response.data}})
+                game: response.data} })
               ]
-            })
+          });
             this.props.navigation.dispatch(resetAction);
 
-            console.log("GameFormConfirmation - invalidating data");
+            //console.log("GameFormConfirmation - invalidating data");
             //this.props.invalidateData().then(() => this.props.dataInvalidated());
 
             this.props.invalidateData();
@@ -69,8 +70,7 @@ class GameFormConfirmationScreen extends Component {
     };
 
     onError = error => {
-
-            console.log("GameFormConfirmation - " + JSON.stringify(error));
+        //console.log('GameFormConfirmation - ' + JSON.stringify(error));
         if (error) {
             this.dropdown.alertWithType('error', 'Error', error.message);
         }
@@ -85,35 +85,35 @@ class GameFormConfirmationScreen extends Component {
         return (
             <View>
                 <Card title="SUMMARY">
-                    <Text style={{
+                    <Text style={ {
                         fontSize: 16,
                         fontWeight: 'normal',
                         color: 'black',
                         textAlign: 'center',
-                        textAlignVertical: 'center'}}>
-                        Tournament : {this.state.tournament.display_name} </Text>
-                    <Text style={{
+                        textAlignVertical: 'center'} }>
+                        Tournament : { this.state.tournament.display_name} </Text>
+                    <Text style={ {
                         fontSize: 16,
                         fontWeight: 'normal',
                         color: 'black',
                         textAlign: 'center',
-                        textAlignVertical: 'center'}}
-                        > Winner : {this.state.winner.username} </Text>
+                        textAlignVertical: 'center'} }
+                        > Winner : { this.state.winner.username} </Text>
                 </Card>
-                <Button title='Darn it, I lost!'
-                    onPress={this.submitGame}
-                    buttonStyle={{
-                        backgroundColor: "tomato",
+                <Button title= "Darn it, I lost!"
+                    onPress={ this.submitGame }
+                    buttonStyle={ {
+                        backgroundColor: 'tomato',
                         height: 45,
-                        borderColor: "transparent",
+                        borderColor: 'transparent',
                         marginTop: 8,
                         borderWidth: 0,
                         borderRadius: 5
-                        }}
+                        } }
                     />
                 <DropdownAlert
-                    ref={ref => this.dropdown = ref}
-                    onClose={data => this.onClose(data)} />
+                    ref={ ref => this.dropdown = ref }
+                    onClose={ data => this.onClose(data) } />
             </View>
         );
     }

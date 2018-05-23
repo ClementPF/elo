@@ -18,31 +18,31 @@ export default TabNavigator(
         TabFeed: {
             screen: stackNavFeed,
             navigationOptions: {
-                tabBarLabel: "Feeed",
+                tabBarLabel: 'Feed',
             }
         },
         TabUserProfile: {
             screen: stackNaveUserProfile,
             navigationOptions: {
-                tabBarLabel: "Me",
+                tabBarLabel: 'Me',
             }
         },
         TabGameForm: {
             screen: stackNavGameForm,
             navigationOptions: {
-                tabBarLabel: "Add Game",
+                tabBarLabel: 'Add Game',
             }
         },
         TabTournaments: {
             screen: stackNavTournaments,
             navigationOptions: {
-                tabBarLabel: "Tournaments",
+                tabBarLabel: 'Tournaments',
             }
         },
         TabSettings: {
             screen: stackNavSettings,
             navigationOptions: {
-                tabBarLabel: "Settings",
+                tabBarLabel: 'Settings',
             }
         }
     },
@@ -53,10 +53,7 @@ export default TabNavigator(
                 let iconName;
                 switch (routeName) {
                     case 'TabFeed':
-                        iconName =
-                        Platform.OS === 'ios'
-                            ? `ios-information-circle${ focused ? '' : '-outline' }`
-                            : 'md-information-circle';
+                        iconName = 'md-home';
                         break;
                     case 'TabTournaments':
                       iconName = 'ios-trophy';
@@ -82,12 +79,17 @@ export default TabNavigator(
             },
         }),
         tabBarOptions: {
-             activeTintColor: 'black',
+            style: {
+                backgroundColor: Colors.tabBar,
+                height: 55,
+                borderTopColor: 'white',
+            },
+             activeTintColor: Colors.tabIconSelected,
              showLabel: true,
         },
         tabBarComponent: TabBarBottom,
         tabBarPosition: 'bottom',
-        tabBarSelectedButtonColor: 'black',
+        tabBarSelectedButtonColor: Colors.tabIconSelected,
         animationEnabled: false,
         swipeEnabled: false,
     }

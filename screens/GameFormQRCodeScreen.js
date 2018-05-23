@@ -71,16 +71,16 @@ render() {
 
     console.log("QR Code obj : " + JSON.stringify(jsonObj));
     return (
-        <View style={{flex:1,
+        <View style={ {flex:1,
             backgroundColor:'white',
             justifyContent: 'center',
-            alignItems: 'center'}} >
+            alignItems: 'center'} } >
 
-                <View style={{
+                <View style={ {
                     width:'100%',
                     flexDirection: 'row',
                     alignItems: 'center',
-                marginTop: 8}}>
+                marginTop: 8} }>
 
                     <TournamentRow
                         tournament= { this.state.tournament.display_name }
@@ -91,8 +91,8 @@ render() {
                         icon={ {name: 'edit'} }
                         title= {'EDIT'}
                         buttonStyle= { {
-                        backgroundColor: "tomato",
-                        borderColor: "transparent",
+                        backgroundColor: 'tomato',
+                        borderColor: 'transparent',
                         borderWidth: 0,
                         borderRadius: 10
                         } }
@@ -102,22 +102,22 @@ render() {
                         }
                         />
                 </View>
-                <View style={{
+                <View style={ {
                     width:'100%',
                     height:1,
-                    backgroundColor: 'black',}}/>
+                    backgroundColor: 'black',} }/>
 
 
-            <View style={{flex:1,
+            <View style={ {flex:1,
             backgroundColor:'white',
             margin:8,
             justifyContent: 'center',
-            alignItems: 'center'}} >
+            alignItems: 'center'} } >
 
                 <Text style= { { 'margin':16,  'justifyContent' : 'center', 'textAlign' : 'center',
                 fontSize: 16,
                 fontWeight: 'bold',
-                color: 'black',} }> {this.state.text} </Text>
+                color: 'black',} }> { this.state.text} </Text>
 
                 <QRCode
                 value={JSON.stringify(jsonObj)}

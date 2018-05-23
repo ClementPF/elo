@@ -30,9 +30,9 @@ constructor(props) {
 }
 
 componentWillMount() {
-    var packageMod = require('../package.json');
+    let packageMod = require('../package.json');
     this.setState(
-        {'appVersion': packageMod.version + "b" + packageMod.buildNumber
+        {'appVersion': packageMod.version + 'b' + packageMod.buildNumber
     });
 }
 
@@ -40,7 +40,7 @@ _onPressRow = (rowID, rowData) => {
     logoutUser().then((response) => {
         this.navigateToLogin();
     }).catch((error) => {
-        console.log('User failed to log in ' + error);
+        this.onError('Failed to log out ' + error);
     });
 }
 
@@ -49,8 +49,8 @@ navigateToLogin() {
         index: 0,
         key: null,
         actions: [NavigationActions.navigate({routeName: 'Login'})]
-    })
-    this.props.navigation.dispatch(resetAction)
+    });
+    this.props.navigation.dispatch(resetAction);
 }
 
 onError = error => {
@@ -67,24 +67,24 @@ onClose(data) {
 
 render() {
     return (
-            <View style={{flex:1,
-                justifyContent: 'center', alignItems: 'center', }} >
+            <View style={ {flex:1,
+                justifyContent: 'center', alignItems: 'center', } } >
                 <StatusBar translucent={ false } barStyle="dark-content" />
                 <Text style= { { 'margin':16,  'justifyContent' : 'center', 'textAlign' : 'center',
                     fontSize: 16,
                     fontWeight: 'bold',
-                    color: 'white',} }> {this.state.text} </Text>
+                    color: 'white',} }> { this.state.text} </Text>
 
                 <Button
                   title="LOGOUT"
-                  titleStyle={ { fontWeight: "700" } }
+                  titleStyle={ { fontWeight: '700' } }
                   buttonStyle={ settingsStyle.button }
-                  onPress={ () => { this._onPressRow() } }
+                  onPress={ () => { this._onPressRow(); } }
                 />
-                <Text style= { {'textAlign' : 'center', color: 'white', position: 'absolute', bottom: 0, width: '100%'} }> { 'Version : ' + this.state.appVersion + (API_CONF.BASE_URL == API_CONF.BASE_LOCAL_URL ? "L" : "R")} </Text>
+                <Text style= { {'textAlign' : 'center', color: 'white', position: 'absolute', bottom: 0, width: '100%'} }> { 'Version : ' + this.state.appVersion + (API_CONF.BASE_URL == API_CONF.BASE_LOCAL_URL ? 'L' : 'R')} </Text>
                 <DropdownAlert
-                    ref={ref => this.dropdown = ref}
-                    onClose={data => this.onClose(data)} />
+                    ref={ ref => this.dropdown = ref }
+                    onClose={ data => this.onClose(data) } />
             </View>
         );
     }
@@ -92,15 +92,15 @@ render() {
 
 settingsStyle = StyleSheet.create({
     button: {
-        backgroundColor: "tomato",
+        backgroundColor: 'tomato',
         width: 300,
         height: 45,
-        borderColor: "transparent",
+        borderColor: 'transparent',
         borderWidth: 0,
         borderRadius: 5,
         margin: 8
     }
-})
+});
 
 const mapStateToProps = ({ userReducer }) => {
     //console.log('Settings - mapStateToProps userReducer:' + JSON.stringify(userReducer));

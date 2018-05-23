@@ -4,21 +4,19 @@ import {
     View,
     Text,
     SectionList,
-    FlatList,
     StatusBar,
     TouchableOpacity,
     RefreshControl,
     StyleSheet,
     ActivityIndicator
 } from 'react-native';
-import {Icon, List, ListItem, Button} from 'react-native-elements';
 import GameRow from '../components/GameRow';
 import UserStatRow from '../components/UserStatRow';
 import EmptyResultsButton from '../components/EmptyResultsButton';
-import Moment from 'moment';
 import { fetchUser, fetchGamesForUser } from '../redux/actions';
 import { invalidateData } from '../redux/actions/RefreshAction';
 import { connect } from 'react-redux';
+import DropdownAlert from 'react-native-dropdownalert';
 
 import {NavigationActions} from 'react-navigation';
 
@@ -28,10 +26,12 @@ class FeedScreen extends Component {
     static propTypes = {
         navigation: PropTypes.object,
         dispatch: PropTypes.func,
+        error: PropTypes.object,
         isDataStale: PropTypes.bool,
         games: PropTypes.array,
         user: PropTypes.object,
         fetchGamesForUser: PropTypes.func,
+        fetchUser: PropTypes.func,
     }
 
     static navigationOptions = ({navigation}) => {
@@ -50,54 +50,45 @@ class FeedScreen extends Component {
     }
 
     componentWillMount() {
-        console.log('FeedScreen - componentWillMount');
+        //console.log('FeedScreen - componentWillMount');
         this.props.fetchUser();
     }
 
     componentWillReceiveProps(nextProps) {
 
         if (nextProps.error && !this.props.error) {
-            this.props.alertWithType('error', 'Error', nextProps.error);
+            this._onError(nextProps.error);
         }
 
         if(this.props.user != nextProps.user && nextProps.user != null){
-            console.log('FeedScreen - componentWillReceiveProps ' + JSON.stringify(nextProps.user));
+            //console.log('FeedScreen - componentWillReceiveProps ' + JSON.stringify(nextProps.user));
             this.fetchData(nextProps.user.username);
         }
         if(this.props.games != nextProps.games && nextProps.games != null){
-            console.log('FeedScreen - componentWillReceiveProps ' + nextProps.games.length);
+            //console.log('FeedScreen - componentWillReceiveProps ' + nextProps.games.length);
             this.setState({games: nextProps.games});
         }
         if(nextProps.isDataStale == true){
-            console.log('FeedScreen - componentWillReceiveProps ' + JSON.stringify(nextProps.isDataStale));
+            //console.log('FeedScreen - componentWillReceiveProps ' + JSON.stringify(nextProps.isDataStale));
             this.fetchData(this.props.user.username);
         }
     }
 
     fetchData(username){
-
-            console.log('fetching data for  ' + JSON.stringify(username));
-
-        getStatsForUser(username).then((response) => {
+        //console.log('fetching data for  ' + JSON.stringify(username));
+        this.setState({loading: true});
+        Promise.all([
+            getStatsForUser(username).then((response) => {
                 this.setState({stats: response.data});
                 this.setState({refreshing: false});
                 this.setState({loading: false});
             }).catch((error) => {
-                console.log('failed to get stats for user ' + error);
-            }).done();
-
-            this.props.fetchGamesForUser(username);
-    }
-
-    textForGameResult(game) {
-        let player_one = game.outcomes[0].user_name;
-        let player_two = game.outcomes[1].user_name;
-        let result = game.outcomes[0].result;
-
-        let str = `${player_one} ${result} against ${player_two}`;
-        //var str = Moment(game.date).format('d MMM');
-
-        return str;
+                this._onError('failed to get stats for user ' + error);
+            }),
+            this.props.fetchGamesForUser(username)
+        ]).then(() => {
+                this.setState({loading: false, refreshing: false});
+        });
     }
 
     _renderItem = ({item, index}) => {
@@ -123,9 +114,21 @@ class FeedScreen extends Component {
 );
 
     _onRefresh() {
-        console.log('refreshing ')
+        //console.log('refreshing ')
         this.setState({refreshing: true});
         this.fetchData(this.props.user.username);
+    }
+
+    _onError = error => {
+        if (error) {
+            this.dropdown.alertWithType('error', 'Error', error);
+        }
+    };
+
+    _onClose(data) {
+        // data = {type, title, message, action}
+        // action means how the alert was closed.
+        // returns: automatic, programmatic, tap, pan or cancel
     }
 
     render() {
@@ -136,37 +139,51 @@ class FeedScreen extends Component {
             return (
                 <View style={ { flex: 1,
                     justifyContent: 'center'} }>
-                    <ActivityIndicator  size='small' color='white'/>
+                    <ActivityIndicator  size="small" color="white"/>
                 </View>
             );
         }
 
-      var sections = [
+        let sections = [
           { title: 'YOUR TOURNAMENTS', data: this.state.stats, renderItem: this._renderItemTournament },
           { title: 'YOUR HISTORY', data: this.state.games, renderItem: this._renderItemGame }
-      ];
-      sections = sections.filter(section => section.data.length > 0 );
+        ];
+        sections = sections.filter(section => section.data.length > 0 );
 
-
-        return (
-            <View
-                style = { feedScreenStyle.container }>
-                <StatusBar translucent={ false } barStyle="light-content" />
-                <SectionList
-                    style = { feedScreenStyle.list }
-                    keyExtractor={ (item, index) => item + index }
-                    renderItem={ ({ item, index, section }) => <Text key={ index }>{ item }</Text> }
-                    renderSectionHeader={ ({ section: { title } }) => <Text style={ searchableSectionList.sectionHeaderText }>{title}</Text> }
-                    sections={ sections }
-                    refreshing={ this.state.refreshing }
-                    onRefresh={ this._onRefresh.bind(this) }
-                    ListEmptyComponent={
-                        <EmptyResultsButton
-                            title= { 'Hey, welcome to the SHARKULATOR,\n Your feed is empty so far, \n go play a game, treat yourself,\n you deserve it Champ.' }
-                            onPress={ () => { this.props.navigation.navigate('Tournaments');} }/>
-                        }/>
-            </View>
-        );
+                if(this.state.loading){
+                    return (
+                        <View style={ { flex: 1,
+                            justifyContent: 'center'} }>
+                            <ActivityIndicator  size="small" color="white"/>
+                            <DropdownAlert
+                                ref={ ref => this.dropdown = ref }
+                                onClose={ data => this._onClose(data) } />
+                        </View>
+                    );
+                }else{
+                    return (
+                        <View
+                            style = { feedScreenStyle.container }>
+                            <StatusBar translucent={ false } barStyle="light-content" />
+                            <SectionList
+                                style = { feedScreenStyle.list }
+                                keyExtractor={ (item, index) => item + index }
+                                renderItem={ ({ item, index, section }) => <Text key={ index }>{ item }</Text> }
+                                renderSectionHeader={ ({ section: { title } }) => <Text style={ searchableSectionList.sectionHeaderText }>{title}</Text> }
+                                sections={ sections }
+                                refreshing={ this.state.refreshing }
+                                onRefresh={ this._onRefresh.bind(this) }
+                                ListEmptyComponent={
+                                    <EmptyResultsButton
+                                        title= { 'Hey, welcome to the SHARKULATOR,\n Your feed is empty so far, \n go play a game, treat yourself,\n you deserve it Champ.' }
+                                        onPress={ () => { this.props.navigation.navigate('Tournaments');} }/>
+                                    }/>
+                            <DropdownAlert
+                                ref={ ref => this.dropdown = ref }
+                                onClose={ data => this._onClose(data) } />
+                        </View>
+                    );
+                }
     }
 }
 
@@ -185,10 +202,10 @@ feedScreenStyle = StyleSheet.create({
         textAlign: 'center',
         backgroundColor: 'black'
     }
-})
+});
 
 const mapStateToProps = ({ userReducer, refreshReducer }) => {
-    console.log('FeedScreen - mapStateToProps userReducer:' + JSON.stringify(userReducer.user != null ? userReducer.user : 'userReducer') + ' refreshReducer : ' + JSON.stringify(refreshReducer));
+    //console.log('FeedScreen - mapStateToProps userReducer:' + JSON.stringify(userReducer.user != null ? userReducer.user : 'userReducer') + ' refreshReducer : ' + JSON.stringify(refreshReducer));
 
     // if(this.props != null){ // avoid NPE on first run
     // console.log('FeedScreen - mapStateToProps userReducer:' +
