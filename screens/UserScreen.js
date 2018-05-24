@@ -19,6 +19,7 @@ import EmptyResultsButton from '../components/EmptyResultsButton';
 import Moment from 'moment';
 import { getUser } from '../redux/actions';
 import { connect } from 'react-redux';
+import DropdownAlert from 'react-native-dropdownalert';
 import { invalidateData } from '../redux/actions/RefreshAction';
 import {NavigationActions} from 'react-navigation';
 
@@ -111,6 +112,9 @@ class UserScreen extends Component {
                 })
             ]).then(() => {
                 this.setState({loading: false, refreshing: false});
+            }).catch((error) => {
+                this.setState({loading: false, refreshing: false});
+                this._onError('failed to fetch page for user ' + error);
             });
     }
 
@@ -156,7 +160,7 @@ class UserScreen extends Component {
 
     _onRefresh() {
         this.setState({refreshing: true});
-        this.fetchData();
+        this.fetchData(this.state.userName, this.state.tournamentName);
     }
 
     _onError = error => {
@@ -177,6 +181,9 @@ class UserScreen extends Component {
                 <View style={ { flex: 1,
                     justifyContent: 'center'} }>
                     <ActivityIndicator  size="small" color="white"/>
+                    <DropdownAlert
+                        ref={ ref => this.dropdown = ref }
+                        onClose={ data => this._onClose(data) } />
                 </View>
             );
         }else{
@@ -207,6 +214,9 @@ class UserScreen extends Component {
                                 title="Havn't played yet, create a tournament or enter a game"
                                 onPress={ () => { this.props.navigation.navigate('Tournaments');} } />
                             }/>
+                <DropdownAlert
+                    ref={ ref => this.dropdown = ref }
+                    onClose={ data => this._onClose(data) } />
                 </View>
             );
         }

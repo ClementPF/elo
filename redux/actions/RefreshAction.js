@@ -5,14 +5,14 @@ import {
 
 export function invalidateData() {
   return function action(dispatch) {
-    //console.log('RefreshAction - action');
-    return invalidateDataSuccess();
+    //console.log('RefreshAction - action invalidateData');
+    return dispatch({ type: INVALIDATE_DATA });
 };
 }
 
 export function dataInvalidated() {
   return function action(dispatch) {
-    //console.log('RefreshAction - action');
+    //console.log('RefreshAction - action dataInvalidated');
     return dispatch({ type: DATA_INVALIDATED });
 };
 }
@@ -20,7 +20,7 @@ export function dataInvalidated() {
 export function invalidateDataSuccess() {
     //console.log('invalidateDataSuccess - action');
 	return {
-		type: DATA_INVALIDATED
+		type: INVALIDATE_DATA
 	};
 }
 
