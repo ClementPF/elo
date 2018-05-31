@@ -27,4 +27,11 @@ function getUsers() {
   return Axios.get(`${API_ENDPOINTS.USERS}`);
 }
 
-export {getUser, getTournamentsForUser, getStatsForUser, getGamesForUser, getUsers};
+function postPushToken(token) {
+  return Axios.post(`${API_ENDPOINTS.USER}/push`,
+      {
+          'value': token
+     });
+}
+
+export {getUser, getTournamentsForUser, getStatsForUser, getGamesForUser, getUsers, postPushToken};

@@ -5,7 +5,7 @@ import {SocialIcon} from 'react-native-elements';
 import {loginUserWithFacebook, loginUserWithGoogle, testTokenValidity, refreshToken} from '../api/login';
 import Axios from 'axios';
 import DropdownAlert from 'react-native-dropdownalert';
-
+import registerForPushNotificationsAsync from '../api/registerForPushNotificationsAsync';
 import { NavigationActions } from 'react-navigation';
 
 import {API_CONF, API_ENDPOINTS} from '../api/config.js';
@@ -50,8 +50,6 @@ class Login extends Component {
                     this.navigateToHome();
                 }).catch((error) => {
                     //this.onError('Previous session is invalid \n' + error);
-
-                    console.log('Previous session is invalid ');
                     refreshToken(tokens.refresh_token).then((response) => {
                         this.setState({
                             'loading': false
@@ -60,7 +58,7 @@ class Login extends Component {
                     }).catch((error) => {
                         //this.onError('Previous refresh is invalid \n' + error);
 
-                        console.log('Previous session is invalid ' + error);
+                        console.log('Previous session is invalid ' + JSON.stringify(error));
                         this.setState({
                             'loading': false
                         });
@@ -134,6 +132,7 @@ class Login extends Component {
         AsyncStorage.setItem('@Store:token', JSON.stringify(data));
 
         console.log('Storing ' + data);
+        registerForPushNotificationsAsync();
         this.navigateToHome();
     }
 

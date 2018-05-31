@@ -17,7 +17,7 @@ import { fetchUser, fetchGamesForUser } from '../redux/actions';
 import { invalidateData } from '../redux/actions/RefreshAction';
 import { connect } from 'react-redux';
 import DropdownAlert from 'react-native-dropdownalert';
-
+import {Notifications} from 'expo';
 import {NavigationActions} from 'react-navigation';
 
 import { getStatsForUser } from '../api/user';
@@ -54,6 +54,10 @@ class FeedScreen extends Component {
         this.props.fetchUser();
     }
 
+    componentDidMount() {
+        this._notificationSubscription = this._registerForPushNotifications();
+    }
+
     componentWillReceiveProps(nextProps) {
 
         if (nextProps.error && !this.props.error) {
@@ -73,6 +77,19 @@ class FeedScreen extends Component {
             this.fetchData(this.props.user.username);
         }
     }
+
+    componentWillUnmount() {
+        this._notificationSubscription && this._notificationSubscription.remove();
+    }
+
+    _registerForPushNotifications() {
+        // Watch for incoming notifications
+        this._notificationSubscription = Notifications.addListener(this._handleNotification);
+    }
+
+    _handleNotification = ({ origin, data }) => {
+        console.log(`Push notification ${origin} with data: ${JSON.stringify(data)}`);
+    };
 
     fetchData(username){
         //console.log('fetching data for  ' + JSON.stringify(username));

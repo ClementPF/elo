@@ -1,10 +1,14 @@
 import { Notifications } from 'expo';
 import React from 'react';
+import PropTypes from 'prop-types';
 import { StackNavigator } from 'react-navigation';
-
+import { View } from 'react-native';
 import LoginNavigator from './LoginNavigator';
 import MainTabNavigator from './MainTabNavigator';
 import registerForPushNotificationsAsync from '../api/registerForPushNotificationsAsync';
+import DropdownAlert from 'react-native-dropdownalert';
+import { invalidateData, dataInvalidated } from '../redux/actions/RefreshAction';
+import { connect } from 'react-redux';
 
 const RootStackNavigator = StackNavigator(
     {
@@ -18,7 +22,13 @@ const RootStackNavigator = StackNavigator(
     { headerMode: 'none' }
 );
 
-export default class RootNavigator extends React.Component {
+class RootNavigator extends React.Component {
+
+    static propTypes = {
+        invalidateData: PropTypes.func,
+        dataInvalidated: PropTypes.func,
+    };
+
     componentDidMount() {
         this._notificationSubscription = this._registerForPushNotifications();
     }
@@ -32,17 +42,42 @@ export default class RootNavigator extends React.Component {
         // You can comment the following line out if you want to stop receiving
         // a notification every time you open the app. Check out the source
         // for this function in api/registerForPushNotificationsAsync.js
-        registerForPushNotificationsAsync();
+
+        //registerForPushNotificationsAsync();
 
         // Watch for incoming notifications
         this._notificationSubscription = Notifications.addListener(this._handleNotification);
     }
 
-    _handleNotification = ({ origin, data }) => {
-        console.log(`Push notification ${origin} with data: ${JSON.stringify(data)}`);
+    _handleNotification = ({ origin, data, body }) => {
+        console.log(`Push notification RootNavigator ${JSON.stringify(body)} with data: ${JSON.stringify(data)}`);
+        this.dropdown.alertWithType('success', 'Well done champ!', data.message);
+
+        //if(data){
+            this.props.invalidateData();
+            this.props.dataInvalidated();
+        //}
     };
 
+    _onClose(data) {
+        // data = {type, title, message, action}
+        // action means how the alert was closed.
+        // returns: automatic, programmatic, tap, pan or cancel
+    }
+
     render() {
-        return <RootStackNavigator />;
+        return <View style= { { flex: 1} }>
+                    <RootStackNavigator />
+                    <DropdownAlert
+                        ref={ ref => this.dropdown = ref }
+                        onClose={ data => this._onClose(data) } />
+                </View>;
     }
 }
+
+const mapStateToProps = ({ refreshReducer }) => {
+        console.log('RootNavigator - mapStateToProps refreshReducer : ' + JSON.stringify(refreshReducer));
+        return { };
+};
+
+export default connect(mapStateToProps, { invalidateData, dataInvalidated })(RootNavigator);
