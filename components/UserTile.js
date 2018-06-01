@@ -10,17 +10,18 @@ export default class UserTile extends Component {
       name: PropTypes.string,
       wins: PropTypes.number,
       games: PropTypes.number,
+      onPress: PropTypes.func,
   }
 
   render = () => {
-    const { name, wins, games} = this.props;
+    const { name, wins, games, onPress} = this.props;
 
-    var initials = (name.charAt(0) + name.charAt(name.indexOf('-') + 1)).toUpperCase();
+    let initials = (name.charAt(0) + name.charAt(name.indexOf('-') + 1)).toUpperCase();
     return (
         <View style = { userTileStyle.container }>
             <View/>
             <Badge
-                value={wins}
+                value={ wins }
                 textStyle={ { color: 'white' } }
             />
             <Avatar
@@ -29,11 +30,11 @@ export default class UserTile extends Component {
                 //source={ {uri: "https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg"} }
                 title= { initials }
                 //icon={ {name: 'fish', color: 'tomato'} }
-                onPress={ () => console.log("Works!") }
-                activeOpacity={0.7}
+                onPress={ () => onPress() }
+                activeOpacity={ 0.7 }
             />
             <Badge
-                value={games}
+                value={ games }
                 textStyle={ { color: 'white' } }
             />
             <View/>

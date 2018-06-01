@@ -1,6 +1,6 @@
 import React, { Component }  from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, StatusBar, StyleSheet, TouchableOpacity, ActivityIndicator }  from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator }  from 'react-native';
 import { getTournaments }  from '../api/tournament';
 import { getTournamentsForUser }  from '../api/user';
 import TournamentRow from '../components/TournamentRow';

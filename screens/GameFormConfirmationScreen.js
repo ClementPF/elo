@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {View, Text, StatusBar} from 'react-native';
+import {View, Text } from 'react-native';
 import {Button, Card, ListItem} from 'react-native-elements';
 import {postGameForTournament} from '../api/tournament';
 import DropdownAlert from 'react-native-dropdownalert';

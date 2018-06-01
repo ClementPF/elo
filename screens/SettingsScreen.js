@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {View, Text, StyleSheet, StatusBar} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import {Button} from 'react-native-elements';
 import {logoutUser} from '../api/login';
 import DropdownAlert from 'react-native-dropdownalert';
@@ -69,7 +69,6 @@ render() {
     return (
             <View style={ {flex:1,
                 justifyContent: 'center', alignItems: 'center', } } >
-                <StatusBar translucent={ false } barStyle="dark-content" />
                 <Text style= { { 'margin':16,  'justifyContent' : 'center', 'textAlign' : 'center',
                     fontSize: 16,
                     fontWeight: 'bold',

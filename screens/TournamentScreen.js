@@ -1,6 +1,6 @@
 import React, { Component }  from 'react';
 import PropTypes from 'prop-types';
-import { View, StatusBar, Text, TouchableOpacity, SectionList, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, SectionList, ActivityIndicator } from 'react-native';
 import { Card} from 'react-native-elements';
 import GameRow from '../components/GameRow';
 import RankRow from '../components/RankRow';
@@ -136,7 +136,6 @@ class TournamentScreen extends Component {
 
               return (
                 <View style={ {flex: 1} }>
-                    <StatusBar translucent={ false } barStyle="light-content" />
                             <SectionList
                               style = { searchableSectionList.list }
                               keyExtractor={ ( item, index) => item + index }

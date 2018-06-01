@@ -4,7 +4,6 @@ import {
     View,
     Text,
     SectionList,
-    StatusBar,
     TouchableOpacity,
     RefreshControl,
     StyleSheet,
@@ -181,7 +180,6 @@ class FeedScreen extends Component {
                     return (
                         <View
                             style = { feedScreenStyle.container }>
-                            <StatusBar translucent={ false } barStyle="light-content" />
                             <SectionList
                                 style = { feedScreenStyle.list }
                                 keyExtractor={ (item, index) => item + index }

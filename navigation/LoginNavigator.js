@@ -18,7 +18,7 @@ export default StackNavigator(
     {
       navigationOptions: {
         header: () => null,
-        headerTitle: 'Login yo',
+        headerTitle: 'Login',
       }
     }
 );

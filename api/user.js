@@ -27,6 +27,15 @@ function getUsers() {
   return Axios.get(`${API_ENDPOINTS.USERS}`);
 }
 
+function challengeUser(challenger,challengee,message) {
+  return Axios.post(`${API_ENDPOINTS.USER}/${challengee}/challenge`,
+      {
+          'challenger':challenger,
+          'challengee':challengee,
+          'message': message
+     });
+}
+
 function postPushToken(token) {
   return Axios.post(`${API_ENDPOINTS.USER}/push`,
       {
@@ -34,4 +43,4 @@ function postPushToken(token) {
      });
 }
 
-export {getUser, getTournamentsForUser, getStatsForUser, getGamesForUser, getUsers, postPushToken};
+export {getUser, getTournamentsForUser, getStatsForUser, getGamesForUser, getUsers, postPushToken, challengeUser};

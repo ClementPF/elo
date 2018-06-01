@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import {
     View,
     Text,
-    StatusBar,
     StyleSheet,
     SectionList,
     TouchableOpacity

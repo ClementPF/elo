@@ -1,6 +1,6 @@
 import React, { Component }  from 'react';
 import PropTypes from 'prop-types';
-import { View, StatusBar, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Icon, Button , ListItem} from 'react-native-elements';
 import SearchableSectionList from '../components/SearchableSectionList';
 import EmptyResultsButton from '../components/EmptyResultsButton';

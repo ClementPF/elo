@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {
     View,
-    StatusBar,
     StyleSheet,
     ActivityIndicator
 } from 'react-native';
@@ -85,7 +84,6 @@ class BlankScreen extends Component {
             return (
                 <View
                     style = { UserScreenStyle.container }>
-                    <StatusBar translucent={ false } barStyle= "light-content" />
                     <DropdownAlert
                         ref={ ref => this.dropdown = ref }
                         onClose={ data => this._onClose(data) } />

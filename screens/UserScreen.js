@@ -5,7 +5,6 @@ import {
     Text,
     SectionList,
     FlatList,
-    StatusBar,
     TouchableOpacity,
     RefreshControl,
     StyleSheet,
@@ -23,7 +22,7 @@ import DropdownAlert from 'react-native-dropdownalert';
 import { invalidateData } from '../redux/actions/RefreshAction';
 import {NavigationActions} from 'react-navigation';
 
-import { getStatsForUser, getGamesForUser} from '../api/user';
+import { getStatsForUser, getGamesForUser, challengeUser} from '../api/user';
 
 class UserScreen extends Component {
     static propTypes = {
@@ -124,11 +123,16 @@ class UserScreen extends Component {
 
     _renderItemUser = ({item, index}) => (
 
-        <UserTile
-            name= { this.state.userName }
-            wins= { this.state.winCount }
-            games={ this.state.gameCount }
-        />);
+        <View>
+            <UserTile
+                name= { this.state.userName }
+                wins= { this.state.winCount }
+                games={ this.state.gameCount }
+                //onPress = { () => {console.log("plop")} }
+                onPress = { () => {
+                    challengeUser(this.props.user,this.state.userName,'I demand a trial by combat.'); } }
+            />
+        </View>);
 
 
     _renderItemGame = ({item, index}) => (
@@ -200,7 +204,6 @@ class UserScreen extends Component {
             return (
                 <View
                     style = { UserScreenStyle.container }>
-                    <StatusBar translucent={ false } barStyle= "light-content" />
                     <SectionList
                         style = { searchableSectionList.list }
                         keyExtractor={ (item, index) => item + index }

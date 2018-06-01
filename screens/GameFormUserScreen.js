@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {View, Text, StatusBar, StyleSheet, SectionList, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, SectionList, TouchableOpacity} from 'react-native';
 import {Button, SearchBar, Icon, ListItem} from 'react-native-elements';
 import SearchableFlatList from '../components/SearchableFlatList';
 import {getTournaments, getUsersForTournament} from '../api/tournament';
@@ -63,27 +63,27 @@ class GameFormUserScreen extends Component {
           });
         })
         .catch((error) => {
-          console.log('failed to get stats for user ' + error);
+          //console.log('failed to get stats for user ' + error);
         }).done();
   }
 
   handleChangeUserText = (text) => {
       this.props.winnerName = text;
-      this.setState({winnerName: text})
-      console.log(" handleChangeUserText " + this.props.winnerName);
+      this.setState( {winnerName: text} );
+      //console.log(" handleChangeUserText " + this.props.winnerName);
   };
 
   _onPressRow = (rowID, rowData)  => {
 
-   console.log("Selected user :" + rowID.username);
+   //console.log('Selected user :' + rowID.username);
 
-   this.props.navigation.navigate('GameFormConfirmation', { tournament: this.state.tournament , winner: rowID})
+   this.props.navigation.navigate('GameFormConfirmation', { tournament: this.state.tournament , winner: rowID});
  }
 
    _renderItem = ({item, i}) => (
 
        <TouchableOpacity
-       onPress={ this._onPressRow.bind(i, item)}>
+       onPress={ this._onPressRow.bind(i, item) }>
             <UserStatRow
                 tournament= { item.first_name + ' ' + item.last_name }
                 position= { 1 }
@@ -93,14 +93,14 @@ class GameFormUserScreen extends Component {
    );
 
   _onRefresh() {
-    console.log('refreshing ')
+    //console.log('refreshing ')
     this.setState({refreshing: true});
     this.loadLists();
 }
 
 
 render() {
-    var sections = [
+    let sections = [
     { title: 'TOP PLAYERS', data: this.state.topPlayers, renderItem: this._renderItem },
     { title: 'ALL PLAYERS', data: this.state.allPlayers, renderItem: this._renderItem },
     ];
@@ -109,21 +109,21 @@ render() {
     return (
         <View style={ {flex:1} } >
             <SearchBar
-                lightTheme={false}
-                onChangeText={ this.handleChangeUserText}
-                placeholder={ this.state.winnerName} />
+                lightTheme={ false }
+                onChangeText={ this.handleChangeUserText }
+                placeholder={ this.state.winnerName } />
 
             <SearchableSectionList
                 style = { feedScreenStyle.list }
                 data={ [...this.state.topPlayers, ...this.state.allPlayers] }
-                   searchProperty={"username"}
-                   searchTerm={ this.state.winnerName}
-                keyExtractor={ (item, index) => item + index}
-                renderItem={ ({ item, index, section }) => <Text key={index}>{item}</Text>}
-                renderSectionHeader={ ({ section: { title } }) => <Text style={ feedScreenStyle.sectionHeaderText }>{title}</Text>}
+                   searchProperty={ 'username' }
+                   searchTerm={ this.state.winnerName }
+                keyExtractor={ (item, index) => item + index }
+                renderItem={ ({ item, index, section }) => <Text key={ index }>{ item }</Text> }
+                renderSectionHeader={ ({ section: { title } }) => <Text style={ feedScreenStyle.sectionHeaderText }>{title}</Text> }
                 sections={ sections }
-                refreshing={ this.state.refreshing}
-                onRefresh={ this._onRefresh.bind(this)}
+                refreshing={ this.state.refreshing }
+                onRefresh={ this._onRefresh.bind(this) }
                 ListEmptyComponent={
                 <EmptyResultsButton
                 title="No player here ? Go find some people and tell them how great the sharkulator is."

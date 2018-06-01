@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {View, Image, Text, FlatList, StatusBar, AsyncStorage} from 'react-native';
+import {View, Image, Text, FlatList, AsyncStorage} from 'react-native';
 import {SocialIcon} from 'react-native-elements';
 import {loginUserWithFacebook, loginUserWithGoogle, testTokenValidity, refreshToken} from '../api/login';
 import Axios from 'axios';
@@ -170,9 +170,6 @@ class Login extends Component {
         }
         return (
             <View style= { { 'backgroundColor' : 'white', 'flex' : 1 } }>
-                <StatusBar
-                    translucent={ false }
-                    barStyle="dark-content"/>
                 <View
                     style= { {'justifyContent' : 'center', 'flex' : 4,
                 alignItems: 'center' } }>
