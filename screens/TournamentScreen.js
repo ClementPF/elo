@@ -58,14 +58,17 @@ class TournamentScreen extends Component {
     }
 
     _renderItemGame = ({item}) => (
-      <GameRow
-          name1= { item.outcomes[item.outcomes[0].result == 'WIN' ? 0 : 1].user_name }
-          name2= { item.outcomes[item.outcomes[0].result != 'WIN' ? 0 : 1].user_name }
-          tournament= { item.tournament_display_name }
-          result= { true }
-          value= { item.outcomes[0].score_value > 0 ? item.outcomes[0].score_value : item.outcomes[1].score_value }
-          date= { item.date }
-      />
+        <TouchableOpacity
+            onPress= { () => this.props.navigation.navigate('Game', { game: item } ) }>
+              <GameRow
+                  name1= { item.outcomes[item.outcomes[0].result == 'WIN' ? 0 : 1].user_name }
+                  name2= { item.outcomes[item.outcomes[0].result != 'WIN' ? 0 : 1].user_name }
+                  tournament= { item.tournament_display_name }
+                  result= { true }
+                  value= { item.outcomes[0].score_value > 0 ? item.outcomes[0].score_value : item.outcomes[1].score_value }
+                  date= { item.date }
+              />
+        </TouchableOpacity>
      );
 
     _renderItemRank = ({item, index}) => (

@@ -13,6 +13,7 @@ export default class EmptyResultsButton extends Component {
 
         return (
           <Button raised
+              style = { { marginTop: 10 } }
               title= { title }
               icon={ {name: 'add'} }
               buttonStyle= { {

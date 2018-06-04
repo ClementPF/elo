@@ -136,13 +136,17 @@ class UserScreen extends Component {
 
 
     _renderItemGame = ({item, index}) => (
-        <GameRow
-            name1= { item.outcomes[item.outcomes[0].result == 'WIN' ? 0 : 1].user_name }
-            name2= { item.outcomes[item.outcomes[0].result != 'WIN' ? 0 : 1].user_name }
-            tournament={ item.tournament.display_name }
-            result= { item.outcomes[item.outcomes[0].user_name == this.state.userName ? 0 : 1].score_value < 0 }
-            value= { item.outcomes[item.outcomes[0].user_name == this.state.userName ? 0 : 1].score_value }
-            date= { item.date }/>);
+        <TouchableOpacity
+            onPress= { () => this.props.navigation.navigate('Game', { game: item } ) }>
+            <GameRow
+                name1= { item.outcomes[item.outcomes[0].result == 'WIN' ? 0 : 1].user_name }
+                name2= { item.outcomes[item.outcomes[0].result != 'WIN' ? 0 : 1].user_name }
+                tournament={ item.tournament.display_name }
+                result= { item.outcomes[item.outcomes[0].user_name == this.state.userName ? 0 : 1].score_value < 0 }
+                value= { item.outcomes[item.outcomes[0].user_name == this.state.userName ? 0 : 1].score_value }
+                date= { item.date }/>
+        </TouchableOpacity>
+        );
 
     _renderItemStats = ({item, index}) => (
         <StatsCard
@@ -199,7 +203,7 @@ class UserScreen extends Component {
               { title: 'STATS', data: this.state.stats, renderItem: this._renderItemStats },
               { title: 'GAME HISTORY', data: this.state.games, renderItem: this._renderItemGame }
             ];
-            sections = sections.filter(section => section.data.length > 0);
+            sections = sections.filter(section => section.data!=null && section.data.length > 0);
 
             return (
                 <View

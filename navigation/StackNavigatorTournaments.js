@@ -7,6 +7,7 @@ import TournamentCreationScreen from '../screens/TournamentCreationScreen';
 import TournamentScreen from '../screens/TournamentScreen';
 import TournamentsScreen from '../screens/TournamentsScreen';
 import UserScreen from '../screens/UserScreen';
+import GameScreen from '../screens/GameScreen';
 
 const stackNav = StackNavigator({
     Tournaments: {
@@ -20,6 +21,9 @@ const stackNav = StackNavigator({
     },
     User: {
         screen: UserScreen
+    },
+    Game: {
+        screen: GameScreen
     }
     }
     ,

@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {View, Text} from 'react-native';
-import {Card} from 'react-native-elements'
-import {postGameForTournament, getUsersForTournament} from '../api/tournament'
+import {Card} from 'react-native-elements';
+import {postGameForTournament, getUsersForTournament} from '../api/tournament';
 import GameRow from '../components/GameRow';
 
 class GameFormResultScreen extends Component {
