@@ -150,7 +150,7 @@ class UserScreen extends Component {
 
     _renderItemStats = ({item, index}) => (
         <StatsCard
-            title= { item.tournament_display_name }
+            title= { item.tournament.display_name }
             name1= { 'Score' }
             value1= { item.score.toFixed(0) }
             name2= { 'Best Score' }

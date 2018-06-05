@@ -151,8 +151,4 @@ UserScreenStyle = StyleSheet.create({
     },
 });
 
-const mapStateToProps = ({ /*reducers*/ }) => {
-    return { /*props*/ };
-};
-
-export default connect(mapStateToProps, { /*actions*/ })(GameScreen);
+export default GameScreen;
