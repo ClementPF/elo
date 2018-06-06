@@ -10,16 +10,23 @@ export default class UserTile extends Component {
       name: PropTypes.string,
       wins: PropTypes.number,
       games: PropTypes.number,
+      active: PropTypes.boolean,
       onPress: PropTypes.func,
   }
 
   render = () => {
-    const { name, wins, games, onPress} = this.props;
+    const { name, wins, games, active, onPress} = this.props;
 
     let initials = (name.charAt(0) + name.charAt(name.indexOf('-') + 1)).toUpperCase();
     return (
         <View style = { userTileStyle.container }>
-            <View/>
+            <View style={ { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center'} }>
+                <Text style={ {
+                    fontSize: 92,
+                } }>
+                    { active ? '⚔️' : ' '}
+                </Text>
+            </View>
             <Badge
                 value={ wins }
                 textStyle={ { color: 'white' } }
@@ -37,7 +44,6 @@ export default class UserTile extends Component {
                 value={ games }
                 textStyle={ { color: 'white' } }
             />
-            <View/>
         </View>
         /*
         <ListItem

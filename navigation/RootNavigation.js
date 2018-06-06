@@ -50,7 +50,7 @@ class RootNavigator extends React.Component {
     }
 
     _handleNotification = ({ origin, data }) => {
-        this.dropdown.alertWithType('success', 'Well done champ!', data.message);
+        this.dropdown.alertWithType('success', data.title, data.message);
 
         //if(data){
             this.props.invalidateData();

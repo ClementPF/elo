@@ -50,7 +50,8 @@ class UserScreen extends Component {
                 games: [],
                 userName: params.userName,
                 tournamentName: params.tournamentName,
-                tournamentDisplayName: params.tournamentDisplayName
+                tournamentDisplayName: params.tournamentDisplayName,
+                challenged: false
             };
         }else{
             this.state = { //case of screen in Profile StackNavigator
@@ -128,9 +129,17 @@ class UserScreen extends Component {
                 name= { this.state.userName }
                 wins= { this.state.winCount }
                 games={ this.state.gameCount }
+                active = { this.state.challenged }
                 //onPress = { () => {console.log("plop")} }
                 onPress = { () => {
-                    challengeUser(this.props.user,this.state.userName,'I demand a trial by combat.'); } }
+                    challengeUser(this.props.user,this.state.userName,'I demand a trial by combat.').then(() => {
+                        this.setState({challenged: true});
+                    }).catch((error) => {
+                        this.setState({challenged: false});
+                        this._onError('Challenge failed, ' + this.state.userName + ' doesn\'t have push notification turned on.');
+                    });
+                }
+                }
             />
         </View>);
 
