@@ -163,6 +163,7 @@ class GameFormTournamentScreen extends Component {
                         ] }
                         refreshing={ this.state.refreshing }
                         onRefresh={ this._onRefresh.bind(this) }
+                        ItemSeparatorComponent={ () => <View style= { { height : 1 } } /> }
                         ListEmptyComponent={
                         <EmptyResultsButton
                         title="Cant' find what you're looking for? why don't you create a new tournament and start praying on some fishes"

@@ -32,7 +32,8 @@ class GameFormConfirmationScreen extends Component {
         super(props);
         this.state = {
             winner: props.navigation.state.params.winner,
-            tournament: props.navigation.state.params.tournament
+            tournament: props.navigation.state.params.tournament,
+            loading: false
         };
     }
 
@@ -42,6 +43,7 @@ class GameFormConfirmationScreen extends Component {
     submitGame = (text) => {
         //console.log("adding game for " + this.state.winner.username + " " + this.state.tournament.name + " " + this.props.user.username);
 
+        this.setState({loading: true});
         postGameForTournament(this.state.tournament.name, this.state.winner.username, this.props.user.username).then((response) => {
             //console.log(JSON.stringify(response.data.outcomes[0].score_value));
 
@@ -65,13 +67,15 @@ class GameFormConfirmationScreen extends Component {
             this.props.invalidateData();
             this.props.dataInvalidated();
         }).catch((error) => {
+            this.setState({loading: false});
             this.onError(error);
         }).done();
     };
 
     onError = error => {
-        //console.log('GameFormConfirmation - ' + JSON.stringify(error));
+        console.log('GameFormConfirmation - ' + JSON.stringify(error));
         if (error) {
+            //this.dropdown.alertWithType('error', 'Error', error.response.data.error_message);
             this.dropdown.alertWithType('error', 'Error', error.message);
         }
     };
@@ -100,7 +104,10 @@ class GameFormConfirmationScreen extends Component {
                         textAlignVertical: 'center'} }
                         > Winner : { this.state.winner.username} </Text>
                 </Card>
-                <Button title= "Darn it, I lost!"
+                <Button
+                    loading= { this.state.loading }
+                    disabled = { this.state.loading }
+                    title= "Darn it, I lost!"
                     onPress={ this.submitGame }
                     buttonStyle={ {
                         backgroundColor: 'tomato',

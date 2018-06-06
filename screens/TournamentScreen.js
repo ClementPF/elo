@@ -147,6 +147,8 @@ class TournamentScreen extends Component {
                               sections={ sections }
                               refreshing={ this.state.refreshing }
                               onRefresh={ this._onRefresh.bind(this) }
+                              ItemSeparatorComponent={ ({ section }) =>
+                                  <View style= { { height : section.title == 'RANKING' ? 1 : 8 } } /> }
                               ListEmptyComponent={
                                 <EmptyResultsButton
                                   title="No Games have been played for this tournament, let's change that."

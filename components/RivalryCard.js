@@ -135,7 +135,6 @@ export default class RivalryCard extends Component {
 rivalStatsCardStyle = StyleSheet.create({
     container: {
         padding: 8,
-        margin: 1,
         backgroundColor: 'white'
     }
 })

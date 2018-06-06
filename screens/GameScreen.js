@@ -131,7 +131,7 @@ class GameScreen extends Component {
                         name4= { 'Current ' + (rivalry.win_streak > 0 ? 'Winning' : (rivalry.lose_streak > 0 ? 'Losing' : (rivalry.tie_streak > 0 ? 'Tie' : ''))) + ' Streak' }
                         value1name4= { Math.max(rivalry.win_streak, rivalry.lose_streak, rivalry.tie_streak) }
                         value2name4= { Math.min(rivalry.win_streak, rivalry.lose_streak, rivalry.tie_streak) }
-                        name5= { 'Longuest Win Streak' }
+                        name5= { 'Longest Win Streak' }
                         value1name5= { rivalry.longuest_win_streak }
                         value2name5= { rivalry.longuest_lose_streak }
                     />

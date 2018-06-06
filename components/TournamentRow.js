@@ -35,7 +35,6 @@ export default class TournamentRow extends Component {
 stylesTournament = StyleSheet.create({
     container: {
         padding: 8,
-        margin: 1,
         flex: 1,
         height: 68,
         flexDirection: 'row',

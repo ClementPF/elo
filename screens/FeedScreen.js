@@ -7,7 +7,8 @@ import {
     TouchableOpacity,
     RefreshControl,
     StyleSheet,
-    ActivityIndicator
+    ActivityIndicator,
+    ItemSeparator
 } from 'react-native';
 import GameRow from '../components/GameRow';
 import UserStatRow from '../components/UserStatRow';
@@ -194,6 +195,8 @@ class FeedScreen extends Component {
                                 sections={ sections }
                                 refreshing={ this.state.refreshing }
                                 onRefresh={ this._onRefresh.bind(this) }
+                                ItemSeparatorComponent={ ({ section }) =>
+                                    <View style= { { height : section.title == 'RANKING' ? 1 : 8 } } /> }
                                 ListEmptyComponent={
                                     <EmptyResultsButton
                                         title= { 'Hey, welcome to the SHARKULATOR,\n Your feed is empty so far, \n go play a game, treat yourself,\n you deserve it Champ.' }

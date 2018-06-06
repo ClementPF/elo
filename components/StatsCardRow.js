@@ -30,7 +30,6 @@ export default class StatsCardRow extends Component {
 
 stylesCardsRow = StyleSheet.create({
   container: {
-      margin: 1,
       flex: 1,
       flexDirection: 'row',
       alignItems: 'center',

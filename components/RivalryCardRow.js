@@ -37,7 +37,6 @@ export default class RivalryCardRow extends Component {
 
 stylesCardsRow = StyleSheet.create({
   container: {
-      margin: 1,
       height: 30,
       flexDirection: 'row',
       alignItems: 'center',

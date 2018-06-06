@@ -50,7 +50,6 @@ class RootNavigator extends React.Component {
     }
 
     _handleNotification = ({ origin, data }) => {
-        console.log(`Push notification RootNavigator ${JSON.stringify(body)} with data: ${JSON.stringify(data)}`);
         this.dropdown.alertWithType('success', 'Well done champ!', data.message);
 
         //if(data){

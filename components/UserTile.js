@@ -59,7 +59,6 @@ userTileStyle = StyleSheet.create({
         height: 128,
         width: '100%',
         padding: 8,
-        margin: 1,
         flexDirection: 'row',
         backgroundColor: 'tomato',
         alignItems:'center',

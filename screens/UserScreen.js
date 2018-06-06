@@ -159,9 +159,9 @@ class UserScreen extends Component {
             value3= { item.game_count }
             name4= { 'Current ' + (item.win_streak > 0 ? 'Winning' : (item.lose_streak > 0 ? 'Losing' : (item.tie_streak > 0 ? 'Tie' : ''))) + ' Streak' }
             value4= { Math.max(item.win_streak, item.lose_streak, item.tie_streak) }
-            name5= { 'Longuest Winning Streak' }
+            name5= { 'Longest Winning Streak' }
             value5= { item.longuest_win_streak }
-            name6= { 'Longuest Losing Streak' }
+            name6= { 'Longest Losing Streak' }
             value6= { item.longuest_lose_streak }
         />
 );
@@ -207,7 +207,7 @@ class UserScreen extends Component {
 
             return (
                 <View
-                    style = { UserScreenStyle.container }>
+                    style = { {} }>
                     <SectionList
                         style = { searchableSectionList.list }
                         keyExtractor={ (item, index) => item + index }
@@ -216,6 +216,8 @@ class UserScreen extends Component {
                         sections={ sections }
                         refreshing={ this.state.refreshing }
                         onRefresh={ this._onRefresh.bind(this) }
+                        ItemSeparatorComponent={ ({ section }) =>
+                            <View style= { { height : section.title == 'RANKING' ? 1 : 8 } } /> }
                         ListEmptyComponent={
                             <EmptyResultsButton
                                 title="Havn't played yet, create a tournament or enter a game"

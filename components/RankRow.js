@@ -30,8 +30,6 @@ export default class RankRow extends Component {
 
 stylesRank = StyleSheet.create({
     container: {
-        padding: 8,
-        margin: 1,
         flex: 1,
         height: 48,
         flexDirection: 'row',
@@ -40,13 +38,14 @@ stylesRank = StyleSheet.create({
         backgroundColor: 'white'
     },
     scoreText: {
-        fontSize: 24,
+        fontSize: 58,
         fontWeight: 'bold',
-        color: 'grey',
+        color: 'lightgrey',
         textAlign: 'right'
     },
     nameText: {
         fontSize: 16,
+        marginLeft: 8,
         fontWeight: 'normal',
         color: 'grey',
         textAlign: 'left'

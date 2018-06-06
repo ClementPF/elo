@@ -29,8 +29,6 @@ export default class UserStatRow extends Component {
 
 stylesStats = StyleSheet.create({
     container: {
-        padding: 8,
-        margin: 1,
         flex: 1,
         height: 48,
         flexDirection: 'row',
@@ -39,13 +37,14 @@ stylesStats = StyleSheet.create({
         backgroundColor: 'white'
     },
     scoreText: {
-        fontSize: 24,
+        fontSize: 58,
         fontWeight: 'bold',
-        color: 'black',
+        color: 'lightgrey',
         textAlign: 'right'
     },
     tournamentText: {
         fontSize: 16,
+        marginLeft: 8,
         fontWeight: 'normal',
         color: 'black',
         textAlign: 'left'
