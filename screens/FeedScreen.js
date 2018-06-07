@@ -115,10 +115,10 @@ class FeedScreen extends Component {
         <TouchableOpacity
             onPress= { () => this.props.navigation.navigate('Game', { game: item } ) }>
             <GameRow
-                name1= { item.outcomes[item.outcomes[0].result == 'WIN' ? 0 : 1].user_name }
-                name2= { item.outcomes[item.outcomes[0].result != 'WIN' ? 0 : 1].user_name }
+                name1= { this.props.user.username }
+                name2= { item.outcomes[0].user_name == this.props.user.username ? item.outcomes[1].user_name : item.outcomes[0].user_name }
                 tournament={ item.tournament.display_name }
-                result= { item.outcomes[item.outcomes[0].user_name == this.props.user.username ? 0 : 1].score_value < 0 }
+                result= { item.outcomes[item.outcomes[0].user_name == this.props.user.username ? 1 : 0].score_value < 0 }
                 value= { item.outcomes[item.outcomes[0].user_name == this.props.user.username ? 0 : 1].score_value }
                 date= { item.date }
             />

@@ -68,7 +68,7 @@ export default class GameRow extends Component {
 
                         <Ionicons name="md-trophy"
                                 size={ 32 }
-                                color="gold"/>
+                                color= { result ? 'gold' : 'transparent' } />
                         <Avatar
                             medium
                             rounded
@@ -78,7 +78,7 @@ export default class GameRow extends Component {
                             activeOpacity={ 0.7 }
                             overlayContainerStyle={ {
                             borderWidth: 4,
-                            borderColor: 'gold' } }
+                            borderColor: result ? 'gold' : 'transparent' } }
                         />
 
                         <Text style={ styles.nameText }>
@@ -93,7 +93,7 @@ export default class GameRow extends Component {
                     <View style={ {flex: 2, flexDirection: 'column', alignItems: 'center'} }>
                         <Ionicons name="md-trophy"
                                 size={ 32 }
-                                color="transparent"/>
+                                color= { result ? 'transparent' : 'gold' }/>
                         <Avatar
                             medium
                             rounded
@@ -101,6 +101,9 @@ export default class GameRow extends Component {
                             title= { initials2 }
                             //icon={ {name: 'fish', color: 'tomato'} }
                             activeOpacity={ 0.7 }
+                            overlayContainerStyle={ {
+                            borderWidth: 4,
+                            borderColor: result ? 'transparent' : 'gold' } }
                         />
 
                         <Text style={ styles.nameText }>
@@ -161,6 +164,6 @@ styles = StyleSheet.create({
     scoreText: {
         fontSize: 200,
         fontWeight: 'bold',
-        color: 'lightgrey',
+        color: 'whitesmoke',
     }
 })

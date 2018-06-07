@@ -99,6 +99,7 @@ class GameScreen extends Component {
             let rivalry = this.state.rivalry;
 
             console.log('rivalry : ' + JSON.stringify(rivalry));
+            console.log('game : ' + JSON.stringify(game));
             return (
                 <View
                     style = { UserScreenStyle.container }>
@@ -106,7 +107,7 @@ class GameScreen extends Component {
                         name1= { game.outcomes[0].user_name }
                         name2= { game.outcomes[1].user_name }
                         tournament= { game.tournament.name }
-                        result= { game.outcomes[1].result == 'WIN' }
+                        result= { game.outcomes[0].win }
                         value= { game.outcomes[0].score_value }
                         date= { game.date }
                     />
