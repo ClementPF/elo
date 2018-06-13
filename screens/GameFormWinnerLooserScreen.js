@@ -69,6 +69,24 @@ class GameFormWinnerLooserScreen extends Component {
                 }
                 />
                 <Button
+                  title="TIED"
+                  titleStyle={ { fontWeight: '700' } }
+                  buttonStyle={ gameFormStyle.button }
+                  onPress={ () => {
+                    if (this.props.tournament != null) {
+                        this.props.navigation.navigate('GameFormTie', {
+                            tournament: this.props.tournament,
+                            winner: this.props.user,
+                            isWinner: true});
+                    }else {
+                        this.props.navigation.navigate('GameFormTournament', {
+                            winner: this.props.user,
+                            isWinner: true});
+                        }
+                    }
+                }
+                />
+                <Button
                   title="LOST"
                   titleStyle={ { fontWeight: '700' } }
                   buttonStyle={ gameFormStyle.button }

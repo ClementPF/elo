@@ -8,6 +8,7 @@ import StatsCardRow from './StatsCardRow';
 export default class UserTile extends Component {
   static propTypes = {
       name: PropTypes.string,
+      pictureUrl: PropTypes.string,
       wins: PropTypes.number,
       games: PropTypes.number,
       active: PropTypes.boolean,
@@ -15,7 +16,7 @@ export default class UserTile extends Component {
   }
 
   render = () => {
-    const { name, wins, games, active, onPress} = this.props;
+    const { name, pictureUrl, wins, games, active, onPress} = this.props;
 
     let initials = (name.charAt(0) + name.charAt(name.indexOf('-') + 1)).toUpperCase();
     return (
@@ -34,8 +35,8 @@ export default class UserTile extends Component {
             <Avatar
                 medium
                 rounded
-                //source={ {uri: "https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg"} }
                 title= { initials }
+                //source={ {uri: pictureUrl} }
                 //icon={ {name: 'fish', color: 'tomato'} }
                 onPress={ () => onPress() }
                 activeOpacity={ 0.7 }

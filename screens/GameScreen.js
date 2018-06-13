@@ -106,8 +106,9 @@ class GameScreen extends Component {
                     <GameRow
                         name1= { game.outcomes[0].user_name }
                         name2= { game.outcomes[1].user_name }
+                        result1= { game.outcomes[0].win }
+                        result2= { game.outcomes[1].win }
                         tournament= { game.tournament.name }
-                        result= { game.outcomes[0].win }
                         value= { game.outcomes[0].score_value }
                         date= { game.date }
                     />

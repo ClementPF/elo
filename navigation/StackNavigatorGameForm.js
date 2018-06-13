@@ -8,6 +8,7 @@ import GameFormWinnerLooserScreen from '../screens/GameFormWinnerLooserScreen';
 import GameFormQRCodeScreen from '../screens/GameFormQRCodeScreen';
 import GameFormQRScannerScreen from '../screens/GameFormQRScannerScreen';
 import GameFormResultScreen from '../screens/GameFormResultScreen';
+import GameFormTieScreen from '../screens/GameFormTieScreen';
 import GameFormConfirmationScreen from '../screens/GameFormConfirmationScreen';
 
 const stackNavGameForm = StackNavigator({
@@ -19,6 +20,9 @@ const stackNavGameForm = StackNavigator({
     },
     GameFormQRCode: {
         screen: GameFormQRCodeScreen
+    },
+    GameFormTie: {
+        screen: GameFormTieScreen
     },
     GameFormQRScanner: {
         screen: GameFormQRScannerScreen

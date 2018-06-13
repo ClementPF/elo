@@ -21,16 +21,16 @@ function getGamesForTournament(tournamentName) {
   return Axios.get(`${API_ENDPOINTS.TOURNAMENT}/${tournamentName}/games`);
 }
 
-function postGameForTournament(tournamentName, winnerName, looserName) {
+function postGameForTournament(tournamentName, winnerName, looserName, isTie) {
   return Axios.post(`${API_ENDPOINTS.TOURNAMENT}/${tournamentName}/games`,
       {
    'outcomes': [
      {
-       'result': 'WIN',
+       'result': isTie ? 'TIE' : 'WIN',
        'user_name': winnerName
      },
      {
-       'result': 'LOSS',
+       'result':  isTie ? 'TIE' : 'LOSS',
        'user_name': looserName
      }
    ],

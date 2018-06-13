@@ -150,6 +150,8 @@ class UserScreen extends Component {
             <GameRow
                 name1= { item.outcomes[1].user_name }
                 name2= { item.outcomes[0].user_name }
+                result1= { item.outcomes[1].win }
+                result2= { item.outcomes[0].win }
                 tournament={ item.tournament.display_name }
                 result= { item.outcomes[1].win }
                 value= { item.outcomes[item.outcomes[0].user_name == this.state.userName ? 0 : 1].score_value }

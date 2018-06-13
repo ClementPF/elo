@@ -8,7 +8,9 @@ import Moment from 'moment';
 export default class GameRow extends Component {
   static propTypes = {
     name1: PropTypes.string,
+    result1: PropTypes.bool,
     name2: PropTypes.string,
+    result2: PropTypes.bool,
     tournament: PropTypes.string,
     result: PropTypes.bool,
     value: PropTypes.number,
@@ -40,7 +42,7 @@ export default class GameRow extends Component {
   }
 
   render = () => {
-    const { name1, name2, tournament, result, value,  date} = this.props;
+    const { name1, name2, result1, result2, tournament, result, value,  date} = this.props;
 
     let strName1 = `${name1}`;
     let strName2 = `${name2}`;
@@ -68,7 +70,7 @@ export default class GameRow extends Component {
 
                         <Ionicons name="md-trophy"
                                 size={ 32 }
-                                color= { result ? 'gold' : 'transparent' } />
+                                color= { result1 ? 'gold' : 'transparent' } />
                         <Avatar
                             medium
                             rounded
@@ -78,7 +80,7 @@ export default class GameRow extends Component {
                             activeOpacity={ 0.7 }
                             overlayContainerStyle={ {
                             borderWidth: 4,
-                            borderColor: result ? 'gold' : 'transparent' } }
+                            borderColor: result1 ? 'gold' : 'transparent' } }
                         />
 
                         <Text style={ styles.nameText }>
@@ -93,7 +95,7 @@ export default class GameRow extends Component {
                     <View style={ {flex: 2, flexDirection: 'column', alignItems: 'center'} }>
                         <Ionicons name="md-trophy"
                                 size={ 32 }
-                                color= { result ? 'transparent' : 'gold' }/>
+                                color= { result2 ? 'gold' : 'transparent' }/>
                         <Avatar
                             medium
                             rounded
@@ -103,7 +105,7 @@ export default class GameRow extends Component {
                             activeOpacity={ 0.7 }
                             overlayContainerStyle={ {
                             borderWidth: 4,
-                            borderColor: result ? 'transparent' : 'gold' } }
+                            borderColor: result2 ? 'gold' : 'transparent' } }
                         />
 
                         <Text style={ styles.nameText }>
@@ -166,4 +168,4 @@ styles = StyleSheet.create({
         fontWeight: 'bold',
         color: 'whitesmoke',
     }
-})
+});

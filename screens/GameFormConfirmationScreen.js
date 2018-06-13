@@ -33,6 +33,7 @@ class GameFormConfirmationScreen extends Component {
         this.state = {
             winner: props.navigation.state.params.winner,
             tournament: props.navigation.state.params.tournament,
+            isTie: props.navigation.state.params.isTie,
             loading: false
         };
     }
@@ -44,7 +45,7 @@ class GameFormConfirmationScreen extends Component {
         //console.log("adding game for " + this.state.winner.username + " " + this.state.tournament.name + " " + this.props.user.username);
 
         this.setState({loading: true});
-        postGameForTournament(this.state.tournament.name, this.state.winner.username, this.props.user.username).then((response) => {
+        postGameForTournament(this.state.tournament.name, this.state.winner.username, this.props.user.username, this.state.isTie).then((response) => {
             //console.log(JSON.stringify(response.data.outcomes[0].score_value));
 
             const resetAction = NavigationActions.reset({
@@ -86,6 +87,10 @@ class GameFormConfirmationScreen extends Component {
         // returns: automatic, programmatic, tap, pan or cancel
     }
     render() {
+
+        let str =  (this.state.isTie ? 'Tied with' : 'Winner') + " " + this.state.winner.username;
+        let buttonStr =  (this.state.isTie ? 'We tied' : 'Darn it, I lost!');
+
         return (
             <View>
                 <Card title="SUMMARY">
@@ -102,12 +107,12 @@ class GameFormConfirmationScreen extends Component {
                         color: 'black',
                         textAlign: 'center',
                         textAlignVertical: 'center'} }
-                        > Winner : { this.state.winner.username} </Text>
+                        > { str } </Text>
                 </Card>
                 <Button
                     loading= { this.state.loading }
                     disabled = { this.state.loading }
-                    title= "Darn it, I lost!"
+                    title= { buttonStr }
                     onPress={ this.submitGame }
                     buttonStyle={ {
                         backgroundColor: 'tomato',
