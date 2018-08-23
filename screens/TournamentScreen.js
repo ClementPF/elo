@@ -61,8 +61,10 @@ class TournamentScreen extends Component {
         <TouchableOpacity
             onPress= { () => this.props.navigation.navigate('Game', { game: item } ) }>
               <GameRow
-                  name1= { item.outcomes[0].user_name }
-                  name2= { item.outcomes[1].user_name }
+                  name1= { item.outcomes[0].user.username }
+                  name2= { item.outcomes[1].user.username }
+                  pictureUrl1= { item.outcomes[0].user.picture_url }
+                  pictureUrl2= { item.outcomes[1].user.picture_url }
                   result1= { item.outcomes[0].win }
                   result2= { item.outcomes[1].win }
                   tournament= { item.tournament.display_name }
@@ -74,7 +76,7 @@ class TournamentScreen extends Component {
 
     _renderItemRank = ({item, index}) => (
         <TouchableOpacity
-            onPress= { () => this.props.navigation.navigate('User', { userStats: item, userName: item.user.username, tournamentName: item.tournament.name, tournamentDisplayName: item.tournament.display_name }) }>
+            onPress= { () => this.props.navigation.navigate('User', { /*userStats: item,*/ user: item.user, tournamentName: item.tournament.name, tournamentDisplayName: item.tournament.display_name }) }>
             <RankRow
                 name= { item.user.username }
                 position= { index + 1 }

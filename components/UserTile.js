@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Avatar,Badge } from 'react-native-elements';
+import { Badge } from 'react-native-elements';
 import PropTypes from 'prop-types';
 import Moment from 'moment';
 import StatsCardRow from './StatsCardRow';
+import AvatarCustom from './AvatarCustom';
 
 export default class UserTile extends Component {
   static propTypes = {
@@ -11,14 +12,17 @@ export default class UserTile extends Component {
       pictureUrl: PropTypes.string,
       wins: PropTypes.number,
       games: PropTypes.number,
-      active: PropTypes.boolean,
+      active: PropTypes.bool,
       onPress: PropTypes.func,
   }
 
   render = () => {
     const { name, pictureUrl, wins, games, active, onPress} = this.props;
+console.log("UserTile " + name + " " + pictureUrl);
 
-    let initials = (name.charAt(0) + name.charAt(name.indexOf('-') + 1)).toUpperCase();
+        if(name == null)
+            console.log("problem " + name);
+
     return (
         <View style = { userTileStyle.container }>
             <View style={ { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center'} }>
@@ -32,11 +36,11 @@ export default class UserTile extends Component {
                 value={ wins }
                 textStyle={ { color: 'white' } }
             />
-            <Avatar
+            <AvatarCustom
                 medium
                 rounded
-                title= { initials }
-                //source={ {uri: pictureUrl} }
+                name= { name }
+                pictureUrl={ pictureUrl }
                 //icon={ {name: 'fish', color: 'tomato'} }
                 onPress={ () => onPress() }
                 activeOpacity={ 0.7 }

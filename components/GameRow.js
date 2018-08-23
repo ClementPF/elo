@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Avatar } from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
 import PropTypes from 'prop-types';
 import Moment from 'moment';
+import AvatarCustom from './AvatarCustom';
 
 export default class GameRow extends Component {
   static propTypes = {
     name1: PropTypes.string,
+    pictureUrl1: PropTypes.string,
     result1: PropTypes.bool,
     name2: PropTypes.string,
     result2: PropTypes.bool,
+    pictureUrl2: PropTypes.string,
     tournament: PropTypes.string,
     result: PropTypes.bool,
     value: PropTypes.number,
@@ -42,13 +44,10 @@ export default class GameRow extends Component {
   }
 
   render = () => {
-    const { name1, name2, result1, result2, tournament, result, value,  date} = this.props;
+    const { name1, name2,pictureUrl1,pictureUrl2, result1, result2, tournament, result, value,  date} = this.props;
 
     let strName1 = `${name1}`;
     let strName2 = `${name2}`;
-
-    let initials1 = (name1.charAt(0) + name1.charAt(name1.indexOf('-') + 1)).toUpperCase();
-    let initials2 = (name2.charAt(0) + name2.charAt(name2.indexOf('-') + 1)).toUpperCase();
 
     return (
 
@@ -71,16 +70,13 @@ export default class GameRow extends Component {
                         <Ionicons name="md-trophy"
                                 size={ 32 }
                                 color= { result1 ? 'gold' : 'transparent' } />
-                        <Avatar
+
+                        <AvatarCustom
                             medium
                             rounded
-                            //source={ {uri: "https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg"} }
-                            title= { initials1 }
-                            //icon={ {name: 'trophy', color: 'tomato'} }
+                            name= { name1 }
+                            pictureUrl= { pictureUrl1 }
                             activeOpacity={ 0.7 }
-                            overlayContainerStyle={ {
-                            borderWidth: 4,
-                            borderColor: result1 ? 'gold' : 'transparent' } }
                         />
 
                         <Text style={ styles.nameText }>
@@ -96,12 +92,11 @@ export default class GameRow extends Component {
                         <Ionicons name="md-trophy"
                                 size={ 32 }
                                 color= { result2 ? 'gold' : 'transparent' }/>
-                        <Avatar
+                        <AvatarCustom
                             medium
                             rounded
-                            //source={ {uri: "https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg"} }
-                            title= { initials2 }
-                            //icon={ {name: 'fish', color: 'tomato'} }
+                            name= { name2 }
+                            pictureUrl= { pictureUrl2 }
                             activeOpacity={ 0.7 }
                             overlayContainerStyle={ {
                             borderWidth: 4,

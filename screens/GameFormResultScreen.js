@@ -24,9 +24,7 @@ class GameFormResultScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            game: props.navigation.state.params.game,
-            winner: props.navigation.state.params.winner,
-            tournament: props.navigation.state.params.tournament
+            game: props.navigation.state.params.game
         };
     }
 
@@ -38,8 +36,10 @@ class GameFormResultScreen extends Component {
             <View style={ {flex:1} }>
                 <Card title="RESULTS">
                     <GameRow
-                        name1= { this.state.game.outcomes[0].user_name }
-                        name2= { this.state.game.outcomes[1].user_name }
+                        name1= { this.state.game.outcomes[0].user.username }
+                        name2= { this.state.game.outcomes[1].user.username }
+                        pictureUrl1= { this.state.game.outcomes[0].user.picture_url }
+                        pictureUrl2= { this.state.game.outcomes[1].user.picture_url }
                         result1= { this.state.game.outcomes[0].win }
                         result2= { this.state.game.outcomes[1].win }
                         tournament= { this.state.game.tournament.name }

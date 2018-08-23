@@ -37,11 +37,21 @@ export default class StatsCard extends Component {
     value6: PropTypes.oneOfType([
               PropTypes.string,
               PropTypes.number
+            ]),
+    name7: PropTypes.string,
+    value7: PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.number
+          ]),
+    name8: PropTypes.string,
+    value8: PropTypes.oneOfType([
+              PropTypes.string,
+              PropTypes.number
             ])
   }
 
   render = () => {
-    const { title, name1, value1, name2, value2, name3, value3, name4, value4, name5, value5, name6, value6} = this.props;
+    const { title, name1, value1, name2, value2, name3, value3, name4, value4, name5, value5, name6, value6, name7, value7, name8, value8} = this.props;
 
     return (
 
@@ -70,6 +80,14 @@ export default class StatsCard extends Component {
             <StatsCardRow
                 name = { name6 }
                 value = { value6 }
+            />
+            <StatsCardRow
+                name = { name7 }
+                value = { value7 }
+            />
+            <StatsCardRow
+                name = { name8 }
+                value = { value8 }
             />
         </Card>
         /*

@@ -1,15 +1,18 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Card, Avatar } from 'react-native-elements';
+import { Card } from 'react-native-elements';
 import PropTypes from 'prop-types';
 import Moment from 'moment';
 import RivalryCardRow from './RivalryCardRow';
 import StatsCardRow from './StatsCardRow';
+import AvatarCustom from './AvatarCustom';
 
 export default class RivalryCard extends Component {
   static propTypes = {
     username1: PropTypes.string,
     username2: PropTypes.string,
+    pictureUrl1: PropTypes.string,
+    pictureUrl2: PropTypes.string,
     title: PropTypes.string,
     name1: PropTypes.string,
     value1name1: PropTypes.oneOfType([
@@ -60,6 +63,7 @@ export default class RivalryCard extends Component {
 
   render = () => {
     const { title, username1, username2,
+            pictureUrl1, pictureUrl2,
             name1, value1name1, value2name1,
             name2, value1name2, value2name2,
             name3, value1name3, value2name3,
@@ -77,21 +81,21 @@ export default class RivalryCard extends Component {
             <View style={ { flexDirection: 'row',
             justifyContent: 'space-between',} }>
                 <View/>
-                <Avatar
+                <AvatarCustom
                     medium
                     rounded
-                    //source={ {uri: "https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg"} }
-                    title= { initials1 }
+                    pictureUrl= { pictureUrl1 }
+                    name= { initials1 }
                     //icon={ {name: 'fish', color: 'tomato'} }
                     //onPress={ () => onPress() }
                     activeOpacity={ 0.7 }
                 />
                 <View/>
-                <Avatar
+                <AvatarCustom
                     medium
                     rounded
-                    //source={ {uri: "https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg"} }
-                    title= { initials2 }
+                    pictureUrl= { pictureUrl2 }
+                    name= { initials2 }
                     //icon={ {name: 'fish', color: 'tomato'} }
                     //onPress={ () => onPress() }
                     activeOpacity={ 0.7 }

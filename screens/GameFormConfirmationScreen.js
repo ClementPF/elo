@@ -31,8 +31,8 @@ class GameFormConfirmationScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            winner: props.navigation.state.params.winner,
-            tournament: props.navigation.state.params.tournament,
+            winnerName: props.navigation.state.params.winnerName,
+            tournamentName: props.navigation.state.params.tournamentName,
             isTie: props.navigation.state.params.isTie,
             loading: false
         };
@@ -42,10 +42,10 @@ class GameFormConfirmationScreen extends Component {
     }
 
     submitGame = (text) => {
-        //console.log("adding game for " + this.state.winner.username + " " + this.state.tournament.name + " " + this.props.user.username);
+        //console.log("adding game for " + this.state.winnerName + " " + this.state.tournamentName + " " + this.props.user.username);
 
         this.setState({loading: true});
-        postGameForTournament(this.state.tournament.name, this.state.winner.username, this.props.user.username, this.state.isTie).then((response) => {
+        postGameForTournament(this.state.tournamentName, this.state.winnerName, this.props.user.username, this.state.isTie).then((response) => {
             //console.log(JSON.stringify(response.data.outcomes[0].score_value));
 
             const resetAction = NavigationActions.reset({
@@ -55,8 +55,6 @@ class GameFormConfirmationScreen extends Component {
                 NavigationActions.navigate({
                   routeName: 'GameFormResult',
                   params : {
-                    tournament: this.state.tournament,
-                winner: this.state.winner,
                 game: response.data} })
               ]
           });
@@ -88,7 +86,7 @@ class GameFormConfirmationScreen extends Component {
     }
     render() {
 
-        let str =  (this.state.isTie ? 'Tied with' : 'Winner') + " " + this.state.winner.username;
+        let str =  (this.state.isTie ? 'Tied with' : 'Winner') + " " + this.state.winnerName;
         let buttonStr =  (this.state.isTie ? 'We tied' : 'Darn it, I lost!');
 
         return (
@@ -100,7 +98,7 @@ class GameFormConfirmationScreen extends Component {
                         color: 'black',
                         textAlign: 'center',
                         textAlignVertical: 'center'} }>
-                        Tournament : { this.state.tournament.display_name} </Text>
+                        Tournament : { this.state.tournament} </Text>
                     <Text style={ {
                         fontSize: 16,
                         fontWeight: 'normal',

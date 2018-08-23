@@ -5,6 +5,7 @@ import {Button} from 'react-native-elements';
 import {BarCodeScanner, Permissions} from 'expo';
 import DropdownAlert from 'react-native-dropdownalert';
 import TournamentRow from '../components/TournamentRow';
+import LZString from 'lz-string';
 
 export default class GameFormQRScannerScreen extends React.Component {
 
@@ -60,13 +61,17 @@ export default class GameFormQRScannerScreen extends React.Component {
         if (!this.state.qrCodeRead) {
             let jsonData = JSON.parse(data);
             this.setState({qrCodeRead: true});
-            if (jsonData.tournament.name != this.state.tournament.name) {
+
+            if (!jsonData.tournament || !jsonData.tournament.name || !jsonData.winner || !jsonData.winner.username) {
+                this.onError('It does not appear to be a valid QR code for the SHARKULATOR');
+            }
+            else if (jsonData.tournament.name != this.state.tournament.name) {
                 this.onError('It looks like you havn\'t selected the same tournament, get your fishes together guys!')
-            } else {
+            }else {
                 console.log(`Bar code with type ${type} and data ${data} !`);
                 this.props.navigation.navigate('GameFormConfirmation', {
-                    tournament: jsonData.tournament,
-                    winner: jsonData.winner
+                    tournamentName: jsonData.tournament.name,
+                    winnerName: jsonData.winner.username
                 })
             }
         }

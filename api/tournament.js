@@ -27,11 +27,15 @@ function postGameForTournament(tournamentName, winnerName, looserName, isTie) {
    'outcomes': [
      {
        'result': isTie ? 'TIE' : 'WIN',
-       'user_name': winnerName
+       'user': {
+           'username':winnerName
+       }
      },
      {
        'result':  isTie ? 'TIE' : 'LOSS',
-       'user_name': looserName
+       'user': {
+           'username':looserName
+       }
      }
    ],
    'tournament':{

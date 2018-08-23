@@ -12,6 +12,7 @@ import SearchableSectionList from '../components/SearchableSectionList';
 import QRCode from 'react-native-qrcode-svg';
 import { fetchUser, fetchGamesForUser } from '../redux/actions';
 import { connect } from 'react-redux';
+import LZString from 'lz-string';
 
 class GameFormQRCodeScreen extends Component {
 
@@ -66,8 +67,14 @@ returnData(data) {
 
 render() {
     let logoFromFile = require('../assets/images/icon.png');
-    let jsonObj = {'winner': this.props.user,
-                    'tournament': this.state.tournament};
+    let jsonObj = {
+            'winner': {
+                'username': this.props.user.username
+            },
+            'tournament': {
+                'name': this.state.tournament.name
+            }
+        };
 
     console.log("QR Code obj : " + JSON.stringify(jsonObj));
     return (
@@ -120,7 +127,8 @@ render() {
                 color: 'black',} }> { this.state.text} </Text>
 
                 <QRCode
-                value={JSON.stringify(jsonObj)}
+                //value={ JSON.stringify(LZString.compress(jsonObj)) }
+                value={ JSON.stringify(jsonObj) }
                 size={200}
                 logo = {logoFromFile}/>
             </View>

@@ -4,7 +4,10 @@ import {API_CONF, API_ENDPOINTS} from './config.js';
 
 function getStatsForUserForTournament(username,tournamentName) {
     console.log('getStatsForUserForTournament ' + username + tournamentName);
-    return Axios.get(`${API_ENDPOINTS.STATS}?userName=${username}&tournamentName=${tournamentName}`);
+    if(tournamentName)
+        return Axios.get(`${API_ENDPOINTS.STATS}?userName=${username}&tournamentName=${tournamentName}`);
+    else
+        return Axios.get(`${API_ENDPOINTS.STATS}?userName=${username}`);
 }
 
 function getRivalryForUserForRivalForTournament(username, rivalName, tournamentName) {

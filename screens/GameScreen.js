@@ -49,8 +49,8 @@ class GameScreen extends Component {
     fetchData (){
         Promise.all([
                 getRivalryForUserForRivalForTournament(
-                    this.state.game.outcomes[0].user_name,
-                    this.state.game.outcomes[1].user_name,
+                    this.state.game.outcomes[0].user.username,
+                    this.state.game.outcomes[1].user.username,
                     this.state.game.tournament.name).then((response) => {
                         this.setState({rivalry: response.data});
                 }).catch((error) => {
@@ -104,8 +104,10 @@ class GameScreen extends Component {
                 <View
                     style = { UserScreenStyle.container }>
                     <GameRow
-                        name1= { game.outcomes[0].user_name }
-                        name2= { game.outcomes[1].user_name }
+                        name1= { game.outcomes[0].user.username }
+                        name2= { game.outcomes[1].user.username }
+                        pictureUrl1= { game.outcomes[0].user.picture_url }
+                        pictureUrl2= { game.outcomes[1].user.picture_url }
                         result1= { game.outcomes[0].win }
                         result2= { game.outcomes[1].win }
                         tournament= { game.tournament.name }
@@ -121,6 +123,8 @@ class GameScreen extends Component {
                         title= { 'RIVALRY' }
                         username1= { rivalry.user.username }
                         username2= { rivalry.rival.username }
+                        pictureUrl1= { rivalry.user.picture_url }
+                        pictureUrl2= { rivalry.rival.picture_url }
                         name1= { 'Total Points' }
                         value1name1= { rivalry.score.toFixed(0) }
                         value2name1= { - rivalry.score.toFixed(0) }

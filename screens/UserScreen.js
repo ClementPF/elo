@@ -22,20 +22,22 @@ import DropdownAlert from 'react-native-dropdownalert';
 import { invalidateData } from '../redux/actions/RefreshAction';
 import {NavigationActions} from 'react-navigation';
 
-import { getStatsForUser, getGamesForUser, challengeUser} from '../api/user';
+import PureChart from 'react-native-pure-chart';
+import { getGamesForUser, getStatsForUser, challengeUser} from '../api/user';
+import { getStatsForUserForTournament} from '../api/stats';
 
 class UserScreen extends Component {
     static propTypes = {
         navigation: PropTypes.object,
         dispatch: PropTypes.func,
         error: PropTypes.object,
-        user: PropTypes.object,
-        isDataStale: PropTypes.bool,
+        user: PropTypes.object, // user logged in
+        isDataStale: PropTypes.bool
     }
 
     static navigationOptions = ({navigation}) => {
         const params = navigation.state.params;
-        return {title: params == null ? 'Your Profile' : params.userName,
+        return {title: params == null ? 'Your Profile' : params.user.username,
                 headerTintColor: 'white'};
     };
 
@@ -46,28 +48,33 @@ class UserScreen extends Component {
             this.state = { //case of screen in feed or tournaments StackNavigator
                 loading: true,
                 refreshing: false,
-                stats: Array(params.userStats),
+                //stats: Array(params.userStats),
                 games: [],
-                userName: params.userName,
+                user: params.user, // user to display
+                tournamentFilter: params.tournamentFilter,
                 tournamentName: params.tournamentName,
                 tournamentDisplayName: params.tournamentDisplayName,
-                challenged: false
+                challenged: false,
+                chartData : []
             };
         }else{
             this.state = { //case of screen in Profile StackNavigator
                 loading: true,
                 refreshing: false,
                 user: null,
-                userName: null,
+                chartData : []
             };
         }
     }
 
     componentWillMount() {
         //console.log('UserScreen - componentWillMount');
-        if(this.state.userName != null && this.state.tournamentName != null){
+        if(this.state.stats != null){
+            this.setState({loading: false, refreshing: false});
+        }
+        else if(this.state.user != null && this.state.tournamentName != null){
             //case of screen in feed or tournaments StackNavigator
-            this.fetchData(this.state.userName, this.state.tournamentName);
+            this.fetchData(this.state.user.username, this.state.tournamentName);
         }
     }
 
@@ -78,35 +85,61 @@ class UserScreen extends Component {
       }
       if(this.props.user != nextProps.user && nextProps.user != null){
           //console.log('UserScreen - componentWillReceiveProps ' + JSON.stringify(nextProps.user));
-          this.setState({user: nextProps.user, userName: nextProps.user.username});
+          this.setState({user: nextProps.user});
           this.fetchData(nextProps.user.username, this.state.tournamentName);
       }
       if(nextProps.isDataStale == true){
           //console.log('UserScreen - componentWillReceiveProps '' + nextProps.invalidateData == true ? ' invalidateData true' : ' invalidateData false');
-          this.fetchData(this.state.userName, this.state.tournamentName);
+          this.fetchData(this.state.username, this.state.tournamentName);
       }
     }
+
+
 
     fetchData (username, tournamentName){
 
         Promise.all([
-            getStatsForUser(username)
+            this.getStats(username,tournamentName)
                 .then((response) => {
                     let wins = 0;
                     let games = 0;
+
+                    if(!Array.isArray(response.data)) // convert a single obj into an array
+                        response.data = [response.data];
+
                     response.data.forEach(function(s) {
                          wins = wins + s.win_count;
                          games = games + s.game_count;
                     });
                     this.setState({stats: response.data,
                         gameCount: games,
-                        winCount: wins});})
+                        winCount: wins});
+                })
                 .catch((error) => {
                     this._onError('failed to get stats for user ' + error);
                 }),
             getGamesForUser(username, tournamentName)
                 .then((response) => {
-                    this.setState({games: response.data});})
+                    var temp = [];
+                    /*
+                    temp.push(response.data.map((elem) => {
+                        return {
+                            x: elem.date,
+                            y: elem.outcomes[elem.outcomes[0].user.username == this.state.user.username ? 0 : 1].score_value.toFixed(0)
+                        }
+                    }));*/
+
+                    temp.push(response.data.map((elem) => {
+                        return {
+                            x: Moment(elem.date).fromNow(false),
+                            y: parseInt(elem.outcomes[elem.outcomes[0].user.username == this.state.user.username ? 0 : 1].score_value.toFixed(0))
+                        }
+                    }));
+                    temp = temp[0];
+
+                    temp = temp.slice(temp.length - 30);
+                    this.setState({games: response.data,
+                                    chartData: temp });})
                 .catch((error) => {
                     this._onError('failed to get games for user ' + error);
                 })
@@ -118,28 +151,42 @@ class UserScreen extends Component {
             });
     }
 
+    // Encapsulate the two endpoints that are queried depending if the screen is used for the userProfile of for the detail of a user in tournmament
+    getStats(username,tournamentName){
+        if(tournamentName){
+             return getStatsForUserForTournament(username,tournamentName);
+        }else {
+             return getStatsForUser(username);
+        }
+    }
+
     _renderItem = ({item, index}) => {
         //console.log('UserScreen - _renderItem ' + index);
     }
 
-    _renderItemUser = ({item, index}) => (
+    _renderChart = ({ item, index}) => (
+        <PureChart
+            data={ item }
+            type='line' />
+        )
 
+    _renderItemUser = ({item, index}) => (
         <View>
             <UserTile
-                name= { this.state.userName }
+                name= { item.username }
+                pictureUrl= { item.picture_url == null ? undefined : item.picture_url }
                 wins= { this.state.winCount }
                 games={ this.state.gameCount }
                 active = { this.state.challenged }
                 //onPress = { () => {console.log("plop")} }
                 onPress = { () => {
-                    challengeUser(this.props.user,this.state.userName,'I demand a trial by combat.').then(() => {
+                    challengeUser(this.props.user,item.username,'I demand a trial by combat.').then(() => {
                         this.setState({challenged: true});
                     }).catch((error) => {
                         this.setState({challenged: false});
-                        this._onError('Challenge failed, ' + this.state.userName + ' doesn\'t have push notification turned on.');
+                        this._onError('Challenge failed, ' + item.username + ' doesn\'t have push notification turned on.');
                     });
-                }
-                }
+                }}
             />
         </View>);
 
@@ -148,13 +195,15 @@ class UserScreen extends Component {
         <TouchableOpacity
             onPress= { () => this.props.navigation.navigate('Game', { game: item } ) }>
             <GameRow
-                name1= { item.outcomes[1].user_name }
-                name2= { item.outcomes[0].user_name }
+                name1= { item.outcomes[1].user.username }
+                name2= { item.outcomes[0].user.username }
+                pictureUrl1= { item.outcomes[1].user.picture_url }
+                pictureUrl2= { item.outcomes[0].user.picture_url }
                 result1= { item.outcomes[1].win }
                 result2= { item.outcomes[0].win }
                 tournament={ item.tournament.display_name }
                 result= { item.outcomes[1].win }
-                value= { item.outcomes[item.outcomes[0].user_name == this.state.userName ? 0 : 1].score_value }
+                value= { item.outcomes[item.outcomes[0].user.username == this.state.user.username ? 0 : 1].score_value }
                 date= { item.date }/>
         </TouchableOpacity>
         );
@@ -174,12 +223,16 @@ class UserScreen extends Component {
             value5= { item.longuest_win_streak }
             name6= { 'Longest Losing Streak' }
             value6= { item.longuest_lose_streak }
+            name7= { 'The Freaking Shark' }
+            value7= { item.worst_rivalry == null ? "❌🦈" : (item.worst_rivalry.rival.username + " (" + item.worst_rivalry.score.toFixed(0) + ")")}
+            name8= { 'The Smelly Fish' }
+            value8= { item.best_rivalry == null ? "❌🎣" : (item.best_rivalry.rival.username + " (" + item.best_rivalry.score.toFixed(0) + ")")}
         />
 );
 
     _onRefresh() {
         this.setState({refreshing: true});
-        this.fetchData(this.state.userName, this.state.tournamentName);
+        this.fetchData(this.state.username, this.state.tournamentName);
     }
 
     _onError = error => {
@@ -208,9 +261,10 @@ class UserScreen extends Component {
         }else{
             const { navigate } = this.props.navigation;
             const rows = this.state.stats;
-            const userAsList = [this.props.user];
+            const userAsList = [this.state.user];
             let sections = [
               { title: null, data: userAsList, renderItem: this._renderItemUser },
+             // { title: 'CHARTS', data: [this.state.chartData], renderItem: this._renderChart },
               { title: 'STATS', data: this.state.stats, renderItem: this._renderItemStats },
               { title: 'GAME HISTORY', data: this.state.games, renderItem: this._renderItemGame }
             ];

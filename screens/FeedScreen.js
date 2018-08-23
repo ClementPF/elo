@@ -116,11 +116,13 @@ class FeedScreen extends Component {
             onPress= { () => this.props.navigation.navigate('Game', { game: item } ) }>
             <GameRow
                 name1= { this.props.user.username }
-                name2= { item.outcomes[0].user_name == this.props.user.username ? item.outcomes[1].user_name : item.outcomes[0].user_name }
-                result1= { item.outcomes[item.outcomes[0].user_name == this.props.user.username ? 0 : 1].win }
-                result2= { item.outcomes[item.outcomes[0].user_name == this.props.user.username ? 1 : 0].win }
+                name2= { item.outcomes[0].user.username == this.props.user.username ? item.outcomes[1].user.username : item.outcomes[0].user.username }
+                pictureUrl1= { this.props.user.picture_url }
+                pictureUrl2= { item.outcomes[0].user.username == this.props.user.username ? item.outcomes[1].user.picture_url : item.outcomes[0].user.picture_url }
+                result1= { item.outcomes[item.outcomes[0].user.username == this.props.user.username ? 0 : 1].win }
+                result2= { item.outcomes[item.outcomes[0].user.username == this.props.user.username ? 1 : 0].win }
                 tournament={ item.tournament.display_name }
-                value= { item.outcomes[item.outcomes[0].user_name == this.props.user.username ? 0 : 1].score_value }
+                value= { item.outcomes[item.outcomes[0].user.username == this.props.user.username ? 0 : 1].score_value }
                 date= { item.date }
             />
         </TouchableOpacity>

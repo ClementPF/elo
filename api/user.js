@@ -11,6 +11,10 @@ function getStatsForUser(username) {
   return Axios.get(`${API_ENDPOINTS.USER}/${username}/stats`);
 }
 
+function getRivalryStatsForUserForTournament(username,tournamentName) {
+  return Axios.get(`${API_ENDPOINTS.USER}/${username}/rivalry?tournamentName=${tournamentName}`);
+}
+
 function getGamesForUser(username,tournamentName) {
     console.log('getGamesForUser ' + username + tournamentName);
     if(tournamentName === undefined || tournamentName == null)
@@ -43,4 +47,4 @@ function postPushToken(token) {
      });
 }
 
-export {getUser, getTournamentsForUser, getStatsForUser, getGamesForUser, getUsers, postPushToken, challengeUser};
+export {getUser, getTournamentsForUser, getStatsForUser, getRivalryStatsForUserForTournament, getGamesForUser, getUsers, postPushToken, challengeUser};
