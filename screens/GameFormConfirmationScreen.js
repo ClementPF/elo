@@ -98,7 +98,7 @@ class GameFormConfirmationScreen extends Component {
                         color: 'black',
                         textAlign: 'center',
                         textAlignVertical: 'center'} }>
-                        Tournament : { this.state.tournament} </Text>
+                        Tournament : { this.state.tournamentName} </Text>
                     <Text style={ {
                         fontSize: 16,
                         fontWeight: 'normal',

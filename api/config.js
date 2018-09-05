@@ -13,6 +13,7 @@ const API_ENDPOINTS = {
   SPORTS : '/sports' ,
   STATS : '/stats' ,
   RIVALRY : '/rivalry' ,
+  RIVALRIES : '/rivalries' ,
 };
 
 export {API_CONF, API_ENDPOINTS};

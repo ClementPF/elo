@@ -24,7 +24,7 @@ import {NavigationActions} from 'react-navigation';
 
 import PureChart from 'react-native-pure-chart';
 import { getGamesForUser, getStatsForUser, challengeUser} from '../api/user';
-import { getStatsForUserForTournament} from '../api/stats';
+import { getStatsForUserForTournament, getRivalriesForUserForTournament} from '../api/stats';
 
 class UserScreen extends Component {
     static propTypes = {
@@ -118,28 +118,40 @@ class UserScreen extends Component {
                 .catch((error) => {
                     this._onError('failed to get stats for user ' + error);
                 }),
+            getRivalriesForUserForTournament(username,"testtournament")
+                .then((response) => {
+                    var temp = [];
+                    temp.push(response.data.map((elem) => {
+                        var rdmColor = 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')';
+                        return {
+                            value: -elem.score.toFixed(0),
+                            label: elem.rival.username,
+                            color: rdmColor
+                        }
+                    }));
+
+                    //temp = temp[0];
+                    this.setState({chartData: temp});
+                })
+                .catch((error) => {
+                    this._onError('failed to get rivalry for user ' + error);
+                }),
             getGamesForUser(username, tournamentName)
                 .then((response) => {
                     var temp = [];
-                    /*
-                    temp.push(response.data.map((elem) => {
-                        return {
-                            x: elem.date,
-                            y: elem.outcomes[elem.outcomes[0].user.username == this.state.user.username ? 0 : 1].score_value.toFixed(0)
-                        }
-                    }));*/
-
+/*
                     temp.push(response.data.map((elem) => {
                         return {
                             x: Moment(elem.date).fromNow(false),
                             y: parseInt(elem.outcomes[elem.outcomes[0].user.username == this.state.user.username ? 0 : 1].score_value.toFixed(0))
                         }
                     }));
+
+
                     temp = temp[0];
 
-                    temp = temp.slice(temp.length - 30);
-                    this.setState({games: response.data,
-                                    chartData: temp });})
+                    temp = temp.slice(temp.length - 30);*/
+                    this.setState({games: response.data });})
                 .catch((error) => {
                     this._onError('failed to get games for user ' + error);
                 })
@@ -160,15 +172,12 @@ class UserScreen extends Component {
         }
     }
 
-    _renderItem = ({item, index}) => {
-        //console.log('UserScreen - _renderItem ' + index);
-    }
-
     _renderChart = ({ item, index}) => (
-        <PureChart
-            data={ item }
-            type='line' />
-        )
+        <View>
+            <PureChart
+                data={ item[0] }
+                type='pie' />
+        </View>);
 
     _renderItemUser = ({item, index}) => (
         <View>
@@ -232,7 +241,7 @@ class UserScreen extends Component {
 
     _onRefresh() {
         this.setState({refreshing: true});
-        this.fetchData(this.state.username, this.state.tournamentName);
+        this.fetchData(this.state.user.username, this.state.tournamentName);
     }
 
     _onError = error => {
@@ -262,9 +271,10 @@ class UserScreen extends Component {
             const { navigate } = this.props.navigation;
             const rows = this.state.stats;
             const userAsList = [this.state.user];
+            const chartDataAsList = [this.state.chartData];
             let sections = [
               { title: null, data: userAsList, renderItem: this._renderItemUser },
-             // { title: 'CHARTS', data: [this.state.chartData], renderItem: this._renderChart },
+              //{ title: 'CHARTS', data: chartDataAsList, renderItem: this._renderChart },
               { title: 'STATS', data: this.state.stats, renderItem: this._renderItemStats },
               { title: 'GAME HISTORY', data: this.state.games, renderItem: this._renderItemGame }
             ];
