@@ -17,13 +17,10 @@ export default class GameFormQRScannerScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            tournament: props.navigation.state.params.tournament
+            tournament: props.navigation.state.params.tournament,
+            hasCameraPermission: null,
+            qrCodeRead: false
         };
-    }
-
-    state = {
-        hasCameraPermission: null,
-        qrCodeRead: false
     }
 
     async componentWillMount() {
@@ -62,16 +59,16 @@ export default class GameFormQRScannerScreen extends React.Component {
             let jsonData = JSON.parse(data);
             this.setState({qrCodeRead: true});
 
-            if (!jsonData.tournament || !jsonData.tournament.name || !jsonData.winner || !jsonData.winner.username) {
+            if (!jsonData.tournament || !jsonData.username) {
                 this.onError('It does not appear to be a valid QR code for the SHARKULATOR');
             }
-            else if (jsonData.tournament.name != this.state.tournament.name) {
+            else if (jsonData.tournament != this.state.tournament.name) {
                 this.onError('It looks like you havn\'t selected the same tournament, get your fishes together guys!')
             }else {
                 console.log(`Bar code with type ${type} and data ${data} !`);
                 this.props.navigation.navigate('GameFormConfirmation', {
-                    tournamentName: jsonData.tournament.name,
-                    winnerName: jsonData.winner.username
+                    tournamentName: jsonData.tournament,
+                    winnerName: jsonData.username
                 })
             }
         }
@@ -81,9 +78,24 @@ export default class GameFormQRScannerScreen extends React.Component {
         const {hasCameraPermission} = this.state;
 
         if (hasCameraPermission === null) {
-            return <Text>Requesting for camera permission</Text>;
+            return <View style={ {
+                flex:1,
+                backgroundColor:'white',
+                justifyContent: 'center',
+                alignItems: 'center',
+                padding:16} } >
+                <Text>Requesting for camera permission</Text>;
+            </View>
         } else if (hasCameraPermission === false) {
-            return <Text>No access to camera</Text>;
+            return <View style={ {
+                flex:1,
+                backgroundColor:'white',
+                justifyContent: 'center',
+                alignItems: 'center',
+                padding:16} } >
+                <Text>No access to camera, please go into the settings of your operating system and allow the SHARKULATOR to access the camera</Text>;
+
+            </View>
         } else {
             return (
                 <View style={ {

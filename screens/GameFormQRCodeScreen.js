@@ -68,12 +68,8 @@ returnData(data) {
 render() {
     let logoFromFile = require('../assets/images/icon.png');
     let jsonObj = {
-            'winner': {
-                'username': this.props.user.username
-            },
-            'tournament': {
-                'name': this.state.tournament.name
-            }
+                'username': 'clement-frequency',//this.props.user.username,
+            'tournament': this.state.tournament.name
         };
 
     console.log("QR Code obj : " + JSON.stringify(jsonObj));
@@ -125,12 +121,10 @@ render() {
                 fontSize: 16,
                 fontWeight: 'bold',
                 color: 'black',} }> { this.state.text} </Text>
-
                 <QRCode
-                //value={ JSON.stringify(LZString.compress(jsonObj)) }
                 value={ JSON.stringify(jsonObj) }
-                size={200}
-                logo = {logoFromFile}/>
+                //value={ JSON.stringify(jsonObj) }
+                size={200}/>
             </View>
         </View>
     );

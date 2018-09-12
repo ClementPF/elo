@@ -90,7 +90,7 @@ class UserScreen extends Component {
       }
       if(nextProps.isDataStale == true){
           //console.log('UserScreen - componentWillReceiveProps '' + nextProps.invalidateData == true ? ' invalidateData true' : ' invalidateData false');
-          this.fetchData(this.state.username, this.state.tournamentName);
+          this.fetchData(this.state.user.username, this.state.tournamentName);
       }
     }
 
@@ -189,6 +189,9 @@ class UserScreen extends Component {
                 active = { this.state.challenged }
                 //onPress = { () => {console.log("plop")} }
                 onPress = { () => {
+                    if(this.state.challenged){
+                        return;
+                    }
                     challengeUser(this.props.user,item.username,'I demand a trial by combat.').then(() => {
                         this.setState({challenged: true});
                     }).catch((error) => {
