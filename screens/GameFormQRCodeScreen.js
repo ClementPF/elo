@@ -68,7 +68,7 @@ returnData(data) {
 render() {
     let logoFromFile = require('../assets/images/icon.png');
     let jsonObj = {
-                'username': 'clement-frequency',//this.props.user.username,
+                'username': this.props.user.username,
             'tournament': this.state.tournament.name
         };
 
