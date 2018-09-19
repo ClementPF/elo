@@ -78,24 +78,12 @@ export default class GameFormQRScannerScreen extends React.Component {
         const {hasCameraPermission} = this.state;
 
         if (hasCameraPermission === null) {
-            return <View style={ {
-                flex:1,
-                backgroundColor:'white',
-                justifyContent: 'center',
-                alignItems: 'center',
-                padding:16} } >
-                <Text>Requesting for camera permission</Text>;
-            </View>
+            return
+                <Text style={{color: 'white'}}>Requesting for camera permission</Text>;
         } else if (hasCameraPermission === false) {
-            return <View style={ {
-                flex:1,
-                backgroundColor:'white',
-                justifyContent: 'center',
-                alignItems: 'center',
-                padding:16} } >
-                <Text>No access to camera, please go into the settings of your operating system and allow the SHARKULATOR to access the camera</Text>;
+            return
+                <Text style={{color: 'white'}} > No access to camera, please go into the settings of your operating system and allow the SHARKULATOR to access the camera</Text>;
 
-            </View>
         } else {
             return (
                 <View style={ {
