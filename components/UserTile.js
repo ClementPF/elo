@@ -33,9 +33,10 @@ console.log("UserTile " + name + " " + pictureUrl);
                 </Text>
             </View>
             <Badge
-                value={ wins }
-                textStyle={ { color: 'white' } }
+                value= { 'WINS \n' + wins }
+                textStyle={ userTileStyle.badgeTextStyle }
             />
+
             <AvatarCustom
                 medium
                 rounded
@@ -46,8 +47,8 @@ console.log("UserTile " + name + " " + pictureUrl);
                 activeOpacity={ 0.7 }
             />
             <Badge
-                value={ games }
-                textStyle={ { color: 'white' } }
+                value={ 'GAMES \n' + games }
+                textStyle={ userTileStyle.badgeTextStyle }
             />
         </View>
         /*
@@ -74,5 +75,9 @@ userTileStyle = StyleSheet.create({
         backgroundColor: 'tomato',
         alignItems:'center',
         justifyContent: 'space-between',
+    },
+    badgeTextStyle: {
+        color: 'white',
+        textAlign: 'center'
     }
 })
