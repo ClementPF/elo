@@ -67,7 +67,9 @@ export default class GameRow extends Component {
 
                     <View style={ {flex: 2, flexDirection: 'column', alignItems: 'center'} }>
 
-                        <Ionicons name="md-trophy"
+                        <Ionicons
+                                style= { { flex: 1 } }
+                                name="md-trophy"
                                 size={ 32 }
                                 color= { result1 ? 'gold' : 'transparent' } />
 
@@ -77,6 +79,8 @@ export default class GameRow extends Component {
                             name= { name1 }
                             pictureUrl= { pictureUrl1 }
                             activeOpacity={ 0.7 }
+                            borderWidth= { 4 }
+                            borderColor= { result1 ? 'gold' : 'transparent' }
                         />
 
                         <Text style={ styles.nameText }>
@@ -89,15 +93,21 @@ export default class GameRow extends Component {
                         </Text>
                     </View>
                     <View style={ {flex: 2, flexDirection: 'column', alignItems: 'center'} }>
-                        <Ionicons name="md-trophy"
+
+                        <Ionicons
+                                style= { { flex: 1 } }
+                                name="md-trophy"
                                 size={ 32 }
                                 color= { result2 ? 'gold' : 'transparent' }/>
+
                         <AvatarCustom
                             medium
                             rounded
                             name= { name2 }
                             pictureUrl= { pictureUrl2 }
                             activeOpacity={ 0.7 }
+                            borderWidth= { 4 }
+                            borderColor= { result2 ? 'gold' : 'transparent' }
                             overlayContainerStyle={ {
                             borderWidth: 4,
                             borderColor: result2 ? 'gold' : 'transparent' } }
@@ -145,7 +155,7 @@ styles = StyleSheet.create({
     },
     nameText: {
         fontSize: 16,
-        margin: 8,
+        margin: 0,
         fontWeight: 'normal',
         color: 'black',
         textAlign: 'center',

@@ -11,10 +11,15 @@ export default class AvatarCustom extends Component {
   }
 
   render = () => {
-    const { name, pictureUrl, onPress} = this.props;
+    const { name, pictureUrl, onPress, borderColor, borderWidth} = this.props;
 
     let initials = name == null ? "XX" : (name.charAt(0) + name.charAt(name.indexOf('-') + 1)).toUpperCase();
     return (
+        <View style={ {
+            padding: 6,
+            backgroundColor: borderColor,
+            borderRadius: 45,
+        } }>
         <Avatar
             { ...this.props }
             medium
@@ -25,6 +30,7 @@ export default class AvatarCustom extends Component {
             onPress={ onPress }
             activeOpacity={ 0.7 }
         />
+    </View>
     );
   }
 }
