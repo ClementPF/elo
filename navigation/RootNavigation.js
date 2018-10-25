@@ -31,6 +31,12 @@ class RootNavigator extends React.Component {
 
     componentDidMount() {
         this._notificationSubscription = this._registerForPushNotifications();
+
+        /*    var that = this;
+        setTimeout(function() {
+                var data = {title:"plop",message:"plopMess"};
+                that._handleNotification({origin:"",data:data});
+        }, 5000);*/
     }
 
     componentWillUnmount() {

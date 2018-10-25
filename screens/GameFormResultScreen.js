@@ -42,7 +42,8 @@ class GameFormResultScreen extends Component {
                         pictureUrl2= { this.state.game.outcomes[1].user.picture_url }
                         result1= { this.state.game.outcomes[0].win }
                         result2= { this.state.game.outcomes[1].win }
-                        tournament= { this.state.game.tournament.name }
+                        tournamentDisplayName={ this.state.game.tournament.display_name }
+                        tournamentName={ this.state.game.tournament.name }
                         value= { this.state.game.outcomes[0].score_value }
                         date= { this.state.game.date }
                     />

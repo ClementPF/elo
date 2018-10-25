@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Animated } from 'react-native';
+import AnimatedBar from './AnimatedBar';
 import PropTypes from 'prop-types';
 import Moment from 'moment';
 
@@ -15,19 +16,22 @@ export default class RivalryCardRow extends Component {
             PropTypes.number
           ])
   }
-
+  constructor(props) {
+      super(props);
+  }
 
   render = () => {
     const { name, value1, value2} = this.props;
       return (
-          <View style={ stylesCardsRow.container }>
-                  <Text style={ stylesCardsRow.valueText }>
+          <View style={ styleRivalryRow.container }
+                >
+                  <Text style={ styleRivalryRow.valueText }>
                       {  value1 }
                   </Text>
-                  <Text style={ stylesCardsRow.nameText }>
+                  <Text style={ styleRivalryRow.nameText }>
                       { name }
                   </Text>
-                  <Text style={ stylesCardsRow.valueText }>
+                  <Text style={ styleRivalryRow.valueText }>
                       {  value2 }
                   </Text>
         </View>
@@ -35,13 +39,12 @@ export default class RivalryCardRow extends Component {
     }
 }
 
-stylesCardsRow = StyleSheet.create({
+styleRivalryRow = StyleSheet.create({
   container: {
-      height: 30,
+      flex: 1,
       flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'space-between',
-      backgroundColor: 'white'
+      justifyContent: 'space-between'
   },
   nameText: {
       fontSize: 12,

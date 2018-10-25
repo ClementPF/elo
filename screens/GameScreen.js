@@ -110,7 +110,8 @@ class GameScreen extends Component {
                         pictureUrl2= { game.outcomes[1].user.picture_url }
                         result1= { game.outcomes[0].win }
                         result2= { game.outcomes[1].win }
-                        tournament= { game.tournament.name }
+                        tournamentDisplayName={ game.tournament.display_name }
+                        tournamentName={ game.tournament.name }
                         value= { game.outcomes[0].score_value }
                         date= { game.date }
                     />

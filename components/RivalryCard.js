@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { Card } from 'react-native-elements';
 import PropTypes from 'prop-types';
 import Moment from 'moment';
-import RivalryCardRow from './RivalryCardRow';
+import RivalryCardRows from './RivalryCardRows';
 import StatsCardRow from './StatsCardRow';
 import AvatarCustom from './AvatarCustom';
 
@@ -104,32 +104,23 @@ export default class RivalryCard extends Component {
             </View>
 
             <View style={ { padding : 16} }>
-                <RivalryCardRow
-                    name = { name1 }
-                    value1 = { value1name1 }
-                    value2 = { value2name1 }
+                <RivalryCardRows
+                    name1 = { name1 }
+                    value1name1 = { value1name1 }
+                    value2name1 = { value2name1 }
+                    name2 = { name2 }
+                    value1name2 = { value1name2 }
+                    value2name2 = { value2name2 }
+                    name3 = { name3 }
+                    value1name3 = { value1name3 }
+                    value2name3 = { value2name3 }
+                    name4 = { name4 }
+                    value1name4 = { value1name4 }
+                    value2name4 = { value2name4 }
+                    name5 = { name5 }
+                    value1name5 = { value1name5 }
+                    value2name5 = { value2name5 }
                 />
-                <RivalryCardRow
-                    name = { name2 }
-                    value1 = { value1name2 }
-                    value2 = { value2name2 }
-                />
-                <RivalryCardRow
-                    name = { name3 }
-                    value1 = { value1name3 }
-                    value2 = { value2name3 }
-                />
-                <RivalryCardRow
-                    name = { name4 }
-                    value1 = { value1name4 }
-                    value2 = { value2name4 }
-                />
-                <RivalryCardRow
-                    name = { name5 }
-                    value1 = { value1name5 }
-                    value2 = { value2name5 }
-                />
-
             </View>
         </Card>
     );

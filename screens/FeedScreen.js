@@ -12,9 +12,11 @@ import {
 } from 'react-native';
 import GameRow from '../components/GameRow';
 import UserStatRow from '../components/UserStatRow';
+import RivalryCard from '../components/RivalryCard';
 import EmptyResultsButton from '../components/EmptyResultsButton';
 import { fetchUser, fetchGamesForUser } from '../redux/actions';
 import { invalidateData } from '../redux/actions/RefreshAction';
+import {getRivalryForUserForRivalForTournament} from '../api/stats';
 import { connect } from 'react-redux';
 import DropdownAlert from 'react-native-dropdownalert';
 import {Notifications} from 'expo';
@@ -109,11 +111,54 @@ class FeedScreen extends Component {
     }
 
     _renderItem = ({item, index}) => {
+
+    }
+
+    _renderRivarlry = (rivalry,index) => {
+
+        return <RivalryCard
+            title= { 'RIVALRY' }
+            username1= { rivalry.user.username }
+            username2= { rivalry.rival.username }
+            pictureUrl1= { rivalry.user.picture_url }
+            pictureUrl2= { rivalry.rival.picture_url }
+            name1= { 'Total Points' }
+            value1name1= { rivalry.score.toFixed(0) }
+            value2name1= { - rivalry.score.toFixed(0) }
+            name2= { 'Game Count' }
+            value1name2= { rivalry.game_count }
+            value2name2= { rivalry.game_count }
+            name3= { 'Win Count' }
+            value1name3= { rivalry.win_count }
+            value2name3= { rivalry.lose_count }
+            name4= { 'Current ' + (rivalry.win_streak > 0 ? 'Winning' : (rivalry.lose_streak > 0 ? 'Losing' : (rivalry.tie_streak > 0 ? 'Tie' : ''))) + ' Streak' }
+            value1name4= { Math.max(rivalry.win_streak, rivalry.lose_streak, rivalry.tie_streak) }
+            value2name4= { Math.min(rivalry.win_streak, rivalry.lose_streak, rivalry.tie_streak) }
+            name5= { 'Longest Win Streak' }
+            value1name5= { rivalry.longuest_win_streak }
+            value2name5= { rivalry.longuest_lose_streak }
+        />
+    }
+
+    _insertRivalryAtIndex = (index) => {
+
+        getRivalryForUserForRivalForTournament(
+            this.state.games[index].outcomes[0].user.username,
+            this.state.games[index].outcomes[1].user.username,
+            this.state.games[index].tournament.name).then((response) => {
+                let games = this.state.games;
+                games.splice(index + 1, 0, response.data)
+                this.setState({games:games});
+        }).catch((error) => {
+            this._onError('failed to get tournaments : ' + error);
+        })
+
+        this.sectionList.scrollToLocation({'animated':true, 'itemIndex':index, 'sectionIndex': 1, 'viewOffset':48, 'viewPosition':0})
     }
 
     _renderItemGame = ({item, index}) => (
         <TouchableOpacity
-            onPress= { () => this.props.navigation.navigate('Game', { game: item } ) }>
+            onPress= { () => this.sectionList.scrollToLocation({'animated':true, 'itemIndex':index, 'sectionIndex': 1, 'viewOffset':48, 'viewPosition':0}) }>
             <GameRow
                 name1= { this.props.user.username }
                 name2= { item.outcomes[0].user.username == this.props.user.username ? item.outcomes[1].user.username : item.outcomes[0].user.username }
@@ -121,13 +166,34 @@ class FeedScreen extends Component {
                 pictureUrl2= { item.outcomes[0].user.username == this.props.user.username ? item.outcomes[1].user.picture_url : item.outcomes[0].user.picture_url }
                 result1= { item.outcomes[item.outcomes[0].user.username == this.props.user.username ? 0 : 1].win }
                 result2= { item.outcomes[item.outcomes[0].user.username == this.props.user.username ? 1 : 0].win }
-                tournament={ item.tournament.display_name }
+                tournamentDisplayName={ item.tournament.display_name }
+                tournamentName={ item.tournament.name }
                 value= { item.outcomes[item.outcomes[0].user.username == this.props.user.username ? 0 : 1].score_value }
                 date= { item.date }
             />
         </TouchableOpacity>
-        );
+    );
 
+    _renderGameSection = ({item, index}) => {
+        if(false)
+            return this._renderItemGame({item,index});
+        else {
+            if(typeof item.game_id !== 'undefined'){
+                return this._renderItemGame({item,index});
+            }else if (item.rivalry_stats_id !== 'undefined'){
+                return this._renderRivarlry(item,index);
+            }
+        }
+    }
+/*
+    _renderGameSection = ({item, index}) => {
+        if(typeof item.game_id !== 'undefined'){
+            return this._renderItemGame(item,index);
+        }else if (item.rivalry_stats_id !== 'undefined'){
+            return this._renderRivarlry(item);
+        }
+    }
+*/
     _renderItemTournament = ({item, index}) => (
         <TouchableOpacity
             onPress= { () => this.props.navigation.navigate('Tournament', { userStats: item,tournamentName: item.tournament.name, tournamentDisplayName: item.tournament.display_name}) }>
@@ -172,7 +238,7 @@ class FeedScreen extends Component {
 
         let sections = [
           { title: 'YOUR TOURNAMENTS', data: this.state.stats, renderItem: this._renderItemTournament },
-          { title: 'YOUR HISTORY', data: this.state.games, renderItem: this._renderItemGame }
+          { title: 'YOUR HISTORY', data: this.state.games, renderItem: this._renderGameSection }
         ];
         sections = sections.filter(section => section.data.length > 0 );
 
@@ -191,6 +257,7 @@ class FeedScreen extends Component {
                         <View
                             style = { feedScreenStyle.container }>
                             <SectionList
+                                ref={ ref => this.sectionList = ref }
                                 style = { feedScreenStyle.list }
                                 keyExtractor={ (item, index) => item + index }
                                 renderItem={ ({ item, index, section }) => <Text key={ index }>{ item }</Text> }
@@ -223,6 +290,7 @@ feedScreenStyle = StyleSheet.create({
     },
     sectionHeaderText: {
         padding: 8,
+        height: 48,
         fontSize: 28,
         fontWeight: 'normal',
         color: 'white',

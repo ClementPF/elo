@@ -23,6 +23,7 @@ import { invalidateData } from '../redux/actions/RefreshAction';
 import {NavigationActions} from 'react-navigation';
 
 import PureChart from 'react-native-pure-chart';
+//import {LineChart} from 'react-native-chart-kit';
 import { getGamesForUser, getStatsForUser, challengeUser} from '../api/user';
 import { getStatsForUserForTournament, getRivalriesForUserForTournament} from '../api/stats';
 
@@ -213,7 +214,8 @@ class UserScreen extends Component {
                 pictureUrl2= { item.outcomes[0].user.picture_url }
                 result1= { item.outcomes[1].win }
                 result2= { item.outcomes[0].win }
-                tournament={ item.tournament.display_name }
+                tournamentDisplayName={ item.tournament.display_name }
+                tournamentName={ item.tournament.name }
                 result= { item.outcomes[1].win }
                 value= { item.outcomes[item.outcomes[0].user.username == this.state.user.username ? 0 : 1].score_value }
                 date= { item.date }/>

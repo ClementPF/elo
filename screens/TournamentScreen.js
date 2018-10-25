@@ -67,7 +67,8 @@ class TournamentScreen extends Component {
                   pictureUrl2= { item.outcomes[1].user.picture_url }
                   result1= { item.outcomes[0].win }
                   result2= { item.outcomes[1].win }
-                  tournament= { item.tournament.display_name }
+                  tournamentDisplayName={ item.tournament.display_name }
+                  tournamentName={ item.tournament.name }
                   value= { item.outcomes[0].score_value > 0 ? item.outcomes[0].score_value : item.outcomes[1].score_value }
                   date= { item.date }
               />
