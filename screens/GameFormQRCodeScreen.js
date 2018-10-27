@@ -54,7 +54,7 @@ class GameFormQRCodeScreen extends Component {
 
       if(nextProps.games != null && nextProps.games.length > 0){
           this.setState(
-              { 'tournament':  this.props.games[0].tournament }
+              { 'tournament':  nextProps.games[0].tournament }
           );
       }
     }
