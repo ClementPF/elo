@@ -166,9 +166,6 @@ export default class GameRow extends Component {
                                     activeOpacity={ 0.7 }
                                     borderWidth= { 4 }
                                     borderColor= { result2 ? 'gold' : 'transparent' }
-                                    overlayContainerStyle={ {
-                                    borderWidth: 4,
-                                    borderColor: result2 ? 'gold' : 'transparent' } }
                                 />
 
                                 <Text style={ styles.nameText }>

@@ -74,7 +74,7 @@ spin () {
           transform: [{rotate: spin}] }}
           >
           <Avatar
-            { ...this.props }
+            //{ ...this.props }
             medium
             rounded
             title= { initials }

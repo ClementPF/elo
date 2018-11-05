@@ -14,6 +14,7 @@ import GameRow from '../components/GameRow';
 import UserStatRow from '../components/UserStatRow';
 import RivalryCard from '../components/RivalryCard';
 import EmptyResultsButton from '../components/EmptyResultsButton';
+import EmptyResultsScreen from '../components/EmptyResultsScreen';
 import { fetchUser, fetchGamesForUser } from '../redux/actions';
 import { invalidateData } from '../redux/actions/RefreshAction';
 import {getRivalryForUserForRivalForTournament} from '../api/stats';
@@ -99,8 +100,6 @@ class FeedScreen extends Component {
         Promise.all([
             getStatsForUser(username).then((response) => {
                 this.setState({stats: response.data});
-                this.setState({refreshing: false});
-                this.setState({loading: false});
             }).catch((error) => {
                 this._onError('failed to get stats for user ' + error);
             }),
@@ -137,7 +136,7 @@ class FeedScreen extends Component {
             name5= { 'Longest Win Streak' }
             value1name5= { rivalry.longuest_win_streak }
             value2name5= { rivalry.longuest_lose_streak }
-        />
+        />;
     }
 
     _insertRivalryAtIndex = (index) => {
@@ -147,13 +146,13 @@ class FeedScreen extends Component {
             this.state.games[index].outcomes[1].user.username,
             this.state.games[index].tournament.name).then((response) => {
                 let games = this.state.games;
-                games.splice(index + 1, 0, response.data)
+                games.splice(index + 1, 0, response.data);
                 this.setState({games:games});
         }).catch((error) => {
             this._onError('failed to get tournaments : ' + error);
-        })
+        });
 
-        this.sectionList.scrollToLocation({'animated':true, 'itemIndex':index, 'sectionIndex': 1, 'viewOffset':48, 'viewPosition':0})
+        this.sectionList.scrollToLocation({'animated':true, 'itemIndex':index, 'sectionIndex': 1, 'viewOffset':48, 'viewPosition':0});
     }
 
     _renderItemGame = ({item, index}) => (
@@ -225,64 +224,60 @@ class FeedScreen extends Component {
 
     render() {
         const { navigate } = this.props.navigation;
-        const rows = this.state.stats;
 
+        let section0 = { title: 'YOUR TOURNAMENTS', data: this.state.stats, renderItem: this._renderItemTournament };
+        let section1 = { title: 'YOUR HISTORY', data: this.state.games, renderItem: this._renderGameSection };
+        let sections = [ section0, section1 ];
+        sections = sections.filter(section => section.data.length > 0 );
+
+        let rendered = null;
         if(this.state.loading){
-            return (
-                <View style={ { flex: 1,
-                    justifyContent: 'center'} }>
+            rendered = (
                     <ActivityIndicator  size="small" color="white"/>
-                </View>
+            );
+        }else if(this.state.games.length == 0){
+            rendered = (
+                    <EmptyResultsScreen
+                        title= { 'Hey, welcome to the SHARKULATOR,\n Your feed is empty so far, \n go play a game, treat yourself,\n you deserve it Champ.' }
+                        onPress={ () => { this.props.navigation.navigate('Tournaments');} }/>
+                    )
+        }else{
+            rendered = (
+                    <SectionList
+                        ref={ ref => this.sectionList = ref }
+                        style = { feedScreenStyle.list }
+                        keyExtractor={ (item, index) => item + index }
+                        renderItem={ ({ item, index, section }) => <Text key={ index }>{ item }</Text> }
+                        renderSectionHeader={ ({ section: { title } }) => <Text style={ feedScreenStyle.sectionHeaderText }>{title}</Text> }
+                        sections={ sections }
+                        refreshing={ this.state.refreshing }
+                        onRefresh={ this._onRefresh.bind(this) }
+                        ItemSeparatorComponent={ ({ section }) =>
+                            <View style= { { height : section.title == 'RANKING' ? 1 : 8 } } /> }
+                        ListEmptyComponent={
+                            <EmptyResultsButton
+                                title= { 'Hey, welcome to the SHARKULATOR,\n Your feed is empty so far, \n go play a game, treat yourself,\n you deserve it Champ.' }
+                                onPress={ () => { this.props.navigation.navigate('Tournaments');} }/>
+                            }/>
             );
         }
 
-        let sections = [
-          { title: 'YOUR TOURNAMENTS', data: this.state.stats, renderItem: this._renderItemTournament },
-          { title: 'YOUR HISTORY', data: this.state.games, renderItem: this._renderGameSection }
-        ];
-        sections = sections.filter(section => section.data.length > 0 );
-
-                if(this.state.loading){
-                    return (
-                        <View style={ { flex: 1,
-                            justifyContent: 'center'} }>
-                            <ActivityIndicator  size="small" color="white"/>
-                            <DropdownAlert
-                                ref={ ref => this.dropdown = ref }
-                                onClose={ data => this._onClose(data) } />
-                        </View>
-                    );
-                }else{
-                    return (
-                        <View
-                            style = { feedScreenStyle.container }>
-                            <SectionList
-                                ref={ ref => this.sectionList = ref }
-                                style = { feedScreenStyle.list }
-                                keyExtractor={ (item, index) => item + index }
-                                renderItem={ ({ item, index, section }) => <Text key={ index }>{ item }</Text> }
-                                renderSectionHeader={ ({ section: { title } }) => <Text style={ feedScreenStyle.sectionHeaderText }>{title}</Text> }
-                                sections={ sections }
-                                refreshing={ this.state.refreshing }
-                                onRefresh={ this._onRefresh.bind(this) }
-                                ItemSeparatorComponent={ ({ section }) =>
-                                    <View style= { { height : section.title == 'RANKING' ? 1 : 8 } } /> }
-                                ListEmptyComponent={
-                                    <EmptyResultsButton
-                                        title= { 'Hey, welcome to the SHARKULATOR,\n Your feed is empty so far, \n go play a game, treat yourself,\n you deserve it Champ.' }
-                                        onPress={ () => { this.props.navigation.navigate('Tournaments');} }/>
-                                    }/>
-                            <DropdownAlert
-                                ref={ ref => this.dropdown = ref }
-                                onClose={ data => this._onClose(data) } />
-                        </View>
-                    );
-                }
+        return (
+            <View
+                style = { feedScreenStyle.container } >
+                {rendered}
+                <DropdownAlert
+                    ref={ ref => this.dropdown = ref }
+                    onClose={ data => this._onClose(data) } />
+            </View>);
     }
 }
 
 feedScreenStyle = StyleSheet.create({
     container: {
+        flex: 1,
+        backgroundColor: 'transparent',
+        justifyContent: 'center'
     },
     list: {
         marginRight: 8,
