@@ -86,7 +86,7 @@ export default class RivalryCard extends Component {
                     rounded
                     pictureUrl= { pictureUrl1 }
                     name= { initials1 }
-                    //icon={ {name: 'fish', color: 'tomato'} }
+                    //icon={ {name: 'fish', color: 'firebrick'} }
                     //onPress={ () => onPress() }
                     activeOpacity={ 0.7 }
                 />
@@ -96,7 +96,7 @@ export default class RivalryCard extends Component {
                     rounded
                     pictureUrl= { pictureUrl2 }
                     name= { initials2 }
-                    //icon={ {name: 'fish', color: 'tomato'} }
+                    //icon={ {name: 'fish', color: 'firebrick'} }
                     //onPress={ () => onPress() }
                     activeOpacity={ 0.7 }
                 />

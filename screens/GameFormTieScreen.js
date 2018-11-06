@@ -163,7 +163,7 @@ render() {
                         icon={ {name: 'edit'} }
                         title= {'EDIT'}
                         buttonStyle= { {
-                        backgroundColor: 'tomato',
+                        backgroundColor: 'firebrick',
                         borderColor: 'transparent',
                         borderWidth: 0,
                         borderRadius: 10
@@ -188,7 +188,7 @@ render() {
                     value={ JSON.stringify(jsonObj)}
                     size={ 200 }
                     logo = { logoFromFile }/>
-                    
+
                     <View style={ {
                         width:'100%',
                         height:8,

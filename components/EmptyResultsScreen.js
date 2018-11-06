@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Button } from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
 
-export default class EmptyResultsButton extends Component {
+export default class EmptyResultsScreen extends Component {
     static propTypes = {
       title: PropTypes.string,
       onPress: PropTypes.func
@@ -51,30 +51,30 @@ export default class EmptyResultsButton extends Component {
 
         return (
             <View
-                style={ [emptyButtonStyle.containerCallToAction, {flexDirection: 'column'} ] }>
-                <View style={ [emptyButtonStyle.arrow , {'backgroundColor' : 'transparent'}] }/>
+                style={ [emptyScreenStyle.containerCallToAction, {flexDirection: 'column'} ] }>
+                <View style={ [emptyScreenStyle.arrow , {'backgroundColor' : 'transparent'}] }/>
                 <Button raised
                     title= { title }
                     icon={ {name: 'add'} }
-                    buttonStyle= { emptyButtonStyle.callToActionButton }
+                    buttonStyle= { emptyScreenStyle.callToActionButton }
                     onPress={ onPress }
                 />
-                <View style={ emptyButtonStyle.arrow }/>
-                <View style={ [emptyButtonStyle.triangle] } />
+                <View style={ emptyScreenStyle.arrow }/>
+                <View style={ [emptyScreenStyle.triangle] } />
                 <Animated.View style={ {height: animationHeight} }/>
           </View>
         );
     }
 }
 
-emptyButtonStyle = StyleSheet.create({
+emptyScreenStyle = StyleSheet.create({
     containerCallToAction:{
         flex:1,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
     },callToActionButton:  {
-        backgroundColor: 'black',
+        backgroundColor: 'firebrick',
         borderColor: 'white',
         borderWidth: 2,
         borderRadius: 10

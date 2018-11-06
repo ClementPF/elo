@@ -97,7 +97,7 @@ class TournamentCreationScreen extends Component {
                 titleStyle={ { color: 'black' } }
                 onPress={ this._createTournament }
                 buttonStyle={ {
-                    backgroundColor: 'tomato',
+                    backgroundColor: 'firebrick',
                     marginTop: 16,
                     height: 45,
                     borderColor: 'transparent',

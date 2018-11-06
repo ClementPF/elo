@@ -104,6 +104,25 @@ class UserScreen extends Component {
                 .then((response) => {
                     let wins = 0;
                     let games = 0;
+                    debugger;
+                    console.log(JSON.stringify(response.data));
+                    if(response.data.length == 0){
+                        let emptyStats = {
+                            'tournament' : { 'display_name': 'tournament'},
+                            'score' : 1000,
+                            'best_score' : 1000,
+                            'game_count' : 0,
+                            'win_streak' : 0,
+                            'lose_streak' : 0,
+                            'tie_streak' : 0,
+                            'longuest_win_streak' : 0,
+                            'longuest_lose_streak' : 0,
+                            'worst_rivalry' : null,
+                            'best_rivalry' : null
+                        };
+                        response.data = [];
+                        response.data[0] = emptyStats;
+                    }
 
                     if(!Array.isArray(response.data)) // convert a single obj into an array
                         response.data = [response.data];
@@ -262,16 +281,10 @@ class UserScreen extends Component {
     }
 
     render() {
+
+        let rendered = null;
         if(this.state.loading){
-            return (
-                <View style={ { flex: 1,
-                    justifyContent: 'center'} }>
-                    <ActivityIndicator  size="small" color="white"/>
-                    <DropdownAlert
-                        ref={ ref => this.dropdown = ref }
-                        onClose={ data => this._onClose(data) } />
-                </View>
-            );
+            rendered = (<ActivityIndicator  size="small" color="white"/>);
         }else{
             const { navigate } = this.props.navigation;
             const rows = this.state.stats;
@@ -285,30 +298,33 @@ class UserScreen extends Component {
             ];
             sections = sections.filter(section => section.data!=null && section.data.length > 0);
 
-            return (
-                <View
-                    style = { {} }>
-                    <SectionList
-                        style = { searchableSectionList.list }
-                        keyExtractor={ (item, index) => item + index }
-                        renderItem={ ({ item, index, section }) => <Text key={ index }>{ item }</Text> }
-                        renderSectionHeader={ ({ section: { title } }) => title == null ? null : <Text style={ searchableSectionList.sectionHeaderText }>{title}</Text> }
-                        sections={ sections }
-                        refreshing={ this.state.refreshing }
-                        onRefresh={ this._onRefresh.bind(this) }
-                        ItemSeparatorComponent={ ({ section }) =>
-                            <View style= { { height : section.title == 'RANKING' ? 1 : 8 } } /> }
-                        ListEmptyComponent={
-                            <EmptyResultsButton
-                                title="Havn't played yet, create a tournament or enter a game"
-                                onPress={ () => { this.props.navigation.navigate('Tournaments');} } />
-                            }/>
+            rendered =  (
+                <SectionList
+                    style = { searchableSectionList.list }
+                    keyExtractor={ (item, index) => item + index }
+                    renderItem={ ({ item, index, section }) => <Text key={ index }>{ item }</Text> }
+                    renderSectionHeader={ ({ section: { title } }) => title == null ? null : <Text style={ searchableSectionList.sectionHeaderText }>{title}</Text> }
+                    sections={ sections }
+                    refreshing={ this.state.refreshing }
+                    onRefresh={ this._onRefresh.bind(this) }
+                    ItemSeparatorComponent={ ({ section }) =>
+                        <View style= { { height : section.title == 'RANKING' ? 1 : 8 } } /> }
+                    ListEmptyComponent={
+                        <EmptyResultsButton
+                            title="Havn't played yet, create a tournament or enter a game"
+                            onPress={ () => { this.props.navigation.navigate('Tournaments');} } />
+                        }/>
+            );
+        }
+
+        return (
+            <View
+                style = { feedScreenStyle.container } >
+                {rendered}
                 <DropdownAlert
                     ref={ ref => this.dropdown = ref }
                     onClose={ data => this._onClose(data) } />
-                </View>
-            );
-        }
+            </View>);
     }
 }
 

@@ -113,7 +113,7 @@ class GameFormConfirmationScreen extends Component {
                     title= { buttonStr }
                     onPress={ this.submitGame }
                     buttonStyle={ {
-                        backgroundColor: 'tomato',
+                        backgroundColor: 'firebrick',
                         height: 45,
                         borderColor: 'transparent',
                         marginTop: 8,

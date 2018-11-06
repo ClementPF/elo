@@ -1,4 +1,4 @@
-const tintColor = 'tomato';
+const tintColor = 'firebrick';
 
 export default {
   tintColor,

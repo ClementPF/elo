@@ -40,6 +40,6 @@ const styles = {
     height: 15,
     borderWidth: 1,
     borderColor: "white",
-    backgroundColor: "tomato"
+    backgroundColor: "firebrick"
   }
 };

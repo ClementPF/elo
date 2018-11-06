@@ -5,6 +5,7 @@ import { Card} from 'react-native-elements';
 import GameRow from '../components/GameRow';
 import RankRow from '../components/RankRow';
 import EmptyResultsButton from '../components/EmptyResultsButton';
+import EmptyResultsScreen from '../components/EmptyResultsScreen';
 import { connect } from 'react-redux';
 import DropdownAlert from 'react-native-dropdownalert';
 import { getStatsForTournament, getGamesForTournament } from '../api/tournament';
@@ -122,16 +123,18 @@ class TournamentScreen extends Component {
     }
 
     render() {
+
+        let rendered = null;
         if(this.state.loading){
-            return (
-                <View style={ { flex: 1,
-                    justifyContent: 'center'} }>
+            rendered = (
                     <ActivityIndicator  size="small" color="white"/>
-                    <DropdownAlert
-                        ref={ ref => this.dropdown = ref }
-                        onClose={ data => this._onClose(data) } />
-                </View>
             );
+          }else if(this.state.games.length == 0){
+              rendered = (
+                      <EmptyResultsScreen
+                          title= { 'No Games have been played for this tournament, let\'s change that.' }
+                          onPress={ () => { this.props.navigation.navigate('Tournaments');} }/>
+                      )
           }else{
               const userStats = this.state.userStats;
 
@@ -141,29 +144,31 @@ class TournamentScreen extends Component {
               ];
               sections = sections.filter(section => section.data.length > 0);
 
-              return (
-                <View style={ {flex: 1} }>
-                            <SectionList
-                              style = { searchableSectionList.list }
-                              keyExtractor={ ( item, index) => item + index }
-                              renderItem={ ({ item, index, section }) => <Text key={ index }>{ item }</Text> }
-                              renderSectionHeader={ ({ section: { title } }) => <Text style={ searchableSectionList.sectionHeaderText }>{title}</Text> }
-                              sections={ sections }
-                              refreshing={ this.state.refreshing }
-                              onRefresh={ this._onRefresh.bind(this) }
-                              ItemSeparatorComponent={ ({ section }) =>
-                                  <View style= { { height : section.title == 'RANKING' ? 1 : 8 } } /> }
-                              ListEmptyComponent={
-                                <EmptyResultsButton
-                                  title="No Games have been played for this tournament, let's change that."
-                                  onPress={ () => { this.props.navigation.navigate('GameFormWinnerLooser');} }/>
-                            }/>
-                    <DropdownAlert
-                        ref={ ref => this.dropdown = ref }
-                        onClose={ data => this._onClose(data) } />
-                </View>
+              rendered = (
+                <SectionList
+                  style = { searchableSectionList.list }
+                  keyExtractor={ ( item, index) => item + index }
+                  renderItem={ ({ item, index, section }) => <Text key={ index }>{ item }</Text> }
+                  renderSectionHeader={ ({ section: { title } }) => <Text style={ searchableSectionList.sectionHeaderText }>{title}</Text> }
+                  sections={ sections }
+                  refreshing={ this.state.refreshing }
+                  onRefresh={ this._onRefresh.bind(this) }
+                  ItemSeparatorComponent={ ({ section }) =>
+                      <View style= { { height : section.title == 'RANKING' ? 1 : 8 } } /> }
+                  ListEmptyComponent={
+                    <EmptyResultsButton
+                      title="No Games have been played for this tournament, let's change that."
+                      onPress={ () => { this.props.navigation.navigate('GameFormWinnerLooser');} }/>
+                }/>
             );
         }
+
+        return (<View style= { feedScreenStyle.container }>
+            {rendered}
+            <DropdownAlert
+                ref={ ref => this.dropdown = ref }
+                onClose={ data => this._onClose(data) } />
+        </View>);
     }
 }
 

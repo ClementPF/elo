@@ -42,7 +42,7 @@ console.log("UserTile " + name + " " + pictureUrl);
                 rounded
                 name= { name }
                 pictureUrl={ pictureUrl }
-                //icon={ {name: 'fish', color: 'tomato'} }
+                //icon={ {name: 'fish', color: 'firebrick'} }
                 onPress={ () => onPress() }
                 activeOpacity={ 0.7 }
             />
@@ -72,7 +72,7 @@ userTileStyle = StyleSheet.create({
         width: '100%',
         padding: 8,
         flexDirection: 'row',
-        backgroundColor: 'tomato',
+        backgroundColor: 'firebrick',
         alignItems:'center',
         justifyContent: 'space-between',
     },

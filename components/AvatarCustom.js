@@ -78,8 +78,8 @@ spin () {
             medium
             rounded
             title= { initials }
-            source={ pictureUrl == undefined ? undefined : {uri: pictureUrl} }
-            //icon={ {name: 'fish', color: 'tomato'} }
+            //source={ pictureUrl == undefined ? undefined : {uri: pictureUrl} }
+            //icon={ {name: 'fish', color: 'firebrick'} }
             onPress={ onPress }
             activeOpacity={ 0.7 }
         />

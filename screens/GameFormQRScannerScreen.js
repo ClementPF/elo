@@ -108,7 +108,7 @@ export default class GameFormQRScannerScreen extends React.Component {
                             icon={ {name: 'edit'} }
                             title= { 'EDIT' }
                             buttonStyle= { {
-                                backgroundColor: 'tomato',
+                                backgroundColor: 'firebrick',
                                 borderColor: 'transparent',
                                 borderWidth: 0,
                                 borderRadius: 10 } }

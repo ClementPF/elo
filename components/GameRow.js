@@ -230,7 +230,7 @@ styles = StyleSheet.create({
     VSText: {
         fontSize: 24,
         fontWeight: 'bold',
-        color: 'tomato',
+        color: 'firebrick',
         textAlign: 'center',
         textAlignVertical: 'center'
     },

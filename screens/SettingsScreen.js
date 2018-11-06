@@ -91,7 +91,7 @@ render() {
 
 settingsStyle = StyleSheet.create({
     button: {
-        backgroundColor: 'tomato',
+        backgroundColor: 'firebrick',
         width: 300,
         height: 45,
         borderColor: 'transparent',
