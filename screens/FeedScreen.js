@@ -266,6 +266,7 @@ class FeedScreen extends Component {
         />
       );
     } else {
+     rendered = (
         <SectionList
           ref={ref => (this.sectionList = ref)}
           style={feedScreenStyle.list}
@@ -278,15 +279,19 @@ class FeedScreen extends Component {
           refreshing={this.state.refreshing}
           onRefresh={this.onRefresh}
           onEndReached={this.onEndReached}
+          onEndReachedThreshold={1.5}
           ItemSeparatorComponent={({ section }) => (
             <View style={{ height: section.title == 'RANKING' ? 1 : 8 }} />
           )}
           ListEmptyComponent={
             <EmptyResultsButton
+              title={
                 'Hey, welcome to the SHARKULATOR,\n Your feed is empty so far, \n go play a game, treat yourself,\n you deserve it Champ.'
               }
+              onPress={() => {
                 this.props.navigation.navigate('Tournaments');
               }}
+            />
           }
           ListFooterComponent={
             this.state.endReached && (
