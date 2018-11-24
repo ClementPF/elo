@@ -381,7 +381,7 @@ class UserScreen extends Component {
           refreshing={refreshing}
           onRefresh={this.onRefresh}
           onEndReached={this.onEndReached}
-          onEndReachedThreshold={(pageCount * pageSize) / games.length}
+          onEndReachedThreshold={1.5}
           ItemSeparatorComponent={({ section }) => (
             <View style={{ height: section.title == 'RANKING' ? 1 : 8 }} />
           )}

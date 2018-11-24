@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, TouchableOpacity, SectionList, ActivityIndicator } from 'react-native';
 import { Card } from 'react-native-elements';
+import { connect } from 'react-redux';
+import DropdownAlert from 'react-native-dropdownalert';
+import { NavigationActions } from 'react-navigation';
 import GameRowContainer from '../containers/GameRowContainer';
 import RankRow from '../components/RankRow';
 import EmptyResultsButton from '../components/EmptyResultsButton';
 import EmptyResultsScreen from '../components/EmptyResultsScreen';
-import { connect } from 'react-redux';
-import DropdownAlert from 'react-native-dropdownalert';
 import { getStatsForTournament, getGamesForTournament } from '../api/tournament';
-import { NavigationActions } from 'react-navigation';
 
 import { invalidateData } from '../redux/actions/RefreshAction';
 
@@ -48,16 +48,17 @@ class TournamentScreen extends Component {
   }
 
   componentWillMount() {
-    //console.log("componentWillMount for tournament " + this.state.tournamentName);
+    // console.log("componentWillMount for tournament " + this.state.tournamentName);
     this.fetchData(this.state.tournamentName);
   }
+
   componentWillReceiveProps(nextProps) {
-    //console.log("TournamentScreen - componentWillReceiveProps " + JSON.stringify(nextProps));
+    // console.log("TournamentScreen - componentWillReceiveProps " + JSON.stringify(nextProps));
     if (nextProps.error && !this.props.error) {
       this.onError(nextProps.error);
     }
     if (nextProps.isDataStale == true) {
-      //console.log("TournamentScreen - componentWillReceiveProps " + nextProps.invalidateData == true ? ' invalidateData true': ' invalidateData false');
+      // console.log("TournamentScreen - componentWillReceiveProps " + nextProps.invalidateData == true ? ' invalidateData true': ' invalidateData false');
       this.fetchData(this.state.tournamentName);
     }
   }
@@ -72,7 +73,7 @@ class TournamentScreen extends Component {
     <TouchableOpacity
       onPress={() =>
         this.props.navigation.navigate('User', {
-          /*userStats: item,*/ user: item.user,
+          /* userStats: item, */ user: item.user,
           tournamentName: item.tournament.name,
           tournamentDisplayName: item.tournament.display_name
         })
@@ -82,14 +83,14 @@ class TournamentScreen extends Component {
     </TouchableOpacity>
   );
 
-  fetchData = (tournamentName) => {
+  fetchData = tournamentName => {
     Promise.all([
       getStatsForTournament(tournamentName)
         .then(response => {
           this.setState({ stats: response.data });
         })
         .catch(error => {
-          this.onError('failed to get stats for tournament : ' + +error);
+          this.onError(`failed to get stats for tournament : ${+error}`);
         }),
       getGamesForTournament(tournamentName, this.state.pageCount, this.state.pageSize)
         .then(response => {
@@ -99,28 +100,28 @@ class TournamentScreen extends Component {
           });
         })
         .catch(error => {
-          this.onError('failed to get games for tournament : ' + +error);
+          this.onError(`failed to get games for tournament : ${+error}`);
         })
     ]).then(() => {
       this.setState({ loading: false, refreshing: false });
     });
-  }
+  };
 
   onRefresh = () => {
-    //console.log('refreshing ')
-    this.setState(
-      { refreshing: true, pageCount: 0, endReached: false },() =>
-      {this.fetchData(this.state.tournamentName)}
-    );
+    // console.log('refreshing ')
+    this.setState({ refreshing: true, pageCount: 0, endReached: false }, () => {
+      this.fetchData(this.state.tournamentName);
+    });
   };
 
   onEndReached = () => {
     const { paginating, endReached } = this.state;
     if (paginating || endReached) return;
     this.setState(
-      (previousState, currentProps) => {
-        return { paginating: true, pageCount: previousState.pageCount + 1 };
-      },
+      (previousState, currentProps) => ({
+        paginating: true,
+        pageCount: previousState.pageCount + 1
+      }),
       () => {
         const { tournamentName, pageSize, pageCount } = this.state;
         getGamesForTournament(tournamentName, pageCount, pageSize).then(response => {
@@ -136,11 +137,11 @@ class TournamentScreen extends Component {
     );
   };
 
-  onClose = (data) => {
+  onClose = data => {
     // data = {type, title, message, action}
     // action means how the alert was closed.
     // returns: automatic, programmatic, tap, pan or cancel
-  }
+  };
 
   render() {
     let rendered = null;
@@ -176,7 +177,7 @@ class TournamentScreen extends Component {
           refreshing={refreshing}
           onRefresh={this.onRefresh}
           onEndReached={this.onEndReached}
-          onEndReachedThreshold={(pageCount * pageSize ) / games.length}
+          onEndReachedThreshold={1.5}
           ItemSeparatorComponent={({ section }) => (
             <View style={{ height: section.title == 'RANKING' ? 1 : 8 }} />
           )}
@@ -206,11 +207,9 @@ class TournamentScreen extends Component {
   }
 }
 
-const mapStateToProps = ({ refreshReducer }) => {
-  //game_id('TournamentScreen - mapStateToProps ');
-  return { isDataStale: refreshReducer.isDataStale };
-};
-
+const mapStateToProps = ({ refreshReducer }) =>
+  // game_id('TournamentScreen - mapStateToProps ');
+  ({ isDataStale: refreshReducer.isDataStale });
 export default connect(
   mapStateToProps,
   { invalidateData }

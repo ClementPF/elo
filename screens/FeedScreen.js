@@ -115,8 +115,10 @@ class FeedScreen extends Component {
           this.setState({ endReached: this.state.pageSize > response.payload.length });
         })
     ]).then(() => {
-        const date = new Date();
-        console.log((date.getTime() - this.timing.getTime()) + 'ms to load a page of ' + this.state.pageSize  );
+      const date = new Date();
+      console.log(
+        date.getTime() - this.timing.getTime() + 'ms to load a page of ' + this.state.pageSize
+      );
       this.setState({ loading: false, refreshing: false });
     });
   }
@@ -205,8 +207,9 @@ class FeedScreen extends Component {
     this.fetchData(this.props.user.username);
   };
 
-  onEndReached = () => {
-    if (this.state.paginating || this.state.endReached) return;
+  onEndReached = (params) => {
+     if (this.state.paginating || this.state.endReached) return;
+
     this.setState(
       (previousState, currentProps) => ({
         paginating: true,
@@ -263,7 +266,6 @@ class FeedScreen extends Component {
         />
       );
     } else {
-      rendered = (
         <SectionList
           ref={ref => (this.sectionList = ref)}
           style={feedScreenStyle.list}
@@ -276,19 +278,15 @@ class FeedScreen extends Component {
           refreshing={this.state.refreshing}
           onRefresh={this.onRefresh}
           onEndReached={this.onEndReached}
-          onEndReachedThreshold={(pageCount * pageSize) / games.length}
           ItemSeparatorComponent={({ section }) => (
             <View style={{ height: section.title == 'RANKING' ? 1 : 8 }} />
           )}
           ListEmptyComponent={
             <EmptyResultsButton
-  title={
                 'Hey, welcome to the SHARKULATOR,\n Your feed is empty so far, \n go play a game, treat yourself,\n you deserve it Champ.'
               }
-  onPress={() => {
                 this.props.navigation.navigate('Tournaments');
               }}
-/>
           }
           ListFooterComponent={
             this.state.endReached && (
