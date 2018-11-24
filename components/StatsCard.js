@@ -7,90 +7,58 @@ import StatsCardRow from './StatsCardRow';
 
 export default class StatsCard extends Component {
   static propTypes = {
-      title: PropTypes.string,
+    title: PropTypes.string,
     name1: PropTypes.string,
-    value1: PropTypes.oneOfType([
-              PropTypes.string,
-              PropTypes.number
-          ]),
+    value1: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     name2: PropTypes.string,
-    value2: PropTypes.oneOfType([
-              PropTypes.string,
-              PropTypes.number
-          ]),
+    value2: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     name3: PropTypes.string,
-    value3: PropTypes.oneOfType([
-              PropTypes.string,
-              PropTypes.number
-          ]),
+    value3: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     name4: PropTypes.string,
-    value4: PropTypes.oneOfType([
-              PropTypes.string,
-              PropTypes.number
-          ]),
+    value4: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     name5: PropTypes.string,
-    value5: PropTypes.oneOfType([
-              PropTypes.string,
-              PropTypes.number
-          ]),
+    value5: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     name6: PropTypes.string,
-    value6: PropTypes.oneOfType([
-              PropTypes.string,
-              PropTypes.number
-            ]),
+    value6: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     name7: PropTypes.string,
-    value7: PropTypes.oneOfType([
-            PropTypes.string,
-            PropTypes.number
-          ]),
+    value7: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     name8: PropTypes.string,
-    value8: PropTypes.oneOfType([
-              PropTypes.string,
-              PropTypes.number
-            ])
-  }
+    value8: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+  };
 
   render = () => {
-    const { title, name1, value1, name2, value2, name3, value3, name4, value4, name5, value5, name6, value6, name7, value7, name8, value8} = this.props;
+    const {
+      title,
+      name1,
+      value1,
+      name2,
+      value2,
+      name3,
+      value3,
+      name4,
+      value4,
+      name5,
+      value5,
+      name6,
+      value6,
+      name7,
+      value7,
+      name8,
+      value8
+    } = this.props;
 
     return (
-
-        <Card style={ statsCardStyle.container }
-            title = { title }>
-            <StatsCardRow
-                name = { name1 }
-                value = { value1 }
-            />
-            <StatsCardRow
-                name = { name2 }
-                value = { value2 }
-            />
-            <StatsCardRow
-                name = { name3 }
-                value = { value3 }
-            />
-            <StatsCardRow
-                name = { name4 }
-                value = { value4 }
-            />
-            <StatsCardRow
-                name = { name5 }
-                value = { value5 }
-            />
-            <StatsCardRow
-                name = { name6 }
-                value = { value6 }
-            />
-            <StatsCardRow
-                name = { name7 }
-                value = { value7 }
-            />
-            <StatsCardRow
-                name = { name8 }
-                value = { value8 }
-            />
-        </Card>
-        /*
+      <Card style={statsCardStyle.container} title={title}>
+        <StatsCardRow name={name1} value={value1} />
+        <StatsCardRow name={name2} value={value2} />
+        <StatsCardRow name={name3} value={value3} />
+        <StatsCardRow name={name4} value={value4} />
+        <StatsCardRow name={name5} value={value5} />
+        <StatsCardRow name={name6} value={value6} />
+        <StatsCardRow name={name7} value={value7} />
+        <StatsCardRow name={name8} value={value8} />
+      </Card>
+      /*
         <ListItem
             title={ Moment(date).format('DD MMM') }
             //titleNumberOfLines= {1}
@@ -102,12 +70,12 @@ export default class StatsCard extends Component {
             hideChevron = { true }
         />*/
     );
-  }
+  };
 }
 
 statsCardStyle = StyleSheet.create({
-    container: {
-        padding: 8,
-        backgroundColor: 'white'
-    }
-})
+  container: {
+    padding: 8,
+    backgroundColor: 'white'
+  }
+});

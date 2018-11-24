@@ -15,48 +15,48 @@ import { getUser } from './redux/actions';
 const store = configureStore();
 
 export default class App extends React.Component {
-    state = {
-        isLoadingComplete: false,
-    };
+  state = {
+    isLoadingComplete: false
+  };
 
-    _loadResourcesAsync = async () => {
-        return Promise.all();
-    };
+  _loadResourcesAsync = async () => {
+    return Promise.all();
+  };
 
-    _handleFinishLoading = () => {
-        this.setState({ isLoadingComplete: true });
-    };
+  _handleFinishLoading = () => {
+    this.setState({ isLoadingComplete: true });
+  };
 
-    render() {
-        return (
-            <Provider store={ store }>
-                <SafeAreaView style={ styles.safeArea }>
-                    <View style={ styles.container }>
-                        { Platform.OS === 'ios' && <StatusBar barStyle="light-content" /> }
-                        { Platform.OS === 'android' && <View style={ styles.statusBarUnderlay } /> }
-                        <RootNavigation />
-                    </View>
-                </SafeAreaView>
-            </Provider>
-        );
-    }
+  render() {
+    return (
+      <Provider store={store}>
+        <SafeAreaView style={styles.safeArea}>
+          <View style={styles.container}>
+            {Platform.OS === 'ios' && <StatusBar barStyle="light-content" />}
+            {Platform.OS === 'android' && <View style={styles.statusBarUnderlay} />}
+            <RootNavigation />
+          </View>
+        </SafeAreaView>
+      </Provider>
+    );
+  }
 }
 
 App.propTypes = {
-    skipLoadingScreen: PropTypes.bool
+  skipLoadingScreen: PropTypes.bool
 };
 
 const styles = StyleSheet.create({
-    safeArea: {
-        flex: 1,
-        backgroundColor: '#000'
-    },
-    container: {
-        flex: 1,
-        backgroundColor: '#000',
-    },
-    statusBarUnderlay: {
-        height: 24,
-        backgroundColor: 'rgba(0,0,0,0.2)',
-    }
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#000'
+  },
+  container: {
+    flex: 1,
+    backgroundColor: '#000'
+  },
+  statusBarUnderlay: {
+    height: 24,
+    backgroundColor: 'rgba(0,0,0,0.2)'
+  }
 });

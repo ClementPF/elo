@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { Animated } from "react-native";
+import React, { Component } from 'react';
+import { Animated } from 'react-native';
 
 type Props = {};
 export default class AnimatedBar extends Component<Props> {
@@ -12,10 +12,9 @@ export default class AnimatedBar extends Component<Props> {
     this.animateBar();
   }
 
-
-    componentDidUpdate() {
-      this.animateBar();
-    }
+  componentDidUpdate() {
+    this.animateBar();
+  }
 
   animateBar = () => {
     const { value, index } = this.props;
@@ -30,8 +29,7 @@ export default class AnimatedBar extends Component<Props> {
     let barWidth = {
       width: this.width
     };
-    return <Animated.View
-        style={[styles.bar, barWidth]} />;
+    return <Animated.View style={[styles.bar, barWidth]} />;
   }
 }
 
@@ -39,7 +37,7 @@ const styles = {
   bar: {
     height: 15,
     borderWidth: 1,
-    borderColor: "white",
-    backgroundColor: "firebrick"
+    borderColor: 'white',
+    backgroundColor: '#CE2728'
   }
 };

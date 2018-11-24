@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
-import {TouchableOpacity} from 'react-native';
-import {StackNavigator} from 'react-navigation'
+import React, { Component } from 'react';
+import { TouchableOpacity } from 'react-native';
+import { StackNavigator } from 'react-navigation';
 
 import GameFormUserScreen from '../screens/GameFormUserScreen';
 import GameFormTournamentScreen from '../screens/GameFormTournamentScreen';
@@ -11,45 +11,48 @@ import GameFormResultScreen from '../screens/GameFormResultScreen';
 import GameFormTieScreen from '../screens/GameFormTieScreen';
 import GameFormConfirmationScreen from '../screens/GameFormConfirmationScreen';
 
-const stackNavGameForm = StackNavigator({
+const stackNavGameForm = StackNavigator(
+  {
     GameFormWinnerLooser: {
-        screen: GameFormWinnerLooserScreen
+      screen: GameFormWinnerLooserScreen
     },
     GameFormTournament: {
-        screen: GameFormTournamentScreen
+      screen: GameFormTournamentScreen
     },
     GameFormQRCode: {
-        screen: GameFormQRCodeScreen
+      screen: GameFormQRCodeScreen
     },
     GameFormTie: {
-        screen: GameFormTieScreen
+      screen: GameFormTieScreen
     },
     GameFormQRScanner: {
-        screen: GameFormQRScannerScreen
+      screen: GameFormQRScannerScreen
     },
     GameFormUser: {
-        screen: GameFormUserScreen
+      screen: GameFormUserScreen
     },
     GameFormResult: {
-        screen: GameFormResultScreen
+      screen: GameFormResultScreen
     },
     GameFormConfirmation: {
-        screen: GameFormConfirmationScreen
+      screen: GameFormConfirmationScreen
     }
-}, {
+  },
+  {
     cardStyle: {
-        backgroundColor: 'black'
+      backgroundColor: 'black'
     },
     headerMode: 'screen',
     navigationOptions: () => ({
-        headerTitleStyle: {
-            fontWeight: 'bold',
-            color: 'white'
-        },
-        headerStyle: {
-            backgroundColor: 'black'
-        }
+      headerTitleStyle: {
+        fontWeight: 'bold',
+        color: 'white'
+      },
+      headerStyle: {
+        backgroundColor: 'black'
+      }
     })
-})
+  }
+);
 
 export default stackNavGameForm;

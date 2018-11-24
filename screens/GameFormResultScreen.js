@@ -1,54 +1,41 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {View, Text} from 'react-native';
-import {Card} from 'react-native-elements';
-import {postGameForTournament, getUsersForTournament} from '../api/tournament';
-import GameRow from '../components/GameRow';
+import { View, Text } from 'react-native';
+import { Card } from 'react-native-elements';
+import { postGameForTournament, getUsersForTournament } from '../api/tournament';
+import GameRowContainer from '../containers/GameRowContainer';
 
 class GameFormResultScreen extends Component {
+  static propTypes = {
+    navigation: PropTypes.object,
+    dispatch: PropTypes.func
+    //gameValue: PropTypes.string
+  };
 
-    static propTypes = {
-        navigation: PropTypes.object,
-        dispatch: PropTypes.func,
-        //gameValue: PropTypes.string
+  static navigationOptions = ({ navigation }) => {
+    const params = navigation.state.params;
+    return {
+      title: navigation.state.params.name,
+      headerTintColor: 'white'
     };
+  };
 
-    static navigationOptions = ({navigation}) => {
-        const params = navigation.state.params;
-        return {
-            title: navigation.state.params.name,
-            headerTintColor: 'white'
-        };
+  constructor(props) {
+    super(props);
+    this.state = {
+      game: props.navigation.state.params.game
     };
+  }
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            game: props.navigation.state.params.game
-        };
-    }
+  componentWillMount() {}
 
-    componentWillMount() {
-    }
-
-    render() {
-        return (
-            <View style={ {flex:1} }>
-                <Card title="RESULTS">
-                    <GameRow
-                        name1= { this.state.game.outcomes[0].user.username }
-                        name2= { this.state.game.outcomes[1].user.username }
-                        pictureUrl1= { this.state.game.outcomes[0].user.picture_url }
-                        pictureUrl2= { this.state.game.outcomes[1].user.picture_url }
-                        result1= { this.state.game.outcomes[0].win }
-                        result2= { this.state.game.outcomes[1].win }
-                        tournamentDisplayName={ this.state.game.tournament.display_name }
-                        tournamentName={ this.state.game.tournament.name }
-                        value= { this.state.game.outcomes[0].score_value }
-                        date= { this.state.game.date }
-                    />
-                </Card>
-            </View>
+  render() {
+    return (
+      <View style={{ flex: 1 }}>
+        <Card title="RESULTS">
+          <GameRowContainer user={this.state.game.outcomes[0].user} game={this.state.game} />
+        </Card>
+      </View>
     );
   }
 }

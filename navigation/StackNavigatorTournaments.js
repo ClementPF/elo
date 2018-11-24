@@ -1,42 +1,39 @@
 import React, { Component } from 'react';
 import { TouchableOpacity } from 'react-native';
-import { StackNavigator} from 'react-navigation'
+import { StackNavigator } from 'react-navigation';
 
 import FeedScreen from '../screens/FeedScreen';
 import TournamentCreationScreen from '../screens/TournamentCreationScreen';
 import TournamentScreen from '../screens/TournamentScreen';
 import TournamentsScreen from '../screens/TournamentsScreen';
 import UserScreen from '../screens/UserScreen';
-import GameScreen from '../screens/GameScreen';
 
-const stackNav = StackNavigator({
+const stackNav = StackNavigator(
+  {
     Tournaments: {
-        screen: TournamentsScreen
+      screen: TournamentsScreen
     },
     Tournament: {
-        screen: TournamentScreen
+      screen: TournamentScreen
     },
     TournamentCreation: {
-        screen: TournamentCreationScreen
+      screen: TournamentCreationScreen
     },
     User: {
-        screen: UserScreen
-    },
-    Game: {
-        screen: GameScreen
+      screen: UserScreen
     }
-    }
-    ,
-    {
-        cardStyle:{backgroundColor:'black' },
-        headerMode: 'screen',
-        navigationOptions: () => ({
-            headerTitleStyle: {
-                fontWeight: 'bold',
-                color: 'white'
-            },
-            headerStyle: {backgroundColor:'black'}
-        })
-})
+  },
+  {
+    cardStyle: { backgroundColor: 'black' },
+    headerMode: 'screen',
+    navigationOptions: () => ({
+      headerTitleStyle: {
+        fontWeight: 'bold',
+        color: 'white'
+      },
+      headerStyle: { backgroundColor: 'black' }
+    })
+  }
+);
 
 export default stackNav;

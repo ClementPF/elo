@@ -31,16 +31,14 @@ const path = require('path');
 const resolvePlugins = require('react-native/node_modules/babel-preset-react-native/lib/resolvePlugins');
 
 const {
-  compactMapping,
+  compactMapping
 } = require('react-native/node_modules/metro-bundler/src/Bundler/source-map');
 
 const cacheKeyParts = [
   fs.readFileSync(__filename),
-  require('react-native/node_modules/babel-plugin-external-helpers/package.json')
-    .version,
+  require('react-native/node_modules/babel-plugin-external-helpers/package.json').version,
   require('react-native/node_modules/babel-preset-fbjs/package.json').version,
-  require('react-native/node_modules/babel-preset-react-native/package.json')
-    .version,
+  require('react-native/node_modules/babel-preset-react-native/package.json').version
 ];
 
 const EXPO_REACT_NATIVE_PATH = path.join(
@@ -88,14 +86,12 @@ const getBabelRC = (function() {
     if (!projectBabelRCPath || !fs.existsSync(projectBabelRCPath)) {
       babelRC = {
         presets: [require('babel-preset-react-native')],
-        plugins: [],
+        plugins: []
       };
 
       // Require the babel-preset's listed in the default babel config
       // $FlowFixMe: dynamic require can't be avoided
-      babelRC.presets = babelRC.presets.map(preset =>
-        require('babel-preset-' + preset)
-      );
+      babelRC.presets = babelRC.presets.map(preset => require('babel-preset-' + preset));
       babelRC.plugins = resolvePlugins(babelRC.plugins);
     } else {
       // if we find a .babelrc file we tell babel to use it
@@ -122,7 +118,7 @@ function buildBabelConfig(filename, options) {
     // babelRC lookup for dependencies
     babelrc: false,
     code: false,
-    filename,
+    filename
   };
 
   let config = Object.assign({}, babelRC, extraConfig);
@@ -131,8 +127,7 @@ function buildBabelConfig(filename, options) {
   const extraPlugins = [externalHelpersPlugin];
 
   var inlineRequires = options.inlineRequires;
-  var blacklist =
-    typeof inlineRequires === 'object' ? inlineRequires.blacklist : null;
+  var blacklist = typeof inlineRequires === 'object' ? inlineRequires.blacklist : null;
   if (inlineRequires && !(blacklist && filename in blacklist)) {
     extraPlugins.push(inlineRequiresPlugin);
   }
@@ -162,7 +157,7 @@ function transform({ filename, options, src }) {
         ast: null,
         code: src,
         filename,
-        map: null,
+        map: null
       };
     } else {
       const result = generate(
@@ -173,7 +168,7 @@ function transform({ filename, options, src }) {
           filename,
           retainLines: !!options.retainLines,
           sourceFileName: filename,
-          sourceMaps: true,
+          sourceMaps: true
         },
         src
       );
@@ -182,9 +177,7 @@ function transform({ filename, options, src }) {
         ast,
         code: result.code,
         filename,
-        map: options.generateSourceMaps
-          ? result.map
-          : result.rawMappings.map(compactMapping),
+        map: options.generateSourceMaps ? result.map : result.rawMappings.map(compactMapping)
       };
     }
   } catch (e) {
@@ -207,11 +200,11 @@ function buildModuleResolverPreset() {
         {
           alias: {
             react: EXPO_REACT_PATH,
-            'react-native': EXPO_REACT_NATIVE_PATH,
-          },
-        },
-      ],
-    ],
+            'react-native': EXPO_REACT_NATIVE_PATH
+          }
+        }
+      ]
+    ]
   };
 }
 
@@ -223,5 +216,5 @@ function getCacheKey() {
 
 module.exports = {
   transform,
-  getCacheKey,
+  getCacheKey
 };

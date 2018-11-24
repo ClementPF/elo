@@ -1,6 +1,6 @@
 import { Permissions, Notifications } from 'expo';
 
-import {postPushToken} from './user';
+import { postPushToken } from './user';
 
 // Example server, implemented in Rails: https://git.io/vKHKv
 const PUSH_ENDPOINT = 'https://expo-push-server.herokuapp.com/tokens';

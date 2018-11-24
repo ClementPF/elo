@@ -17,17 +17,14 @@ module.exports = {
     return [];
   },
   getTransformModulePath() {
-    const modulePath = path.join(
-      __dirname,
-      'transformer.js'
-    );
+    const modulePath = path.join(__dirname, 'transformer.js');
     if (!registeredTransformModulePaths.has(modulePath)) {
       babelRegisterOnly([modulePath]);
       registeredTransformModulePaths.add(modulePath);
     }
     return modulePath;
   },
-  extraNodeModules: getNodeModulesForDirectory(path.resolve('.')),
+  extraNodeModules: getNodeModulesForDirectory(path.resolve('.'))
 };
 
 function getNodeModulesForDirectory(rootPath) {
@@ -37,15 +34,12 @@ function getNodeModulesForDirectory(rootPath) {
     const folderPath = path.join(nodeModulePath, folderName);
     if (folderName.startsWith('@')) {
       const scopedModuleFolders = fs.readdirSync(folderPath);
-      const scopedModules = scopedModuleFolders.reduce(
-        (scopedModules, scopedFolderName) => {
-          scopedModules[
-            `${folderName}/${scopedFolderName}`
-          ] = maybeResolveSymlink(path.join(folderPath, scopedFolderName));
-          return scopedModules;
-        },
-        {}
-      );
+      const scopedModules = scopedModuleFolders.reduce((scopedModules, scopedFolderName) => {
+        scopedModules[`${folderName}/${scopedFolderName}`] = maybeResolveSymlink(
+          path.join(folderPath, scopedFolderName)
+        );
+        return scopedModules;
+      }, {});
       return Object.assign({}, modules, scopedModules);
     }
     modules[folderName] = maybeResolveSymlink(folderPath);

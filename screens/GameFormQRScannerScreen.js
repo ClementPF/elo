@@ -1,148 +1,160 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {StyleSheet, Text, View} from 'react-native';
-import {Button} from 'react-native-elements';
-import {BarCodeScanner, Permissions} from 'expo';
+import { StyleSheet, Text, View } from 'react-native';
+import { Button } from 'react-native-elements';
+import { BarCodeScanner, Permissions } from 'expo';
 import DropdownAlert from 'react-native-dropdownalert';
 import TournamentRow from '../components/TournamentRow';
 import LZString from 'lz-string';
 
 export default class GameFormQRScannerScreen extends React.Component {
+  static navigationOptions = ({ navigation }) => {
+    const params = navigation.state.params;
+    return { title: 'Scan the QR code', headerTintColor: 'white' };
+  };
 
-    static navigationOptions = ({navigation}) => {
-        const params = navigation.state.params;
-        return {title: 'Scan the QR code', headerTintColor: 'white'};
+  constructor(props) {
+    super(props);
+    this.state = {
+      tournament: props.navigation.state.params.tournament,
+      hasCameraPermission: null,
+      qrCodeRead: false
     };
+  }
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            tournament: props.navigation.state.params.tournament,
-            hasCameraPermission: null,
-            qrCodeRead: false
-        };
+  async componentWillMount() {
+    const { status } = await Permissions.askAsync(Permissions.CAMERA);
+    this.setState({
+      hasCameraPermission: status === 'granted'
+    });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    //console.log('GameFormQRScannerScreen - componentWillReceiveProps ' + JSON.stringify(nextProps));
+
+    if (nextProps.games != null && nextProps.games.length > 0) {
+      this.setState({ tournament: this.props.games[0].tournament });
     }
+  }
 
-    async componentWillMount() {
-        const {status} = await Permissions.askAsync(Permissions.CAMERA);
-        this.setState({
-            hasCameraPermission: status === 'granted'
+  onClose(data) {
+    this.setState({ qrCodeRead: false });
+  }
+
+  onError = error => {
+    if (error) {
+      this.dropdown.alertWithType('error', 'Error', error);
+    }
+  };
+
+  // called when navigating back from tournament selection
+  returnData(data) {
+    this.setState({ tournament: data });
+  }
+
+  _handleBarCodeRead = ({ type, data }) => {
+    if (!this.state.qrCodeRead) {
+      let jsonData = JSON.parse(data);
+      this.setState({ qrCodeRead: true });
+
+      if (!jsonData.tournament || !jsonData.username) {
+        this.onError('It does not appear to be a valid QR code for the SHARKULATOR');
+      } else if (jsonData.tournament != this.state.tournament.name) {
+        this.onError(
+          "It looks like you havn't selected the same tournament, get your fishes together guys!"
+        );
+      } else {
+        console.log(`Bar code with type ${type} and data ${data} !`);
+        this.props.navigation.navigate('GameFormConfirmation', {
+          tournamentName: jsonData.tournament,
+          winnerName: jsonData.username
         });
+      }
     }
+  };
 
-    componentWillReceiveProps(nextProps) {
+  render() {
+    const { hasCameraPermission } = this.state;
 
-        //console.log('GameFormQRScannerScreen - componentWillReceiveProps ' + JSON.stringify(nextProps));
-
-        if (nextProps.games != null && nextProps.games.length > 0) {
-            this.setState({'tournament': this.props.games[0].tournament});
-        }
+    if (hasCameraPermission === null) {
+      return <Text style={{ color: 'white' }}>Requesting for camera permission</Text>;
+    } else if (hasCameraPermission === false) {
+      return (
+        <Text style={{ color: 'white' }}>
+          {' '}
+          No access to camera, please go into the settings of your operating system and allow the
+          SHARKULATOR to access the camera
+        </Text>
+      );
+    } else {
+      return (
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: 'white',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}
+        >
+          <View
+            style={{
+              width: '100%',
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginTop: 8
+            }}
+          >
+            <TournamentRow
+              tournament={this.state.tournament.display_name}
+              tournament_id_name={this.state.tournament.name}
+              sport={this.state.tournament.sport.name}
+            />
+            <Button
+              icon={{ name: 'edit' }}
+              title={'EDIT'}
+              buttonStyle={{
+                backgroundColor: '#CE2728',
+                borderColor: 'transparent',
+                borderWidth: 0,
+                borderRadius: 10
+              }}
+              onPress={() => {
+                this.props.navigation.navigate('GameFormTournament', {
+                  returnData: this.returnData.bind(this)
+                });
+              }}
+            />
+          </View>
+          <View
+            style={{
+              width: '100%',
+              height: 1,
+              backgroundColor: 'black'
+            }}
+          />
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: 'white',
+              width: '100%',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}
+          >
+            <BarCodeScanner
+              onBarCodeRead={this._handleBarCodeRead}
+              style={StyleSheet.absoluteFill}
+            />
+          </View>
+          <DropdownAlert ref={ref => (this.dropdown = ref)} onClose={data => this.onClose(data)} />
+        </View>
+      );
     }
-
-    onClose(data) {
-        this.setState({qrCodeRead: false});
-    }
-
-    onError = error => {
-        if (error) {
-            this.dropdown.alertWithType('error', 'Error', error);
-        }
-    };
-
-    // called when navigating back from tournament selection
-    returnData(data) {
-        this.setState({tournament: data});
-    }
-
-    _handleBarCodeRead = ({type, data}) => {
-        if (!this.state.qrCodeRead) {
-            let jsonData = JSON.parse(data);
-            this.setState({qrCodeRead: true});
-
-            if (!jsonData.tournament || !jsonData.username) {
-                this.onError('It does not appear to be a valid QR code for the SHARKULATOR');
-            }
-            else if (jsonData.tournament != this.state.tournament.name) {
-                this.onError('It looks like you havn\'t selected the same tournament, get your fishes together guys!')
-            }else {
-                console.log(`Bar code with type ${type} and data ${data} !`);
-                this.props.navigation.navigate('GameFormConfirmation', {
-                    tournamentName: jsonData.tournament,
-                    winnerName: jsonData.username
-                })
-            }
-        }
-    }
-
-    render() {
-        const {hasCameraPermission} = this.state;
-
-        if (hasCameraPermission === null) {
-            return (
-                <Text style={{color: 'white'}}>Requesting for camera permission</Text>)
-        } else if (hasCameraPermission === false) {
-            return(
-                <Text style={{color: 'white'}} > No access to camera, please go into the settings of your operating system and allow the SHARKULATOR to access the camera</Text>
-            )
-
-        } else {
-            return (
-                <View style={ {
-                    flex:1,
-                    backgroundColor:'white',
-                    justifyContent: 'center',
-                    alignItems: 'center'} } >
-
-                    <View style={ {
-                        width:'100%',
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginTop: 8} }>
-
-                        <TournamentRow
-                            tournament= { this.state.tournament.display_name }
-                            tournament_id_name= { this.state.tournament.name }
-                            sport= { this.state.tournament.sport.name }
-                        />
-                        <Button
-                            icon={ {name: 'edit'} }
-                            title= { 'EDIT' }
-                            buttonStyle= { {
-                                backgroundColor: 'firebrick',
-                                borderColor: 'transparent',
-                                borderWidth: 0,
-                                borderRadius: 10 } }
-                                onPress={ () => {
-                                    this.props.navigation.navigate('GameFormTournament',  {returnData: this.returnData.bind(this)});
-                                } }
-                        />
-                    </View>
-                    <View style={ {
-                        width:'100%',
-                        height:1,
-                        backgroundColor: 'black',} }
-                    />
-                    <View style={ {flex:1,
-                             backgroundColor:'white',
-                             width:'100%',
-                             justifyContent: 'center',
-                             alignItems: 'center'} } >
-
-                             <BarCodeScanner
-                                 onBarCodeRead={ this._handleBarCodeRead }
-                                 style={ StyleSheet.absoluteFill }/>
-                    </View>
-                    <DropdownAlert
-                        ref={ ref => this.dropdown = ref }
-                        onClose={ data => this.onClose(data) } />
-                </View>
-            );
-        }
-    }
+  }
 }
 
 GameFormQRScannerScreen.propTypes = {
-   error: PropTypes.object,
-   games: PropTypes.object,
-   navigation: PropTypes.object,
+  error: PropTypes.object,
+  games: PropTypes.object,
+  navigation: PropTypes.object
 };

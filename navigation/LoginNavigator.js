@@ -10,19 +10,19 @@ import Colors from '../constants/Colors';
 import Login from '../screens/Login';
 
 export default StackNavigator(
-    {
-        Login: {
-            screen: Login
-        }
-    },
-    {
-      navigationOptions: {
-        header: () => null,
-        headerTitle: 'Login',
-      }
+  {
+    Login: {
+      screen: Login
     }
+  },
+  {
+    navigationOptions: {
+      header: () => null,
+      headerTitle: 'Login'
+    }
+  }
 );
 
 StackNavigator.propTypes = {
-    focused: PropTypes.bool
+  focused: PropTypes.bool
 };

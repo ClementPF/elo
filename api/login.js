@@ -1,5 +1,5 @@
 import Axios from 'axios';
-import {API_CONF, API_ENDPOINTS} from './config.js';
+import { API_CONF, API_ENDPOINTS } from './config.js';
 
 import { AsyncStorage } from 'react-native';
 
@@ -15,38 +15,37 @@ function logtest(fb_token) {
 function loginUserWithFacebook(fb_token) {
   return Axios.post(`${API_ENDPOINTS.AUTH}/token`, {
     provider_access_token: fb_token,
-    token_provider: "facebook"
+    token_provider: 'facebook'
   });
 }
 
 function loginUserWithGoogle(google_token) {
   return Axios.post(`${API_ENDPOINTS.AUTH}/token`, {
     provider_access_token: google_token,
-    token_provider: "google"
+    token_provider: 'google'
   });
 }
 
 function testTokenValidity(token) {
-    console.log('testTokenValidity ');
+  console.log('testTokenValidity ');
   Axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
   return Axios.get(API_ENDPOINTS.USER);
 }
 
-function refreshToken(token){
+function refreshToken(token) {
   Axios.defaults.headers.common['Authorization'] = 'Bearer ';
-    return Axios.post(`${API_ENDPOINTS.AUTH}/refresh`, {
-        access_token:'plop',
-        refresh_token: token
-    });
+  return Axios.post(`${API_ENDPOINTS.AUTH}/refresh`, {
+    access_token: 'plop',
+    refresh_token: token
+  });
 }
 
 function logoutUser() {
-    Axios.defaults.headers.common['Authorization'] = '';
+  Axios.defaults.headers.common['Authorization'] = '';
 
-    console.log('Loging out ');
+  console.log('Loging out ');
 
-    return AsyncStorage.removeItem('@Store:token');
+  return AsyncStorage.removeItem('@Store:token');
 }
 
-
-export {loginUserWithFacebook, loginUserWithGoogle,testTokenValidity, refreshToken, logoutUser};
+export { loginUserWithFacebook, loginUserWithGoogle, testTokenValidity, refreshToken, logoutUser };

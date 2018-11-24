@@ -3,6 +3,6 @@ import UserReducer from './UserReducer';
 import RefreshReducer from './RefreshReducer';
 
 export default combineReducers({
-    userReducer: UserReducer,
-    refreshReducer: RefreshReducer,
+  userReducer: UserReducer,
+  refreshReducer: RefreshReducer
 });

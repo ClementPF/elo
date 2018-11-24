@@ -1,21 +1,20 @@
-import React, { Component } from "react";
-import { FlatList } from "react-native";
-import PropTypes from "prop-types";
+import React, { Component } from 'react';
+import { FlatList } from 'react-native';
+import PropTypes from 'prop-types';
 
 export default class SearchableFlatlist extends Component {
-  static INCLUDES = "includes";
-  static WORDS = "words";
+  static INCLUDES = 'includes';
+  static WORDS = 'words';
   getFilteredResults() {
     let { data, type, searchProperty, searchTerm } = this.props;
-    return data.filter(
-      item =>
-        type && type === SearchableFlatlist.WORDS
-          ? new RegExp(`\\b${searchTerm}`, "gi").test(item[searchProperty])
-          : new RegExp(`${searchTerm}`, "gi").test(item[searchProperty])
+    return data.filter(item =>
+      type && type === SearchableFlatlist.WORDS
+        ? new RegExp(`\\b${searchTerm}`, 'gi').test(item[searchProperty])
+        : new RegExp(`${searchTerm}`, 'gi').test(item[searchProperty])
     );
   }
   render() {
-    return <FlatList {...this.props} data={ this.getFilteredResults()} />;
+    return <FlatList {...this.props} data={this.getFilteredResults()} />;
   }
 }
 
