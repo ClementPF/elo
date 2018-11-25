@@ -41,7 +41,7 @@
     "native-navigation": "^0.2.1",
     "react": "16.3.1",
     "react-native": "expo/react-native#sdk-27",
-    "react-native-chart-kit": "1.1.5",
+    "react-native-chart-kit": "1.2.0",
     "react-native-dropdownalert": "3.4.0",
     "react-native-elements": "0.17.0",
     "react-native-extended-stylesheet": "0.6.0",
@@ -55,6 +55,7 @@
     "react-redux": "5.0.7",
     "redux": "3.7.2",
     "redux-devtools-extension": "^2.13.2",
-    "redux-thunk": "2.2.0"
+    "redux-thunk": "2.2.0",
+    "victory": "^31.0.1"
   }
 }

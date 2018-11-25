@@ -15,15 +15,15 @@ import Moment from 'moment';
 import { connect } from 'react-redux';
 import DropdownAlert from 'react-native-dropdownalert';
 import { NavigationActions } from 'react-navigation';
-import PureChart from 'react-native-pure-chart';
 import GameRowContainer from '../containers/GameRowContainer';
-import StatsCard from '../components/StatsCard';
+import StatsCardContainer from '../containers/StatsCardContainer';
 import UserTile from '../components/UserTile';
 import EmptyResultsButton from '../components/EmptyResultsButton';
 import { getUser } from '../redux/actions';
 import { invalidateData } from '../redux/actions/RefreshAction';
+import { Dimensions } from 'react-native'
 
-// import {LineChart} from 'react-native-chart-kit';
+import {PieChart} from 'react-native-chart-kit';
 import { getGamesForUser, getStatsForUser, challengeUser } from '../api/user';
 import { getStatsForUserForTournament, getRivalriesForUserForTournament } from '../api/stats';
 
@@ -113,10 +113,10 @@ class UserScreen extends Component {
   };
 
   onRefresh = () => {
-    const { tournamentName } = this.state;
+    const { user, tournamentName } = this.state;
     this.setState(
       { refreshing: true, pageCount: 0, endReached: false },
-      this.fetchData(tournamentName)
+      this.fetchData(user.username, tournamentName)
     );
   };
 
@@ -185,24 +185,26 @@ class UserScreen extends Component {
         .catch(error => {
           this.onError(`failed to get stats for user ${error}`);
         }),
-      getRivalriesForUserForTournament(username, 'testtournament')
+      getRivalriesForUserForTournament(username, tournamentName)
         .then(response => {
           const temp = [];
           temp.push(
             response.data.map(elem => {
-              const rdmColor = `rgb(${Math.floor(Math.random() * 256)},${Math.floor(
-                Math.random() * 256
-              )},${Math.floor(Math.random() * 256)})`;
+              const rdmColor = `rgb(
+                  255,
+                  ${Math.floor(Math.random() * 100)},
+                  ${Math.floor(Math.random() * 100)},
+                  ${Math.max(0.8,Math.min(1,0.8+Math.random()))})`;
               return {
-                value: -elem.score.toFixed(0),
-                label: elem.rival.username,
-                color: rdmColor
+                value: Math.round(elem.score),
+                name: elem.rival.username,
+                color: rdmColor,
+                legendFontColor: 'dimgrey',
+                legendFontSize: 10
               };
             })
           );
-
-          //  temp = temp[0];
-          this.setState({ chartData: temp });
+          this.setState({ chartData: temp[0] });
         })
         .catch(error => {
           this.onError(`failed to get rivalry for user ${error}`);
@@ -214,23 +216,27 @@ class UserScreen extends Component {
         page_size: pageSize
       })
         .then(response => {
-          /*
-          const temp = [];
+        var temp = [];
+        /*
+        temp.push(
+          response.data.map(elem => {
+            return {
+              x: Moment(elem.date).fromNow(false),
+              y: parseInt(
+                elem.outcomes[
+                  elem.outcomes[0].user.username == this.state.user.username ? 0 : 1
+                ].score_value.toFixed(0)
+              )
+            };
+          })
+      );*/
 
-                    temp.push(response.data.map((elem) => {
-                        return {
-                            x: Moment(elem.date).fromNow(false),
-                            y: parseInt(elem.outcomes[elem.outcomes[0].user.username == this.state.user.username ? 0 : 1].score_value.toFixed(0))
-                        }
-                    }));
+        temp = temp[0];
 
-
-                    temp = temp[0];
-
-                    temp = temp.slice(temp.length - 30); */
           this.setState({
             games: response.data,
-            endReached: response.data.length < pageSize
+            endReached: response.data.length < pageSize,
+            //chartData: temp
           });
         })
         .catch(error => {
@@ -254,11 +260,43 @@ class UserScreen extends Component {
     return getStatsForUser(username);
   };
 
-  renderChart = ({ item, index }) => (
-    <View>
-      <PureChart data={item[0]} type="pie" />
-    </View>
-  );
+  renderChart = ({ item, index }) => {
+      const screenWidth = Dimensions.get('window').width
+    const chartConfig = {
+        color: (opacity = 1) => `rgba(10, 255, 10, ${opacity})`
+      }
+    //takers.map(item => { item.value = Math.abs(item.value); return item });
+    const giversChart = <PieChart style={{flex:1}} data={item} accessor="value" width={screenWidth} height={220} chartConfig={chartConfig} backgroundColor='white'/>;
+    return (
+      <View style={{ flex:1, flexDirection: 'column', justifyContent: 'center',
+      alignItems: 'center' }}>
+        {item.length > 0 && giversChart}
+      </View>
+    );
+  };
+
+    renderChartOG = ({ item, index }) => {
+        const screenWidth = Dimensions.get('window').width
+      var givers = item[0].filter(item => item.value > 0);
+      var takers = item[0].filter(item => item.value < 0);
+      const chartConfig = {
+          color: (opacity = 1) => `rgba(10, 255, 10, ${opacity})`
+        }
+      debugger;
+      //takers.map(item => { item.value = Math.abs(item.value); return item });
+      const giversChart = <PieChart style={{flex:1}} data={givers} accessor="value" width={screenWidth} height={220} chartConfig={chartConfig} backgroundColor='white'/>;
+      const takersChart = <PieChart style={{flex:1}} data={takers} accessor="value" width={screenWidth} height={220} chartConfig={chartConfig} backgroundColor='white'/>;
+      return (
+        <View style={{ flex:1, flexDirection: 'column', justifyContent: 'center',
+        alignItems: 'center' }}>
+        <Text style={searchableSectionList.sectionHeaderText}> 🎣 GIVERS 🎣 </Text>
+          {givers.length > 0 && giversChart}
+
+          <Text style={searchableSectionList.sectionHeaderText}> 🦈 TAKERS 🦈 </Text>
+          {takers.length > 0 && takersChart}
+        </View>
+      );
+    };
 
   renderItemUser = ({ item, index }) => {
     const { winCount, gameCount, challenged } = this.state;
@@ -301,47 +339,7 @@ class UserScreen extends Component {
     </TouchableOpacity>
   );
 
-  renderItemStats = ({ item, index }) => {
-    const { win_streak, lose_streak, tie_streak, tournament } = item;
-    let currentStreakType;
-    if (win_streak > 0) {
-      currentStreakType = 'Winning';
-    } else if (lose_streak > 0) {
-      currentStreakType = 'Losing';
-    } else if (tie_streak > 0) {
-      currentStreakType = 'Tie';
-    }
-
-    return (
-      <StatsCard
-        title={tournament.display_name}
-        name1="Score"
-        value1={item.score.toFixed(0)}
-        name2="Best Score"
-        value2={item.best_score.toFixed(0)}
-        name3="Game Count"
-        value3={item.game_count}
-        name4={`Current ${currentStreakType} Streak`}
-        value4={Math.max(win_streak, lose_streak, tie_streak)}
-        name5="Longest Winning Streak"
-        value5={item.longuest_win_streak}
-        name6="Longest Losing Streak"
-        value6={item.longuest_lose_streak}
-        name7="The Freaking Shark"
-        value7={
-          item.worst_rivalry == null
-            ? '❌🦈'
-            : `${item.worst_rivalry.rival.username} (${item.worst_rivalry.score.toFixed(0)})`
-        }
-        name8="The Smelly Fish"
-        value8={
-          item.best_rivalry == null
-            ? '❌🎣'
-            : `${item.best_rivalry.rival.username} (${item.best_rivalry.score.toFixed(0)})`
-        }
-      />
-    );
-  };
+  renderItemStats = ({ item, index }) => <StatsCardContainer stats={item} />
 
   onClose(data) {
     //   data = {type, title, message, action}
@@ -358,11 +356,20 @@ class UserScreen extends Component {
       const { navigate } = this.props.navigation;
 
       const userAsList = [user];
-      const chartDataAsList = [chartData];
+      //const chartDataAsList = [chartData];
+
+
+    var givers = chartData.filter(item => item.value > 0);
+    var takers = chartData.filter(item => item.value < 0);
+
+    const giversChartDataAsList = [givers];
+    const takersChartDataAsList = [takers];
+debugger;
       let sections = [
         { title: null, data: userAsList, renderItem: this.renderItemUser },
-        // { title: 'CHARTS', data: chartDataAsList, renderItem: this.renderChart },
         { title: 'STATS', data: stats, renderItem: this.renderItemStats },
+        { title: '🎣 FISHES 🎣 ', data: giversChartDataAsList, renderItem: this.renderChart },
+        { title: '🦈 SHARKS 🦈', data: takersChartDataAsList, renderItem: this.renderChart },
         { title: 'GAME HISTORY', data: games, renderItem: this.renderItemGame }
       ];
       sections = sections.filter(section => section.data != null && section.data.length > 0);

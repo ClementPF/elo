@@ -18,7 +18,6 @@ export default class UserTile extends Component {
 
   render = () => {
     const { name, pictureUrl, wins, games, active, onPress } = this.props;
-    console.log('UserTile ' + name + ' ' + pictureUrl);
 
     if (name == null) console.log('problem ' + name);
 
@@ -56,17 +55,6 @@ export default class UserTile extends Component {
         />
         <Badge value={'GAMES \n' + games} textStyle={userTileStyle.badgeTextStyle} />
       </View>
-      /*
-        <ListItem
-            title={ Moment(date).format('DD MMM') }
-            //titleNumberOfLines= {1}
-            //rightTitle={ value.toFixed(0) }
-            //rightTitleNumberOfLines= {1}
-            subtitle = { str }
-            //subtitleStyle = { {textAlign: 'right'} }
-            subtitleNumberOfLines= {5}
-            hideChevron = { true }
-        />*/
     );
   };
 }

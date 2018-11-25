@@ -77,8 +77,7 @@ class Login extends Component {
           });
           console.log('No Previous session found ');
         }
-      })
-      .done();
+      });
   }
 
   componentWillReceiveProps(nextProps) {
