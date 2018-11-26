@@ -1,7 +1,7 @@
 {
   "name": "elo",
-  "version": "1.4.0",
-  "buildNumber": "11",
+  "version": "1.4.1",
+  "buildNumber": "12",
   "devDependencies": {
     "babel-eslint": "^8.2.3",
     "babel-preset-expo": "^4.0.0",
@@ -56,6 +56,7 @@
     "redux": "3.7.2",
     "redux-devtools-extension": "^2.13.2",
     "redux-thunk": "2.2.0",
-    "victory": "^31.0.1"
+    "victory": "^31.0.1",
+    "victory-native": "^31.0.0"
   }
 }

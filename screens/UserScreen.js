@@ -19,11 +19,21 @@ import GameRowContainer from '../containers/GameRowContainer';
 import StatsCardContainer from '../containers/StatsCardContainer';
 import UserTile from '../components/UserTile';
 import EmptyResultsButton from '../components/EmptyResultsButton';
+import RivalriesPieChart from '../components/RivalriesPieChart';
 import { getUser } from '../redux/actions';
 import { invalidateData } from '../redux/actions/RefreshAction';
-import { Dimensions } from 'react-native'
+import { Dimensions } from 'react-native';
+import Svg from 'react-native-svg';
 
-import {PieChart} from 'react-native-chart-kit';
+//import {PieChart} from 'react-native-chart-kit';
+import {
+  VictoryPie,
+  VictoryChart,
+  VictoryTheme,
+  VictoryContainer,
+  VictoryLabel,
+  VictoryTooltip
+} from 'victory-native';
 import { getGamesForUser, getStatsForUser, challengeUser } from '../api/user';
 import { getStatsForUserForTournament, getRivalriesForUserForTournament } from '../api/stats';
 
@@ -50,6 +60,7 @@ class UserScreen extends Component {
     if (params) {
       this.state = {
         //  case of screen in feed or tournaments StackNavigator
+        isProfileScreen: false,
         loading: true,
         refreshing: false,
         paginating: false,
@@ -65,6 +76,7 @@ class UserScreen extends Component {
     } else {
       this.state = {
         //  case of screen in Profile StackNavigator
+        isProfileScreen: true,
         loading: true,
         refreshing: false,
         paginating: false,
@@ -194,10 +206,11 @@ class UserScreen extends Component {
                   255,
                   ${Math.floor(Math.random() * 100)},
                   ${Math.floor(Math.random() * 100)},
-                  ${Math.max(0.8,Math.min(1,0.8+Math.random()))})`;
+                  ${Math.max(0.8, Math.min(1, 0.8 + Math.random()))})`;
               return {
                 value: Math.round(elem.score),
                 name: elem.rival.username,
+                label: elem.rival.username + ": " + Math.round(elem.score),
                 color: rdmColor,
                 legendFontColor: 'dimgrey',
                 legendFontSize: 10
@@ -216,8 +229,8 @@ class UserScreen extends Component {
         page_size: pageSize
       })
         .then(response => {
-        var temp = [];
-        /*
+          var temp = [];
+          /*
         temp.push(
           response.data.map(elem => {
             return {
@@ -231,11 +244,11 @@ class UserScreen extends Component {
           })
       );*/
 
-        temp = temp[0];
+          temp = temp[0];
 
           this.setState({
             games: response.data,
-            endReached: response.data.length < pageSize,
+            endReached: response.data.length < pageSize
             //chartData: temp
           });
         })
@@ -260,43 +273,7 @@ class UserScreen extends Component {
     return getStatsForUser(username);
   };
 
-  renderChart = ({ item, index }) => {
-      const screenWidth = Dimensions.get('window').width
-    const chartConfig = {
-        color: (opacity = 1) => `rgba(10, 255, 10, ${opacity})`
-      }
-    //takers.map(item => { item.value = Math.abs(item.value); return item });
-    const giversChart = <PieChart style={{flex:1}} data={item} accessor="value" width={screenWidth} height={220} chartConfig={chartConfig} backgroundColor='white'/>;
-    return (
-      <View style={{ flex:1, flexDirection: 'column', justifyContent: 'center',
-      alignItems: 'center' }}>
-        {item.length > 0 && giversChart}
-      </View>
-    );
-  };
-
-    renderChartOG = ({ item, index }) => {
-        const screenWidth = Dimensions.get('window').width
-      var givers = item[0].filter(item => item.value > 0);
-      var takers = item[0].filter(item => item.value < 0);
-      const chartConfig = {
-          color: (opacity = 1) => `rgba(10, 255, 10, ${opacity})`
-        }
-      debugger;
-      //takers.map(item => { item.value = Math.abs(item.value); return item });
-      const giversChart = <PieChart style={{flex:1}} data={givers} accessor="value" width={screenWidth} height={220} chartConfig={chartConfig} backgroundColor='white'/>;
-      const takersChart = <PieChart style={{flex:1}} data={takers} accessor="value" width={screenWidth} height={220} chartConfig={chartConfig} backgroundColor='white'/>;
-      return (
-        <View style={{ flex:1, flexDirection: 'column', justifyContent: 'center',
-        alignItems: 'center' }}>
-        <Text style={searchableSectionList.sectionHeaderText}> 🎣 GIVERS 🎣 </Text>
-          {givers.length > 0 && giversChart}
-
-          <Text style={searchableSectionList.sectionHeaderText}> 🦈 TAKERS 🦈 </Text>
-          {takers.length > 0 && takersChart}
-        </View>
-      );
-    };
+  renderChart = ({ item, index }) => <View style={{backgroundColor:'black', borderWidth: 1, borderColor:'white'}}><RivalriesPieChart rivalries={item}/></View>;
 
   renderItemUser = ({ item, index }) => {
     const { winCount, gameCount, challenged } = this.state;
@@ -333,13 +310,11 @@ class UserScreen extends Component {
 
   renderItemGame = ({ item, index }) => (
     <TouchableOpacity onPress={() => this.props.navigation.navigate('Game', { game: item })}>
-      <GameRowContainer
-        user={item.outcomes[1].user}
-        game={item}/>
+      <GameRowContainer user={item.outcomes[1].user} game={item} />
     </TouchableOpacity>
   );
 
-  renderItemStats = ({ item, index }) => <StatsCardContainer stats={item} />
+  renderItemStats = ({ item, index }) => <StatsCardContainer stats={item} />;
 
   onClose(data) {
     //   data = {type, title, message, action}
@@ -349,29 +324,50 @@ class UserScreen extends Component {
 
   render() {
     let rendered = null;
-    const { chartData, stats, games, refreshing, pageCount, pageSize, user, endReached, loading } = this.state;
+    const {
+        isProfileScreen,
+      chartData,
+      stats,
+      games,
+      refreshing,
+      pageCount,
+      pageSize,
+      user,
+      endReached,
+      loading
+    } = this.state;
     if (loading) {
       rendered = <ActivityIndicator size="small" color="white" />;
     } else {
       const { navigate } = this.props.navigation;
 
       const userAsList = [user];
+      const chartDataClone = JSON.parse(JSON.stringify(chartData));
       //const chartDataAsList = [chartData];
 
+      var givers = chartDataClone.filter(item => item.value > 0);
+      givers.sort(function(a, b){return a.value - b.value});
+      var takers = chartDataClone.filter(item => item.value < 0);
+      takers.sort(function(a, b){return b.value - a.value});
+      takers = takers.map(elem => {
+        elem.value = Math.abs(elem.value);
+        return elem;
+      });
 
-    var givers = chartData.filter(item => item.value > 0);
-    var takers = chartData.filter(item => item.value < 0);
-
-    const giversChartDataAsList = [givers];
-    const takersChartDataAsList = [takers];
-debugger;
+      const giversChartDataAsList = [givers];
+      const takersChartDataAsList = [takers];
+      debugger;
       let sections = [
         { title: null, data: userAsList, renderItem: this.renderItemUser },
         { title: 'STATS', data: stats, renderItem: this.renderItemStats },
-        { title: '🎣 FISHES 🎣 ', data: giversChartDataAsList, renderItem: this.renderChart },
-        { title: '🦈 SHARKS 🦈', data: takersChartDataAsList, renderItem: this.renderChart },
         { title: 'GAME HISTORY', data: games, renderItem: this.renderItemGame }
       ];
+
+      if(!isProfileScreen){
+          if(givers.length > 0) {sections.splice(2, 0, { title: 'FISHES', data: [givers], renderItem: this.renderChart })}
+          if(takers.length > 0) {sections.splice(2, 0, { title: 'SHARKS', data: [takers], renderItem: this.renderChart })}
+      }
+
       sections = sections.filter(section => section.data != null && section.data.length > 0);
 
       rendered = (
@@ -431,3 +427,48 @@ export default connect(
   mapStateToProps,
   {}
 )(UserScreen);
+
+/*
+  renderChartOG = ({ item, index }) => {
+    const screenWidth = Dimensions.get('window').width;
+    var givers = item[0].filter(item => item.value > 0);
+    var takers = item[0].filter(item => item.value < 0);
+    const chartConfig = {
+      color: (opacity = 1) => `rgba(10, 255, 10, ${opacity})`
+    };
+    debugger;
+    //takers.map(item => { item.value = Math.abs(item.value); return item });
+    const giversChart = (
+      <PieChart
+        style={{ flex: 1 }}
+        data={givers}
+        accessor="value"
+        width={screenWidth}
+        height={220}
+        chartConfig={chartConfig}
+        backgroundColor="white"
+      />
+    );
+    const takersChart = (
+      <PieChart
+        style={{ flex: 1 }}
+        data={takers}
+        accessor="value"
+        width={screenWidth}
+        height={220}
+        chartConfig={chartConfig}
+        backgroundColor="white"
+      />
+    );
+    return (
+      <View
+        style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}
+      >
+        <Text style={searchableSectionList.sectionHeaderText}> 🎣 GIVERS 🎣 </Text>
+        {givers.length > 0 && giversChart}
+
+        <Text style={searchableSectionList.sectionHeaderText}> 🦈 TAKERS 🦈 </Text>
+        {takers.length > 0 && takersChart}
+      </View>
+    );
+};*/
