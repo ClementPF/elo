@@ -57,6 +57,12 @@ class UserScreen extends Component {
   constructor(props) {
     super(props);
     const { params } = props.navigation.state;
+    //this.chartRef = {};
+    this.viewabilityConfig = {
+      waitForInteraction: true,
+      viewAreaCoveragePercentThreshold: 5,
+      minimumViewTime:0,
+    }
     if (params) {
       this.state = {
         //  case of screen in feed or tournaments StackNavigator
@@ -273,7 +279,32 @@ class UserScreen extends Component {
     return getStatsForUser(username);
   };
 
-  renderChart = ({ item, index }) => <View style={{backgroundColor:'black', borderWidth: 1, borderColor:'white'}}><RivalriesPieChart rivalries={item}/></View>;
+  renderChart = (params) => {
+    const { section, item, index } = params;
+    return <View style={{
+        backgroundColor:'black',
+        borderWidth: 1,
+        borderColor:'white'}}>
+        <RivalriesPieChart
+            //ref={ref => (this.chartRef[section.title] = ref)}
+            rivalries={item}/>
+    </View>};
+
+    onViewableItemsChanged = ({viewableItems, changed}) => {
+
+        const sharkChartVisibilityHasChanged = (changed[0].item.title === 'SHARKS' && changed[0].isViewable);
+        const fishChartVisibilityHasChanged = (changed[0].item.title === 'FISHES' && changed[0].isViewable);
+
+        console.log("chart shark now visible :" + sharkChartVisibilityHasChanged );
+        console.log("chart fish now visible :" + fishChartVisibilityHasChanged );
+        if(fishChartVisibilityHasChanged){
+            this.chartRef[changed[0].item.title].startAnimation();
+            //this.setState({ fishChartVisible : fishChartVisibilityHasChanged })
+        }else if(sharkChartVisibilityHasChanged){
+            this.chartRef[changed[0].item.title].startAnimation();
+            //this.setState({ sharkChartVisible: sharkChartVisibilityHasChanged})
+        }
+    }
 
   renderItemUser = ({ item, index }) => {
     const { winCount, gameCount, challenged } = this.state;
@@ -356,7 +387,6 @@ class UserScreen extends Component {
 
       const giversChartDataAsList = [givers];
       const takersChartDataAsList = [takers];
-      debugger;
       let sections = [
         { title: null, data: userAsList, renderItem: this.renderItemUser },
         { title: 'STATS', data: stats, renderItem: this.renderItemStats },
@@ -385,6 +415,8 @@ class UserScreen extends Component {
           onRefresh={this.onRefresh}
           onEndReached={this.onEndReached}
           onEndReachedThreshold={1.5}
+          //viewabilityConfig={this.viewabilityConfig}
+          //onViewableItemsChanged={this.onViewableItemsChanged}
           ItemSeparatorComponent={({ section }) => (
             <View style={{ height: section.title == 'RANKING' ? 1 : 8 }} />
           )}
