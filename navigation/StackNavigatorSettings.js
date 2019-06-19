@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { TouchableOpacity } from 'react-native';
-import { StackNavigator } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation';
 
 import SettingsScreen from '../screens/SettingsScreen';
 
-const stackNavSettings = StackNavigator(
+const stackNavSettings = createStackNavigator(
   {
     Settings: {
       screen: SettingsScreen
@@ -13,12 +13,12 @@ const stackNavSettings = StackNavigator(
   {
     cardStyle: { backgroundColor: 'black' },
     headerMode: 'screen',
-    navigationOptions: () => ({
+    defaultNavigationOptions: () => ({
       headerTitleStyle: {
         fontWeight: 'bold',
         color: 'white'
       },
-      headerStyle: { backgroundColor: 'black' }
+      headerStyle: { backgroundColor: 'black', borderBottomWidth: 0, elevation: 0 }
     })
   }
 );

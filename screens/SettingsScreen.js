@@ -8,7 +8,7 @@ import DropdownAlert from 'react-native-dropdownalert';
 import { invalidateData } from '../redux/actions/RefreshAction';
 import { connect } from 'react-redux';
 
-import { NavigationActions } from 'react-navigation';
+import { NavigationActions, StackActions } from 'react-navigation';
 
 import { API_CONF, API_ENDPOINTS } from '../api/config.js';
 
@@ -44,7 +44,7 @@ class SettingsScreen extends React.Component {
   };
 
   navigateToLogin() {
-    const resetAction = NavigationActions.reset({
+    const resetAction = StackActions.reset({
       index: 0,
       key: null,
       actions: [NavigationActions.navigate({ routeName: 'Login' })]

@@ -27,7 +27,6 @@ function loginUserWithGoogle(google_token) {
 }
 
 function testTokenValidity(token) {
-  console.log('testTokenValidity ');
   Axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
   return Axios.get(API_ENDPOINTS.USER);
 }

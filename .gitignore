@@ -61,3 +61,4 @@ fastlane/screenshots
 .expo/settings.json
 
 app.json
+*.xcf

@@ -1,7 +1,7 @@
 import { Notifications } from 'expo';
 import React from 'react';
 import PropTypes from 'prop-types';
-import { StackNavigator } from 'react-navigation';
+import { createStackNavigator, createAppContainer } from 'react-navigation';
 import { View } from 'react-native';
 import LoginNavigator from './LoginNavigator';
 import MainTabNavigator from './MainTabNavigator';
@@ -10,7 +10,7 @@ import DropdownAlert from 'react-native-dropdownalert';
 import { invalidateData, dataInvalidated } from '../redux/actions/RefreshAction';
 import { connect } from 'react-redux';
 
-const RootStackNavigator = StackNavigator(
+const RootStackNavigator = createStackNavigator(
   {
     Login: {
       screen: LoginNavigator
@@ -21,6 +21,8 @@ const RootStackNavigator = StackNavigator(
   },
   { headerMode: 'none' }
 );
+
+const AppContainer = createAppContainer(RootStackNavigator);
 
 class RootNavigator extends React.Component {
   static propTypes = {
@@ -72,7 +74,7 @@ class RootNavigator extends React.Component {
   render() {
     return (
       <View style={{ flex: 1 }}>
-        <RootStackNavigator />
+        <AppContainer />
         <DropdownAlert ref={ref => (this.dropdown = ref)} onClose={data => this.onClose(data)} />
       </View>
     );

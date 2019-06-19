@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { TouchableOpacity } from 'react-native';
-import { StackNavigator } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation';
 
 import FeedScreen from '../screens/FeedScreen';
 import TournamentCreationScreen from '../screens/TournamentCreationScreen';
@@ -8,7 +8,7 @@ import TournamentScreen from '../screens/TournamentScreen';
 import TournamentsScreen from '../screens/TournamentsScreen';
 import UserScreen from '../screens/UserScreen';
 
-const stackNav = StackNavigator(
+const stackNav = createStackNavigator(
   {
     Tournaments: {
       screen: TournamentsScreen
@@ -26,12 +26,12 @@ const stackNav = StackNavigator(
   {
     cardStyle: { backgroundColor: 'black' },
     headerMode: 'screen',
-    navigationOptions: () => ({
+    defaultNavigationOptions: () => ({
       headerTitleStyle: {
         fontWeight: 'bold',
         color: 'white'
       },
-      headerStyle: { backgroundColor: 'black' }
+      headerStyle: { backgroundColor: 'black', borderBottomWidth: 0, elevation: 0 }
     })
   }
 );

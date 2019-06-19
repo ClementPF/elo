@@ -5,10 +5,8 @@ import { Button, Card, ListItem } from 'react-native-elements';
 import { postGameForTournament } from '../api/tournament';
 import DropdownAlert from 'react-native-dropdownalert';
 import { invalidateData, dataInvalidated } from '../redux/actions/RefreshAction';
-
+import { NavigationActions, StackActions } from 'react-navigation';
 import { connect } from 'react-redux';
-
-import { NavigationActions } from 'react-navigation';
 
 class GameFormConfirmationScreen extends Component {
   static propTypes = {
@@ -52,7 +50,7 @@ class GameFormConfirmationScreen extends Component {
       .then(response => {
         //console.log(JSON.stringify(response.data.outcomes[0].score_value));
 
-        const resetAction = NavigationActions.reset({
+        const resetAction = StackActions.reset({
           index: 1,
           actions: [
             NavigationActions.navigate({ routeName: 'GameFormWinnerLooser' }),

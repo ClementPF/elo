@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { TouchableOpacity } from 'react-native';
-import { StackNavigator } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation';
 
 import UserScreen from '../screens/UserScreen';
 
-const stackNavUserProfile = StackNavigator(
+const stackNavUserProfile = createStackNavigator(
   {
     UserProfile: {
       screen: UserScreen
@@ -13,12 +13,12 @@ const stackNavUserProfile = StackNavigator(
   {
     cardStyle: { backgroundColor: 'black' },
     headerMode: 'screen',
-    navigationOptions: () => ({
+    defaultNavigationOptions: () => ({
       headerTitleStyle: {
         fontWeight: 'bold',
         color: 'white'
       },
-      headerStyle: { backgroundColor: 'black' }
+      headerStyle: { backgroundColor: 'black', borderBottomWidth: 0, elevation: 0 }
     })
   }
 );

@@ -61,8 +61,8 @@ class UserScreen extends Component {
     this.viewabilityConfig = {
       waitForInteraction: true,
       viewAreaCoveragePercentThreshold: 5,
-      minimumViewTime:0,
-    }
+      minimumViewTime: 0
+    };
     if (params) {
       this.state = {
         //  case of screen in feed or tournaments StackNavigator
@@ -103,6 +103,10 @@ class UserScreen extends Component {
     } else if (user != null && tournamentName != null) {
       //  case of screen in feed or tournaments StackNavigator
       this.fetchData(user.username, tournamentName);
+    } else if (this.props.user != null) {
+      //  case of screen in feed or tournaments StackNavigator
+      this.setState({ user: this.props.user });
+      this.fetchData(this.props.user.username);
     }
   }
 
@@ -153,20 +157,24 @@ class UserScreen extends Component {
           tournamentName,
           page: pageCount,
           page_size: pageSize
-        }).then(response => {
-          if (response.data.length < pageSize) {
-            this.setState({ endReached: true, paginating: false });
-          } else {
-            games.push(...response.data);
-            this.setState({ games, paginating: false });
-          }
-        });
+        })
+          .then(response => {
+            console.log(response);
+            if (response.data.length < pageSize) {
+              this.setState({ endReached: true, paginating: false });
+            } else {
+              games.push(...response.data);
+              this.setState({ games, paginating: false });
+            }
+          })
+          .catch(console.error);
       }
     );
   };
 
   fetchData = (username, tournamentName) => {
     const { pageCount, pageSize } = this.state;
+    console.log('fetchData', username, tournamentName);
     Promise.all([
       this.getStats(username, tournamentName)
         .then(response => {
@@ -216,7 +224,7 @@ class UserScreen extends Component {
               return {
                 value: Math.round(elem.score),
                 name: elem.rival.username,
-                label: elem.rival.username + ": " + Math.round(elem.score),
+                label: elem.rival.username + ': ' + Math.round(elem.score),
                 color: rdmColor,
                 legendFontColor: 'dimgrey',
                 legendFontSize: 10
@@ -251,7 +259,7 @@ class UserScreen extends Component {
       );*/
 
           temp = temp[0];
-
+          console.log('fetchData', response);
           this.setState({
             games: response.data,
             endReached: response.data.length < pageSize
@@ -279,32 +287,40 @@ class UserScreen extends Component {
     return getStatsForUser(username);
   };
 
-  renderChart = (params) => {
+  renderChart = params => {
     const { section, item, index } = params;
-    return <View style={{
-        backgroundColor:'black',
-        borderWidth: 1,
-        borderColor:'white'}}>
+    return (
+      <View
+        style={{
+          backgroundColor: 'black',
+          borderWidth: 1,
+          borderColor: 'white'
+        }}
+      >
         <RivalriesPieChart
-            //ref={ref => (this.chartRef[section.title] = ref)}
-            rivalries={item}/>
-    </View>};
+          //ref={ref => (this.chartRef[section.title] = ref)}
+          rivalries={item}
+        />
+      </View>
+    );
+  };
 
-    onViewableItemsChanged = ({viewableItems, changed}) => {
+  onViewableItemsChanged = ({ viewableItems, changed }) => {
+    const sharkChartVisibilityHasChanged =
+      changed[0].item.title === 'SHARKS' && changed[0].isViewable;
+    const fishChartVisibilityHasChanged =
+      changed[0].item.title === 'FISHES' && changed[0].isViewable;
 
-        const sharkChartVisibilityHasChanged = (changed[0].item.title === 'SHARKS' && changed[0].isViewable);
-        const fishChartVisibilityHasChanged = (changed[0].item.title === 'FISHES' && changed[0].isViewable);
-
-        console.log("chart shark now visible :" + sharkChartVisibilityHasChanged );
-        console.log("chart fish now visible :" + fishChartVisibilityHasChanged );
-        if(fishChartVisibilityHasChanged){
-            this.chartRef[changed[0].item.title].startAnimation();
-            //this.setState({ fishChartVisible : fishChartVisibilityHasChanged })
-        }else if(sharkChartVisibilityHasChanged){
-            this.chartRef[changed[0].item.title].startAnimation();
-            //this.setState({ sharkChartVisible: sharkChartVisibilityHasChanged})
-        }
+    console.log('chart shark now visible :' + sharkChartVisibilityHasChanged);
+    console.log('chart fish now visible :' + fishChartVisibilityHasChanged);
+    if (fishChartVisibilityHasChanged) {
+      this.chartRef[changed[0].item.title].startAnimation();
+      //this.setState({ fishChartVisible : fishChartVisibilityHasChanged })
+    } else if (sharkChartVisibilityHasChanged) {
+      this.chartRef[changed[0].item.title].startAnimation();
+      //this.setState({ sharkChartVisible: sharkChartVisibilityHasChanged})
     }
+  };
 
   renderItemUser = ({ item, index }) => {
     const { winCount, gameCount, challenged } = this.state;
@@ -356,7 +372,7 @@ class UserScreen extends Component {
   render() {
     let rendered = null;
     const {
-        isProfileScreen,
+      isProfileScreen,
       chartData,
       stats,
       games,
@@ -377,9 +393,13 @@ class UserScreen extends Component {
       //const chartDataAsList = [chartData];
 
       var givers = chartDataClone.filter(item => item.value > 0);
-      givers.sort(function(a, b){return a.value - b.value});
+      givers.sort(function(a, b) {
+        return a.value - b.value;
+      });
       var takers = chartDataClone.filter(item => item.value < 0);
-      takers.sort(function(a, b){return b.value - a.value});
+      takers.sort(function(a, b) {
+        return b.value - a.value;
+      });
       takers = takers.map(elem => {
         elem.value = Math.abs(elem.value);
         return elem;
@@ -393,9 +413,13 @@ class UserScreen extends Component {
         { title: 'GAME HISTORY', data: games, renderItem: this.renderItemGame }
       ];
 
-      if(!isProfileScreen){
-          if(givers.length > 0) {sections.splice(2, 0, { title: 'FISHES', data: [givers], renderItem: this.renderChart })}
-          if(takers.length > 0) {sections.splice(2, 0, { title: 'SHARKS', data: [takers], renderItem: this.renderChart })}
+      if (!isProfileScreen) {
+        if (givers.length > 0) {
+          sections.splice(2, 0, { title: 'FISHES', data: [givers], renderItem: this.renderChart });
+        }
+        if (takers.length > 0) {
+          sections.splice(2, 0, { title: 'SHARKS', data: [takers], renderItem: this.renderChart });
+        }
       }
 
       sections = sections.filter(section => section.data != null && section.data.length > 0);

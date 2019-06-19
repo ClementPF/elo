@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { TouchableOpacity } from 'react-native';
-import { StackNavigator } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation';
 
 import GameFormUserScreen from '../screens/GameFormUserScreen';
 import GameFormTournamentScreen from '../screens/GameFormTournamentScreen';
@@ -11,7 +11,7 @@ import GameFormResultScreen from '../screens/GameFormResultScreen';
 import GameFormTieScreen from '../screens/GameFormTieScreen';
 import GameFormConfirmationScreen from '../screens/GameFormConfirmationScreen';
 
-const stackNavGameForm = StackNavigator(
+const stackNavGameForm = createStackNavigator(
   {
     GameFormWinnerLooser: {
       screen: GameFormWinnerLooserScreen
@@ -43,14 +43,12 @@ const stackNavGameForm = StackNavigator(
       backgroundColor: 'black'
     },
     headerMode: 'screen',
-    navigationOptions: () => ({
+    defaultNavigationOptions: () => ({
       headerTitleStyle: {
         fontWeight: 'bold',
         color: 'white'
       },
-      headerStyle: {
-        backgroundColor: 'black'
-      }
+      headerStyle: { backgroundColor: 'black', borderBottomWidth: 0, elevation: 0 }
     })
   }
 );

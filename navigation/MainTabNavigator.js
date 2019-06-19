@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { TabNavigator, TabBarBottom } from 'react-navigation';
+import { createBottomTabNavigator, TabBarBottom } from 'react-navigation';
 
 import Colors from '../constants/Colors';
 
@@ -13,7 +13,7 @@ import stackNavTournaments from './StackNavigatorTournaments';
 import stackNavSettings from './StackNavigatorSettings';
 import stackNaveUserProfile from './StackNavigatorUserProfile';
 
-export default TabNavigator(
+export default createBottomTabNavigator(
   {
     TabFeed: {
       screen: stackNavFeed,
@@ -47,7 +47,7 @@ export default TabNavigator(
     }
   },
   {
-    navigationOptions: ({ navigation }) => ({
+    defaultNavigationOptions: ({ navigation }) => ({
       tabBarIcon: ({ focused }) => {
         const { routeName } = navigation.state;
         let iconName;
@@ -94,7 +94,3 @@ export default TabNavigator(
     swipeEnabled: false
   }
 );
-
-TabNavigator.propTypes = {
-  focused: PropTypes.bool
-};

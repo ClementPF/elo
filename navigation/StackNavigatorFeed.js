@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { TouchableOpacity } from 'react-native';
-import { StackNavigator } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation';
 
 import FeedScreen from '../screens/FeedScreen';
 import TournamentScreen from '../screens/TournamentScreen';
 import TournamentsScreen from '../screens/TournamentsScreen';
 import UserScreen from '../screens/UserScreen';
 
-const stackNavFeed = StackNavigator(
+const stackNavFeed = createStackNavigator(
   {
     Feed: {
       screen: FeedScreen
@@ -22,12 +22,12 @@ const stackNavFeed = StackNavigator(
   {
     cardStyle: { backgroundColor: 'black' },
     headerMode: 'screen',
-    navigationOptions: () => ({
+    defaultNavigationOptions: () => ({
       headerTitleStyle: {
         fontWeight: 'bold',
         color: 'white'
       },
-      headerStyle: { backgroundColor: 'black' }
+      headerStyle: { backgroundColor: 'black', borderBottomWidth: 0, elevation: 0 }
     })
   }
 );

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Platform, StatusBar, StyleSheet, View, SafeAreaView } from 'react-native';
+import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { AppLoading, Asset, Font } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import RootNavigation from './navigation/RootNavigation';
@@ -30,13 +30,13 @@ export default class App extends React.Component {
   render() {
     return (
       <Provider store={store}>
-        <SafeAreaView style={styles.safeArea}>
+        <View style={styles.safeArea}>
           <View style={styles.container}>
             {Platform.OS === 'ios' && <StatusBar barStyle="light-content" />}
             {Platform.OS === 'android' && <View style={styles.statusBarUnderlay} />}
             <RootNavigation />
           </View>
-        </SafeAreaView>
+        </View>
       </Provider>
     );
   }

@@ -2,13 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View } from 'react-native';
 import { FormLabel, FormInput, Button } from 'react-native-elements';
-
 import DropdownAlert from 'react-native-dropdownalert';
 import { postTournament } from '../api/tournament';
-
 import { invalidateData, dataInvalidated } from '../redux/actions/RefreshAction';
 import { connect } from 'react-redux';
-import { NavigationActions } from 'react-navigation';
+import { NavigationActions, StackActions } from 'react-navigation';
 
 class TournamentCreationScreen extends Component {
   static propTypes = {
@@ -64,7 +62,7 @@ class TournamentCreationScreen extends Component {
   };
 
   onClose(data) {
-    const resetAction = NavigationActions.reset({
+    const resetAction = StackActions.reset({
       index: 0,
       actions: [NavigationActions.navigate({ routeName: 'Tournaments' })]
     });
