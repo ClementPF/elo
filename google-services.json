@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "975514203843",
+    "firebase_url": "https://sharkulator-1526354981039.firebaseio.com",
+    "project_id": "sharkulator-1526354981039",
+    "storage_bucket": "sharkulator-1526354981039.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:975514203843:android:8792874bb49ca570",
+        "android_client_info": {
+          "package_name": "com.elo.sharkulator"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "975514203843-28qehmdnj49oefjubbg99o1n68ahj3f7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.elo.sharkulator",
+            "certificate_hash": "1b95f5d037054b88dac47ad816029c33aa7ae21a"
+          }
+        },
+        {
+          "client_id": "975514203843-kqho0mtodfj50penbqrt1voq9hs34j57.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.elo.sharkulator",
+            "certificate_hash": "90988e0e97c34c9c94c0947a23df779f97ca4f5f"
+          }
+        },
+        {
+          "client_id": "975514203843-orbnpufagngsecqdg13hkm8rloleakre.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5N0oV7iBPn0Bvhe3b-7auENANsU7YxdE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "975514203843-orbnpufagngsecqdg13hkm8rloleakre.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "975514203843-4iitkt007snetchd63d8v6e96vu7qnle.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.elo.sharkulator"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
