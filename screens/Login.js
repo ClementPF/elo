@@ -1,8 +1,20 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import Constants from 'expo-constants';
 import * as Facebook from 'expo-facebook';
-import { Google } from 'expo';
-import { View, Image, Text, FlatList, AsyncStorage } from 'react-native';
+import * as GoogleSignIn from 'expo-google-sign-in';
+import _ from 'lodash';
+
+import {
+  View,
+  Image,
+  Text,
+  FlatList,
+  AsyncStorage,
+  Alert,
+  Platform,
+  StyleSheet
+} from 'react-native';
 import { SocialIcon } from 'react-native-elements';
 import {
   loginUserWithFacebook,
@@ -16,6 +28,36 @@ import registerForPushNotificationsAsync from '../api/registerForPushNotificatio
 import { NavigationActions, StackActions } from 'react-navigation';
 
 import { API_CONF, API_ENDPOINTS } from '../api/config.js';
+
+const isInClient = Constants.appOwnership === 'expo';
+if (isInClient) {
+  GoogleSignIn.allowInClient();
+}
+
+const clientIdForUseInTheExpoClient =
+  '975514203843-4bkrrov84hiepp4a6r8ngci9j1o8lnhk.apps.googleusercontent.com';
+
+/*
+ * Redefine this one with your client ID
+ *
+ * The iOS value is the one that really matters,
+ * on Android this does nothing because the client ID
+ * is read from the google-services.json.
+ */
+const yourClientIdForUseInStandalone = Platform.select({
+  android: androidStandaloneAppClientId,
+  ios: iosStandaloneAppClientId
+});
+
+const androidClientId = '975514203843-4bkrrov84hiepp4a6r8ngci9j1o8lnhk.apps.googleusercontent.com';
+const iosClientId = '975514203843-jriblf35irfbh0e8e49ojeq2q4egtc98.apps.googleusercontent.com';
+const iosStandaloneAppClientId =
+  '975514203843-4iitkt007snetchd63d8v6e96vu7qnle.apps.googleusercontent.com';
+const androidStandaloneAppClientId =
+  '975514203843-kqho0mtodfj50penbqrt1voq9hs34j57.apps.googleusercontent.com';
+
+const clientId = isInClient ? clientIdForUseInTheExpoClient : yourClientIdForUseInStandalone;
+
 class Login extends Component {
   static propTypes = {
     navigation: PropTypes.object,
@@ -34,47 +76,77 @@ class Login extends Component {
     };
   }
 
+  async componentDidMount() {
+    //try {
+    await GoogleSignIn.initAsync({
+      isOfflineEnabled: false,
+      isPromptEnabled: true,
+      webClientId: '975514203843-orbnpufagngsecqdg13hkm8rloleakre.apps.googleusercontent.com'
+    });
+    //} catch ({ message }) {
+    // alert('GoogleSignIn.initAsync(): ' + message);
+    //}
+  }
+
   componentWillMount() {
     let packageMod = require('../package.json');
     this.setState({
-      appVersion: packageMod.version + 'b' + packageMod.buildNumber,
-      loading: true
+      appVersion: packageMod.version + 'b' + packageMod.buildNumber
     });
-
-    const t = AsyncStorage.getItem('@Store:token')
-      .then(value => JSON.parse(value))
+    this.restoreSession()
       .then(tokens => {
-        if (tokens != null) {
-          console.log('Previous access_token found ' + tokens.access_token);
-          console.log('Previous refresh_token found ' + tokens.refresh_token);
-
-          testTokenValidity(tokens.access_token)
-            .then(response => {
-              //this.dropdown.alertWithType('info', 'Info', 'Valid Session Found');
-
-              console.log('Valid Session Found ');
-              this.setState({
-                loading: false
-              });
-              this.navigateToHome();
-            })
-            .catch(error => {
-              //this.onError('Previous session is invalid \n' + error);
-              refreshToken(tokens.refresh_token).then(response => {
-                this.setState({
-                  loading: false
-                });
-                this.onLoggedIn(response.data);
-              });
-            });
-        } else {
-          this.setState({
-            loading: false
-          });
-          console.log('No Previous session found ');
-        }
+        const { access_token, refresh_token } = tokens;
+        console.log('Previous access_token found ' + access_token);
+        console.log('Previous refresh_token found ' + refresh_token);
+        this.setState({
+          loading: true
+        });
+        return this.validateRestoredSession({ access_token, refresh_token });
+      })
+      .then(session => {
+        this.setState({ loading: false });
+        this.onLoggedIn(session);
+      })
+      .catch(error => {
+        console.log(error);
       });
   }
+
+  restoreSession = () => {
+    return new Promise((resolve, reject) => {
+      AsyncStorage.getItem('@Store:token')
+        .then(value => JSON.parse(value))
+        .then(tokens => {
+          if (!_.isNil(tokens)) {
+            const { access_token, refresh_token } = tokens;
+            resolve({ access_token, refresh_token });
+          } else {
+            reject(new Error('No previous session found'));
+          }
+        })
+        .catch(error => {
+          reject(error);
+        });
+    });
+  };
+
+  validateRestoredSession = ({ access_token, refresh_token }) => {
+    return new Promise((resolve, reject) => {
+      testTokenValidity(access_token)
+        .then(response => {
+          resolve({ access_token, refresh_token });
+        })
+        .catch(error => {
+          refreshToken(refresh_token)
+            .then(response => {
+              resolve(response.data);
+            })
+            .catch(error => {
+              reject(error);
+            });
+        });
+    });
+  };
 
   componentWillReceiveProps(nextProps) {
     console.log('componentWillReceiveProps' + nextProps);
@@ -85,57 +157,32 @@ class Login extends Component {
 
   componentWillUnmount() {}
 
-  async signInWithFacebookAsync() {
-    const { type, token } = await Facebook.logInWithReadPermissionsAsync('1169707689780759', {
-      permissions: ['email', 'public_profile']
-    }).catch(error => console.error);
-
-    if (type === 'success') {
-      console.log('FB login success - token : ' + token);
-
-      loginUserWithFacebook(token)
-        .then(response => {
-          this.onLoggedIn(response.data);
-        })
-        .catch(error => {
-          this.onError('User failed to log in ' + error);
-        });
-    }
-  }
-
-  async signInWithGoogleAsync() {
+  signInWithFacebookAsync = async () => {
     try {
-      const result = await Google.logInAsync({
-        behavior: 'web',
-        androidClientId: '975514203843-4bkrrov84hiepp4a6r8ngci9j1o8lnhk.apps.googleusercontent.com',
-        iosClientId: '975514203843-jriblf35irfbh0e8e49ojeq2q4egtc98.apps.googleusercontent.com',
-        iosStandaloneAppClientId:
-          '975514203843-4iitkt007snetchd63d8v6e96vu7qnle.apps.googleusercontent.com',
-        androidStandaloneAppClientId:
-          '975514203843-kqho0mtodfj50penbqrt1voq9hs34j57.apps.googleusercontent.com',
-        scopes: ['profile', 'email']
-      });
-
-      if (result.type === 'success') {
-        console.log('success');
-        loginUserWithGoogle(result.idToken)
+      await GoogleSignIn.askForPlayServicesAsync();
+      const results = await GoogleSignIn.signInAsync();
+      const {
+        type,
+        user: {
+          auth: { accessToken, idToken }
+        }
+      } = results;
+      console.log(results);
+      if (type === 'success') {
+        loginUserWithGoogle(idToken)
           .then(response => {
             this.onLoggedIn(response.data);
           })
           .catch(error => {
             this.onError('User failed to log in ' + error);
           });
-      } else {
-        console.log(result.type);
-        return { cancelled: true };
       }
-    } catch (e) {
-      console.log('error');
-      return { error: true };
+    } catch ({ message }) {
+      console.error('login: Error:' + message);
     }
-  }
+  };
 
-  onLoggedIn(data) {
+  onLoggedIn = data => {
     this.dropdown.alertWithType('info', 'Info', 'User Logged in Successfully');
     Axios.defaults.headers.common['Authorization'] = 'Bearer ' + data.access_token;
     AsyncStorage.setItem('@Store:token', JSON.stringify(data));
@@ -143,7 +190,7 @@ class Login extends Component {
     console.log('Storing ' + data);
     registerForPushNotificationsAsync();
     this.navigateToHome();
-  }
+  };
 
   // This function will navigate to the Home screen and remove the login from the stack
   navigateToHome() {
@@ -178,58 +225,31 @@ class Login extends Component {
       );
     }
     return (
-      <View style={{ backgroundColor: 'white', flex: 1 }}>
-        <View style={{ justifyContent: 'center', flex: 4, alignItems: 'center' }}>
-          <Image
-            style={{ width: 256, height: 256 }}
-            source={require('../assets/images/icon.png')}
-          />
+      <View style={loginStyle.container}>
+        <View style={loginStyle.imageContainer}>
+          <Image style={loginStyle.logo} source={require('../assets/images/icon.png')} />
         </View>
-        <View style={{ flex: 1 }}>
-          <Text
-            style={{
-              margin: 16,
-              justifyContent: 'center',
-              textAlign: 'center',
-              fontSize: 16,
-              fontWeight: 'bold',
-              color: 'darkslategrey'
-            }}
-          >
-            {' '}
-            {this.state.welcome_text}{' '}
-          </Text>
+        <View style={loginStyle.welcomeTextContainer}>
+          <Text style={loginStyle.welcomeText}>{this.state.welcome_text}</Text>
         </View>
-        <View style={{ flex: 2, flexDirection: 'column' }}>
+        <View style={loginStyle.buttonsContainer}>
           <SocialIcon
             title="Sign In With Facebook"
             button={true}
-            onPress={() => {
-              this.signInWithFacebookAsync();
-            }}
+            onPress={this.signInWithFacebookAsync}
             type="facebook"
           />
           <SocialIcon
             title="Sign In With Google"
             button={true}
-            onPress={() => {
-              this.signInWithGoogleAsync();
-            }}
+            onPress={this.signInWithFacebookAsync}
             type="google-plus-official"
           />
         </View>
-        <Text
-          style={{
-            textAlign: 'center',
-            position: 'absolute',
-            bottom: 0,
-            width: '100%'
-          }}
-        >
-          {' '}
-          {'Version : ' +
-            this.state.appVersion +
-            (API_CONF.BASE_URL == API_CONF.BASE_LOCAL_URL ? 'L' : 'R')}{' '}
+        <Text style={loginStyle.versionText}>
+          {`Version : ${this.state.appVersion} ${
+            API_CONF.BASE_URL == API_CONF.BASE_LOCAL_URL ? 'L' : 'R'
+          }`}
         </Text>
 
         <DropdownAlert ref={ref => (this.dropdown = ref)} onClose={data => this.onClose(data)} />
@@ -237,5 +257,27 @@ class Login extends Component {
     );
   }
 }
+
+loginStyle = StyleSheet.create({
+  container: { backgroundColor: 'white', flex: 1 },
+  imageContainer: { justifyContent: 'center', flex: 4, alignItems: 'center' },
+  welcomeText: {
+    margin: 16,
+    justifyContent: 'center',
+    textAlign: 'center',
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'darkslategrey'
+  },
+  welcomeTextContainer: { flex: 1 },
+  logo: { width: 256, height: 256 },
+  buttonsContainer: { flex: 2, flexDirection: 'column' },
+  versionText: {
+    textAlign: 'center',
+    position: 'absolute',
+    bottom: 0,
+    width: '100%'
+  }
+});
 
 export default Login;

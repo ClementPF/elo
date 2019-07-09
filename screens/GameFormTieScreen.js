@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { BarCodeScanner, Permissions } from 'expo';
+import * as Permissions from 'expo-permissions';
+import { BarCodeScanner } from 'expo-barcode-scanner';
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Button, SearchBar, Icon, ListItem } from 'react-native-elements';
 import SearchableFlatList from '../components/SearchableFlatList';
