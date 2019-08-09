@@ -80,7 +80,7 @@ export default class GameFormQRScannerScreen extends React.Component {
         >
           <TournamentRow
             tournament={this.state.tournament.display_name}
-            tournament_id_name={this.state.tournament.name}
+            tournamentIdName={this.state.tournament.name}
             sport={this.state.tournament.sport.name}
           />
           <Button
@@ -252,7 +252,7 @@ export default class GameFormQRScannerScreen extends React.Component {
           >
             <TournamentRow
               tournament={this.state.tournament.display_name}
-              tournament_id_name={this.state.tournament.name}
+              tournamentIdName={this.state.tournament.name}
               sport={this.state.tournament.sport.name}
             />
             <Button

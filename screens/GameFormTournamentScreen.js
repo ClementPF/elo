@@ -105,7 +105,7 @@ class GameFormTournamentScreen extends Component {
     <TouchableOpacity onPress={() => this.onPress(item)}>
       <TournamentRow
         tournament={item.display_name}
-        tournament_id_name={item.name}
+        tournamentIdName={item.name}
         sport={item.sport.name}
       />
     </TouchableOpacity>

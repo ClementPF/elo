@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, StatusBar, StyleSheet, SectionList, TouchableOpacity } from 'react-native';
 import { Button, SearchBar, Icon, ListItem } from 'react-native-elements';
-import SearchableFlatList from '../components/SearchableFlatList';
+import {
+  SearchableFlatList,
+  UserStatRow,
+  TournamentRow,
+  SearchableSectionList
+} from '../components';
 import { getTournaments, getUsersForTournament } from '../api/tournament';
-import { getTournamentsForUser } from '../api/user';
-import { getUser, getUsers } from '../api/user';
-import UserStatRow from '../components/UserStatRow';
-import TournamentRow from '../components/TournamentRow';
-import SearchableSectionList from '../components/SearchableSectionList';
+import { getTournamentsForUser, getUser, getUsers } from '../api/user';
 import QRCode from 'react-native-qrcode-svg';
 import { fetchUser } from '../redux/actions';
 import { connect } from 'react-redux';
@@ -43,8 +44,6 @@ class GameFormQRCodeScreen extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    //console.log("GameFormQRCodeScreen - componentWillReceiveProps " + JSON.stringify(nextProps));
-
     if (nextProps.error && !this.props.error) {
       this.props.alertWithType('error', 'Error', nextProps.error);
     }
@@ -55,96 +54,89 @@ class GameFormQRCodeScreen extends Component {
   }
 
   // called when navigating back from tournament selection
-  returnData(data) {
+  returnData = data => {
     this.setState({ tournament: data });
-  }
+  };
 
   render() {
-    let logoFromFile = require('../assets/images/icon.png');
-    let jsonObj = {
-      username: this.props.user.username,
-      tournament: this.state.tournament.name
+    const {
+      user: { username },
+      navigation
+    } = this.props;
+    const { tournament, text } = this.state;
+    const { display_name: displayName, name, sport } = tournament;
+
+    const logoFromFile = require('../assets/images/icon.png');
+
+    const qrData = {
+      username,
+      tournament: tournament.name
     };
 
-    console.log('QR Code obj : ' + JSON.stringify(jsonObj));
+    console.log('QR Code obj : ' + JSON.stringify(qrData));
     return (
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: 'white',
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}
-      >
-        <View
-          style={{
-            width: '100%',
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginTop: 8
-          }}
-        >
-          <TournamentRow
-            tournament={this.state.tournament.display_name}
-            tournament_id_name={this.state.tournament.name}
-            sport={this.state.tournament.sport.name}
-          />
+      <View style={styles.container}>
+        <View style={styles.tournamentHeader}>
+          <TournamentRow tournament={displayName} tournamentIdName={name} sport={sport.name} />
           <Button
             icon={{ name: 'edit' }}
             title={'EDIT'}
-            buttonStyle={{
-              backgroundColor: '#CE2728',
-              borderColor: 'transparent',
-              borderWidth: 0,
-              borderRadius: 10
-            }}
+            buttonStyle={styles.button}
             onPress={() => {
-              this.props.navigation.navigate('GameFormTournament', {
-                returnData: this.returnData.bind(this)
-              });
+              navigation.navigate('GameFormTournament', returnData);
             }}
           />
         </View>
-        <View
-          style={{
-            width: '100%',
-            height: 1,
-            backgroundColor: 'black'
-          }}
-        />
-
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: 'white',
-            margin: 8,
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}
-        >
-          <Text
-            style={{
-              margin: 16,
-              justifyContent: 'center',
-              textAlign: 'center',
-              fontSize: 16,
-              fontWeight: 'bold',
-              color: 'black'
-            }}
-          >
-            {' '}
-            {this.state.text}{' '}
-          </Text>
-          <QRCode
-            value={JSON.stringify(jsonObj)}
-            //value={ JSON.stringify(jsonObj) }
-            size={200}
-          />
+        <View style={styles.hackyContainer} />
+        <View style={styles.QRContainer}>
+          <Text style={styles.text}>{text}</Text>
+          <QRCode value={JSON.stringify(qrData)} size={200} />
         </View>
       </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  tournamentHeader: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 8
+  },
+  button: {
+    backgroundColor: '#CE2728',
+    borderColor: 'transparent',
+    borderWidth: 0,
+    borderRadius: 10
+  },
+  text: {
+    margin: 16,
+    justifyContent: 'center',
+    textAlign: 'center',
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'black'
+  },
+  hackyContainer: {
+    width: '100%',
+    height: 1,
+    backgroundColor: 'black'
+  },
+  QRContainer: {
+    flex: 1,
+    backgroundColor: 'white',
+    margin: 8,
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
+});
 
 const mapStateToProps = ({ userReducer }) => {
   //console.log('GameFormQRCodeScreen - mapStateToProps userReducer:' + JSON.stringify(userReducer));

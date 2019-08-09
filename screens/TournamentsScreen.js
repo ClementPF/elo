@@ -100,7 +100,7 @@ class TournamentsScreen extends Component {
     <TouchableOpacity onPress={this._onPressRow.bind(i, item)}>
       <TournamentRow
         tournament={item.display_name}
-        tournament_id_name={item.name}
+        tournamentIdName={item.name}
         sport={item.sport.name}
       />
     </TouchableOpacity>
