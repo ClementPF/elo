@@ -25,7 +25,7 @@ import {
 import Axios from 'axios';
 import DropdownAlert from 'react-native-dropdownalert';
 import registerForPushNotificationsAsync from '../api/registerForPushNotificationsAsync';
-import { NavigationActions, StackActions } from 'react-navigation';
+import { SwitchActions, NavigationActions, StackActions } from 'react-navigation';
 
 import { API_CONF, API_ENDPOINTS } from '../api/config.js';
 
@@ -108,7 +108,7 @@ class Login extends Component {
         this.onLoggedIn(session);
       })
       .catch(error => {
-        console.log(error);
+        console.log('restoreSession catch', error);
       });
   }
 
@@ -157,7 +157,7 @@ class Login extends Component {
 
   componentWillUnmount() {}
 
-  signInWithFacebookAsync = async () => {
+  signInWithGoogleAsync = async () => {
     try {
       await GoogleSignIn.askForPlayServicesAsync();
       const results = await GoogleSignIn.signInAsync();
@@ -182,6 +182,24 @@ class Login extends Component {
     }
   };
 
+  signInWithFacebookAsync = async () => {
+    const { type, token } = await Facebook.logInWithReadPermissionsAsync('1169707689780759', {
+      permissions: ['email', 'public_profile']
+    }).catch(error => console.error);
+
+    if (type === 'success') {
+      console.log('FB login success - token : ' + token);
+
+      loginUserWithFacebook(token)
+        .then(response => {
+          this.onLoggedIn(response.data);
+        })
+        .catch(error => {
+          this.onError('User failed to log in ' + error);
+        });
+    }
+  };
+
   onLoggedIn = data => {
     this.dropdown.alertWithType('info', 'Info', 'User Logged in Successfully');
     Axios.defaults.headers.common['Authorization'] = 'Bearer ' + data.access_token;
@@ -200,8 +218,8 @@ class Login extends Component {
       key: null,
       actions: [NavigationActions.navigate({ routeName: 'Main' })]
     });
-
-    this.props.navigation.dispatch(NavigationActions.navigate({ routeName: 'Main' }));
+    this.props.navigation.dispatch(SwitchActions.jumpTo({ routeName: 'Main' }));
+    //this.props.navigation.dispatch(NavigationActions.navigate({ routeName: 'Main' }));
   }
 
   onError = error => {
@@ -242,7 +260,7 @@ class Login extends Component {
           <SocialIcon
             title="Sign In With Google"
             button={true}
-            onPress={this.signInWithFacebookAsync}
+            onPress={this.signInWithGoogleAsync}
             type="google-plus-official"
           />
         </View>

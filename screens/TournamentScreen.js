@@ -84,19 +84,20 @@ class TournamentScreen extends Component {
   );
 
   fetchData = tournamentName => {
+    const { pageCount, pageSize } = this.state;
     Promise.all([
       getStatsForTournament(tournamentName)
-        .then(response => {
-          this.setState({ stats: response.data });
+        .then(stats => {
+          this.setState({ stats });
         })
         .catch(error => {
           this.onError(`failed to get stats for tournament : ${+error}`);
         }),
-      getGamesForTournament(tournamentName, this.state.pageCount, this.state.pageSize)
-        .then(response => {
+      getGamesForTournament(tournamentName, pageCount, pageSize)
+        .then(games => {
           this.setState({
-            games: response.data,
-            endReached: response.data.length < this.state.pageCount
+            games,
+            endReached: games.length < pageCount
           });
         })
         .catch(error => {
@@ -124,12 +125,12 @@ class TournamentScreen extends Component {
       }),
       () => {
         const { tournamentName, pageSize, pageCount } = this.state;
-        getGamesForTournament(tournamentName, pageCount, pageSize).then(response => {
-          if (response.data.length == 0) {
+        getGamesForTournament(tournamentName, pageCount, pageSize).then(games => {
+          if (games.length == 0) {
             this.setState({ endReached: true, paginating: false });
           } else {
             const { games } = this.state;
-            games.push(...response.data);
+            games.push(...games);
             this.setState({ games, paginating: false });
           }
         });

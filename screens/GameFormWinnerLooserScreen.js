@@ -35,74 +35,60 @@ class GameFormWinnerLooserScreen extends Component {
   componentWillMount() {}
 
   render() {
+    const { user, navigation, tournament } = this.props;
+    const { text } = this.state;
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text
-          style={{
-            margin: 16,
-            justifyContent: 'center',
-            textAlign: 'center',
-            fontSize: 16,
-            fontWeight: 'bold',
-            color: 'white'
-          }}
-        >
-          {' '}
-          {this.state.text}{' '}
-        </Text>
+      <View style={styles.container}>
+        <Text style={styles.text}>{text}</Text>
 
         <Button
           title="WON"
-          titleStyle={{ fontWeight: '700' }}
-          buttonStyle={gameFormStyle.button}
+          titleStyle={styles.buttonLabel}
+          buttonStyle={styles.button}
           onPress={() => {
-            if (this.props.tournament != null) {
-              this.props.navigation.navigate('GameFormQRCode', {
-                tournament: this.props.tournament,
-                winner: this.props.user,
-                isWinner: true
+            if (tournament != null) {
+              navigation.navigate('GameFormQRCode', {
+                tournament
               });
             } else {
-              this.props.navigation.navigate('GameFormTournament', {
-                winner: this.props.user,
-                isWinner: true
+              navigation.navigate('GameFormTournament', {
+                winner: user
               });
             }
           }}
         />
-        <Button
-          title="TIED"
-          titleStyle={{ fontWeight: '700' }}
-          buttonStyle={gameFormStyle.button}
-          onPress={() => {
-            if (this.props.tournament != null) {
-              this.props.navigation.navigate('GameFormTie', {
-                tournament: this.props.tournament,
-                winner: this.props.user,
-                isWinner: true
-              });
-            } else {
-              this.props.navigation.navigate('GameFormTournament', {
-                winner: this.props.user,
-                isWinner: true
-              });
-            }
-          }}
-        />
+        {false && (
+          <Button
+            title="TIED"
+            titleStyle={styles.buttonLabel}
+            buttonStyle={styles.button}
+            onPress={() => {
+              if (tournament != null) {
+                navigation.navigate('GameFormTie', {
+                  tournament,
+                  looser: user
+                });
+              } else {
+                navigation.navigate('GameFormTournament', {
+                  winner: user
+                });
+              }
+            }}
+          />
+        )}
         <Button
           title="LOST"
-          titleStyle={{ fontWeight: '700' }}
-          buttonStyle={gameFormStyle.button}
+          titleStyle={styles.buttonLabel}
+          buttonStyle={styles.button}
           onPress={() => {
-            if (this.props.tournament != null) {
-              this.props.navigation.navigate('GameFormQRScanner', {
-                tournament: this.props.tournament,
-                isWinner: false
+            if (tournament != null) {
+              navigation.navigate('GameFormQRScanner', {
+                tournament,
+                user
               });
             } else {
-              this.props.navigation.navigate('GameFormTournament', {
-                winner: this.props.user,
-                isWinner: false
+              navigation.navigate('GameFormTournament', {
+                looser: user
               });
             }
           }}
@@ -112,7 +98,8 @@ class GameFormWinnerLooserScreen extends Component {
   }
 }
 
-gameFormStyle = StyleSheet.create({
+const styles = StyleSheet.create({
+  container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   button: {
     backgroundColor: '#CE2728',
     width: 300,
@@ -121,6 +108,15 @@ gameFormStyle = StyleSheet.create({
     borderWidth: 0,
     borderRadius: 5,
     margin: 8
+  },
+  buttonLabel: { fontWeight: '700' },
+  text: {
+    margin: 16,
+    justifyContent: 'center',
+    textAlign: 'center',
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'white'
   }
 });
 

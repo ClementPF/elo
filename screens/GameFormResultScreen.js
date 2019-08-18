@@ -13,27 +13,29 @@ class GameFormResultScreen extends Component {
   };
 
   static navigationOptions = ({ navigation }) => {
-    const params = navigation.state.params;
+    const { name } = navigation.state.params;
     return {
-      title: navigation.state.params.name,
+      title: name,
       headerTintColor: 'white'
     };
   };
 
   constructor(props) {
     super(props);
+    const { game } = props.navigation.state.params;
     this.state = {
-      game: props.navigation.state.params.game
+      game
     };
   }
 
   componentWillMount() {}
 
   render() {
+    const { game } = this.state;
     return (
       <View style={{ flex: 1 }}>
         <Card title="RESULTS">
-          <GameRowContainer user={this.state.game.outcomes[0].user} game={this.state.game} />
+          <GameRowContainer user={game.outcomes[0].user} game={game} />
         </Card>
       </View>
     );

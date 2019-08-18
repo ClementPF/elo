@@ -15,6 +15,7 @@ import {
 } from '../../constants';*/
 
 export function fetchUser() {
+  console.log('fetchUser');
   return function action(dispatch) {
     dispatch({ type: GET_USER_START });
 
@@ -22,7 +23,7 @@ export function fetchUser() {
     const request = getUser();
 
     return request.then(
-      response => dispatch(getUserSuccess(response.data)),
+      data => dispatch(getUserSuccess(data)),
       err => dispatch(getUserError(err.message))
     );
   };
@@ -49,15 +50,15 @@ export function fetchGamesForUser(username, page, pageSize) {
     dispatch({ type: GET_USER_GAMES_START });
 
     const request = getGamesForUser({ username: username, page: page, page_size: pageSize });
-
     return request.then(
-      response => dispatch(getUserGamesSuccess(response.data)),
+      data => dispatch(getUserGamesSuccess(data)),
       err => dispatch(getUserGamesError(err.message))
     );
   };
 }
 
 export function getUserGamesSuccess(games) {
+  console.log('fetchGamesForUser', games);
   return {
     type: GET_USER_GAMES_SUCCESS,
     payload: games
@@ -70,22 +71,3 @@ export function getUserGamesError(error) {
     payload: error
   };
 }
-
-/*
-export const getUser = () => {
-  return (dispatch) => {
-      Axios.get(`${API_ENDPOINTS.USER}`)
-      .then((response) => {
-        dispatch({
-          type: GET_USER_SUCCESS,
-          payload: response.data
-        });
-      })
-      .catch((error) => {
-        dispatch({
-          type: GET_USER_FAIL,
-          payload: error.message
-        });
-      });
-  };
-};*/

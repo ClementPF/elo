@@ -8,22 +8,14 @@ import RivalryRowsContainer from '../containers/RivalryRowsContainer';
 
 export default class GameRow extends Component {
   static propTypes = {
-    name1: PropTypes.string,
-    pictureUrl1: PropTypes.string,
-    result1: PropTypes.bool,
-    name2: PropTypes.string,
-    result2: PropTypes.bool,
-    pictureUrl2: PropTypes.string,
-    tournamentDisplayName: PropTypes.string,
-    tournamentName: PropTypes.string,
-    result: PropTypes.bool,
-    value: PropTypes.number,
-    date: PropTypes.number
+    game: PropTypes.object
   };
 
   constructor() {
     super();
-    this.extendedHeight = new Animated.Value(180);
+    this.fromValue = 196;
+    this.toValue = 296;
+    this.extendedHeight = new Animated.Value(this.fromValue);
     this.state = {
       showRivalry: false,
       rowExpended: false
@@ -69,42 +61,35 @@ export default class GameRow extends Component {
   }
 
   animateExpend = () => {
-    this.extendedHeight.setValue(180);
+    this.extendedHeight.setValue(this.fromValue);
     Animated.timing(this.extendedHeight, {
-      toValue: 296,
+      toValue: this.toValue,
       duration: 500,
       easing: Easing.linear
     }).start(() => this.setState({ rowExpended: true }));
   };
 
   animateCollapse = () => {
-    this.extendedHeight.setValue(296);
+    this.extendedHeight.setValue(this.toValue);
     Animated.timing(this.extendedHeight, {
-      toValue: 180,
+      toValue: this.fromValue,
       duration: 500,
       easing: Easing.linear
     }).start(() => this.setState({ rowExpended: false }));
   };
 
-  render = () => {
+  rivalryRows = (outcomes, tournamentName) => {
+    const { showRivalry } = this.state;
     const {
-      name1,
-      name2,
-      pictureUrl1,
-      pictureUrl2,
-      result1,
-      result2,
-      tournamentDisplayName,
-      tournamentName,
-      result,
-      value,
-      date
-    } = this.props;
+      [0]: {
+        user: { username: username }
+      },
+      [1]: {
+        user: { username: rivalname }
+      }
+    } = outcomes;
 
-    let strName1 = `${name1}`;
-    let strName2 = `${name2}`;
-
-    let rivalryRows = this.state.showRivalry ? (
+    return (
       <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
         <Text
           style={{
@@ -126,85 +111,123 @@ export default class GameRow extends Component {
           }}
         >
           <RivalryRowsContainer
-            username={name1}
-            rivalname={name2}
+            username={username}
+            rivalname={rivalname}
             tournamentName={tournamentName}
           />
         </View>
       </View>
-    ) : (
-      <View />
     );
+  };
 
+  avatarOutcome = outcomes => {
+    const color = outcomes[0].result === 'WIN' ? 'gold' : 'transparent';
+    return (
+      <>
+        <Ionicons
+          style={{ marginBottom: -9, padding: 0 }}
+          name="md-trophy"
+          size={32}
+          color={color}
+        />
+        <AvatarCustom
+          medium
+          rounded
+          name={outcomes[0].user.username}
+          pictureUrl={outcomes[0].pictureUrl}
+          activeOpacity={0.7}
+          borderWidth={4}
+          borderColor={color}
+        />
+        {outcomes.map(o => (
+          <Text key={`${o.outcome_id}${o.user.user_id}`} style={styles.nameText}>
+            {o.user.username}
+          </Text>
+        ))}
+      </>
+    );
+  };
+
+  teamOutcome = outcomes => {
+    const trophyColor = outcomes[0].result === 'WIN' ? 'gold' : 'transparent';
+    const borderColor = outcomes[0].result === 'WIN' ? 'gold' : 'lightgrey';
+    const backgroundColor = outcomes[0].result === 'WIN' ? 'gold' : 'lightgrey';
+    //const textColor = outcomes[0].result === 'WIN' ? 'white' : 'black';
+    const textColor = 'black';
+    const opacity = 0.85;
+    return (
+      <>
+        <Ionicons
+          style={{ opacity: opacity }}
+          style={{ marginBottom: -9, padding: 0 }}
+          name="md-trophy"
+          size={32}
+          color={trophyColor}
+        />
+        <View style={[styles.teamOutcomes, { borderColor: borderColor, opacity: opacity }]}>
+          {outcomes.map(o => (
+            <Text
+              key={`${o.outcome_id}${o.user.user_id}`}
+              numberOfLines={1}
+              adjustsFontSizeToFit
+              minimumFontScale={0.5}
+              style={[styles.nameText, { color: textColor }]}
+            >
+              {o.user.username}
+            </Text>
+          ))}
+        </View>
+      </>
+    );
+  };
+
+  outcomeColumn = outcomes => {
+    return (
+      <View style={styles.outcomeColumns}>
+        {outcomes.length === 1 ? this.avatarOutcome(outcomes) : this.teamOutcome(outcomes)}
+      </View>
+    );
+  };
+
+  render = () => {
+    const {
+      game: {
+        date,
+        outcomes,
+        tournament: { name, display_name: displayName }
+      }
+    } = this.props;
+
+    const { showRivalry } = this.state;
+
+    const value = outcomes[0].score_value;
+    const winners = outcomes.filter(o => o.result === 'WIN');
+    const losers = outcomes.filter(o => o.result === 'LOSS');
+    const rivalryRows =
+      outcomes.length > 2 || !showRivalry ? null : this.rivalryRows(outcomes, name);
+
+    const leftOutcomes = winners;
+    const rightOutcomes = losers;
     return (
       <TouchableOpacity
+        key={`${outcomes[0].outcome_id}`}
         onPress={() => {
-          this.setState({ showRivalry: !this.state.showRivalry });
+          this.setState({ showRivalry: !(outcomes.length > 2) && !showRivalry });
         }}
       >
         <Animated.View style={[styles.container, { height: this.extendedHeight }]}>
-          <View
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}
-          >
+          <View style={styles.scoreContainer}>
             <Text style={styles.scoreText}>{value.toFixed(0)}</Text>
           </View>
           <View style={styles.gameContainer}>
             <Text style={styles.dateText}>{this.shortenDateText(Moment(date).fromNow(false))}</Text>
-            <Text style={styles.tournamentText}>{tournamentDisplayName}</Text>
+            <Text style={styles.tournamentText}>{displayName}</Text>
             <View style={{ flex: 4, flexDirection: 'row' }}>
-              <View style={{ flex: 2, flexDirection: 'column', alignItems: 'center' }}>
-                <Ionicons
-                  style={{ flex: 1 }}
-                  name="md-trophy"
-                  size={32}
-                  color={result1 ? 'gold' : 'transparent'}
-                />
-
-                <AvatarCustom
-                  medium
-                  rounded
-                  name={name1}
-                  pictureUrl={pictureUrl1}
-                  activeOpacity={0.7}
-                  borderWidth={4}
-                  borderColor={result1 ? 'gold' : 'transparent'}
-                />
-
-                <Text style={styles.nameText}>{strName1}</Text>
-              </View>
-              <View
-                style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
-              >
+              {this.outcomeColumn(leftOutcomes)}
+              <View style={styles.vsContainer}>
                 <Text style={styles.VSText}>{'VS'}</Text>
               </View>
-              <View style={{ flex: 2, flexDirection: 'column', alignItems: 'center' }}>
-                <Ionicons
-                  style={{ flex: 1 }}
-                  name="md-trophy"
-                  size={32}
-                  color={result2 ? 'gold' : 'transparent'}
-                />
-
-                <AvatarCustom
-                  medium
-                  rounded
-                  name={name2}
-                  pictureUrl={pictureUrl2}
-                  activeOpacity={0.7}
-                  borderWidth={4}
-                  borderColor={result2 ? 'gold' : 'transparent'}
-                />
-
-                <Text style={styles.nameText}>{strName2}</Text>
-              </View>
+              {this.outcomeColumn(rightOutcomes)}
             </View>
           </View>
           {rivalryRows}
@@ -214,7 +237,7 @@ export default class GameRow extends Component {
   };
 }
 
-styles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     padding: 8,
     flexDirection: 'column',
@@ -222,12 +245,23 @@ styles = StyleSheet.create({
     backgroundColor: 'white'
   },
   gameContainer: {
-    padding: 8,
     height: 164,
+    padding: 8,
     flexDirection: 'column',
     alignItems: 'center',
     backgroundColor: 'transparent'
   },
+  scoreContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  outcomeColumns: { flex: 2, flexDirection: 'column', alignItems: 'center' },
+  vsContainer: { flexDirection: 'column', alignItems: 'center', justifyContent: 'center' },
   resultContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -250,8 +284,6 @@ styles = StyleSheet.create({
     textAlignVertical: 'center'
   },
   nameText: {
-    fontSize: 16,
-    margin: 0,
     fontWeight: 'normal',
     color: 'black',
     textAlign: 'center',
@@ -268,5 +300,10 @@ styles = StyleSheet.create({
     fontSize: 200,
     fontWeight: 'bold',
     color: 'whitesmoke'
+  },
+  teamOutcomes: {
+    padding: 8,
+    borderRadius: 16,
+    borderWidth: 6
   }
 });

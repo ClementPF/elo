@@ -1,7 +1,7 @@
 import { Notifications } from 'expo';
 import React from 'react';
 import PropTypes from 'prop-types';
-import { createStackNavigator, createAppContainer } from 'react-navigation';
+import { createSwitchNavigator, createAppContainer } from 'react-navigation';
 import { View } from 'react-native';
 import LoginNavigator from './LoginNavigator';
 import MainTabNavigator from './MainTabNavigator';
@@ -10,7 +10,7 @@ import DropdownAlert from 'react-native-dropdownalert';
 import { invalidateData, dataInvalidated } from '../redux/actions/RefreshAction';
 import { connect } from 'react-redux';
 
-const RootStackNavigator = createStackNavigator(
+const RootSwitchNavigator = createSwitchNavigator(
   {
     Login: {
       screen: LoginNavigator
@@ -22,7 +22,7 @@ const RootStackNavigator = createStackNavigator(
   { headerMode: 'none' }
 );
 
-const AppContainer = createAppContainer(RootStackNavigator);
+const AppContainer = createAppContainer(RootSwitchNavigator);
 
 class RootNavigator extends React.Component {
   static propTypes = {

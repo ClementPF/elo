@@ -24,6 +24,7 @@ import { getUser } from '../redux/actions';
 import { invalidateData } from '../redux/actions/RefreshAction';
 import { Dimensions } from 'react-native';
 import Svg from 'react-native-svg';
+import _ from 'lodash';
 
 //import {PieChart} from 'react-native-chart-kit';
 import {
@@ -143,8 +144,8 @@ class UserScreen extends Component {
   };
 
   onEndReached = () => {
-    const { paginating, endReached, games } = this.state;
-    if (paginating || endReached) return;
+    const { paginating, endReached, games: loadedGames } = this.state;
+    if (paginating || endReached || _.isEmpty(loadedGames)) return;
     this.setState(
       (previousState, currentProps) => ({
         paginating: true,
@@ -158,14 +159,13 @@ class UserScreen extends Component {
           page: pageCount,
           page_size: pageSize
         })
-          .then(response => {
-            console.log(response);
-            if (response.data.length < pageSize) {
-              this.setState({ endReached: true, paginating: false });
-            } else {
-              games.push(...response.data);
-              this.setState({ games, paginating: false });
-            }
+          .then(games => {
+            loadedGames.push(...games);
+            this.setState({
+              games: loadedGames,
+              endReached: games.length < pageSize,
+              paginating: false
+            });
           })
           .catch(console.error);
       }
@@ -177,10 +177,10 @@ class UserScreen extends Component {
     console.log('fetchData', username, tournamentName);
     Promise.all([
       this.getStats(username, tournamentName)
-        .then(response => {
+        .then(stats => {
           let wins = 0;
           let games = 0;
-          if (response.data.length == 0) {
+          if (stats.length == 0) {
             const emptyStats = {
               tournament: { display_name: 'tournament' },
               score: 1000,
@@ -194,28 +194,28 @@ class UserScreen extends Component {
               worst_rivalry: null,
               best_rivalry: null
             };
-            response.data = [];
-            response.data[0] = emptyStats;
+            stats = [];
+            stats[0] = emptyStats;
           }
 
-          if (!Array.isArray(response.data))
+          if (!Array.isArray(stats))
             //   convert a single obj into an array
-            response.data = [response.data];
+            stats = [stats];
 
-          response.data.forEach(s => {
+          stats.forEach(s => {
             wins += s.win_count;
             games += s.game_count;
           });
-          this.setState({ stats: response.data, gameCount: games, winCount: wins });
+          this.setState({ stats, gameCount: games, winCount: wins });
         })
         .catch(error => {
           this.onError(`failed to get stats for user ${error}`);
         }),
       getRivalriesForUserForTournament(username, tournamentName)
-        .then(response => {
+        .then(rivalries => {
           const temp = [];
           temp.push(
-            response.data.map(elem => {
+            rivalries.map(elem => {
               const rdmColor = `rgb(
                   255,
                   ${Math.floor(Math.random() * 100)},
@@ -242,28 +242,10 @@ class UserScreen extends Component {
         page: pageCount,
         page_size: pageSize
       })
-        .then(response => {
-          var temp = [];
-          /*
-        temp.push(
-          response.data.map(elem => {
-            return {
-              x: Moment(elem.date).fromNow(false),
-              y: parseInt(
-                elem.outcomes[
-                  elem.outcomes[0].user.username == this.state.user.username ? 0 : 1
-                ].score_value.toFixed(0)
-              )
-            };
-          })
-      );*/
-
-          temp = temp[0];
-          console.log('fetchData', response);
+        .then(games => {
           this.setState({
-            games: response.data,
-            endReached: response.data.length < pageSize
-            //chartData: temp
+            games,
+            endReached: games.length < pageSize
           });
         })
         .catch(error => {

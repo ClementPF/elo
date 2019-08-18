@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { Button, Card, ListItem } from 'react-native-elements';
+import { Ionicons } from '@expo/vector-icons';
+import { OutcomesColumns } from '../components';
 import { postGameForTournament } from '../api/tournament';
 import DropdownAlert from 'react-native-dropdownalert';
 import { invalidateData, dataInvalidated } from '../redux/actions/RefreshAction';
@@ -27,10 +29,12 @@ class GameFormConfirmationScreen extends Component {
 
   constructor(props) {
     super(props);
+    const { outcomes, tournament, isTie } = props.navigation.state.params;
+
     this.state = {
-      winnerName: props.navigation.state.params.winnerName,
-      tournamentName: props.navigation.state.params.tournamentName,
-      isTie: props.navigation.state.params.isTie,
+      outcomes,
+      tournament,
+      isTie,
       loading: false
     };
   }
@@ -40,16 +44,15 @@ class GameFormConfirmationScreen extends Component {
   submitGame = text => {
     //console.log("adding game for " + this.state.winnerName + " " + this.state.tournamentName + " " + this.props.user.username);
 
-    this.setState({ loading: true });
-    postGameForTournament(
-      this.state.tournamentName,
-      this.state.winnerName,
-      this.props.user.username,
-      this.state.isTie
-    )
-      .then(response => {
-        //console.log(JSON.stringify(response.data.outcomes[0].score_value));
+    const {
+      isTie,
+      outcomes,
+      tournament: { name: tournamentName }
+    } = this.state;
 
+    this.setState({ loading: true });
+    postGameForTournament(tournamentName, outcomes, isTie)
+      .then(game => {
         const resetAction = StackActions.reset({
           index: 1,
           actions: [
@@ -57,14 +60,13 @@ class GameFormConfirmationScreen extends Component {
             NavigationActions.navigate({
               routeName: 'GameFormResult',
               params: {
-                game: response.data
+                game
               }
             })
           ]
         });
         this.props.navigation.dispatch(resetAction);
 
-        //console.log("GameFormConfirmation - invalidating data");
         //this.props.invalidateData().then(() => this.props.dataInvalidated());
 
         this.props.invalidateData();
@@ -80,7 +82,6 @@ class GameFormConfirmationScreen extends Component {
   onError = error => {
     console.log('GameFormConfirmation - ' + JSON.stringify(error));
     if (error) {
-      //this.dropdown.alertWithType('error', 'Error', error.response.data.error_message);
       this.dropdown.alertWithType('error', 'Error', error.message);
     }
   };
@@ -91,55 +92,52 @@ class GameFormConfirmationScreen extends Component {
     // returns: automatic, programmatic, tap, pan or cancel
   }
   render() {
-    let str = (this.state.isTie ? 'Tied with' : 'Winner') + ' ' + this.state.winnerName;
-    let buttonStr = this.state.isTie ? 'We tied' : 'Darn it, I lost!';
+    const {
+      isTie,
+      outcomes,
+      loading,
+      tournament: { display_name: displayName }
+    } = this.state;
+    let buttonStr = isTie ? 'We tied' : `Darn it, ${outcomes.length > 2 ? 'We' : 'I'} lost!`;
 
     return (
       <View>
-        <Card title="SUMMARY">
-          <Text
-            style={{
-              fontSize: 16,
-              fontWeight: 'normal',
-              color: 'black',
-              textAlign: 'center',
-              textAlignVertical: 'center'
-            }}
-          >
-            Tournament : {this.state.tournamentName}{' '}
-          </Text>
-          <Text
-            style={{
-              fontSize: 16,
-              fontWeight: 'normal',
-              color: 'black',
-              textAlign: 'center',
-              textAlignVertical: 'center'
-            }}
-          >
-            {' '}
-            {str}{' '}
-          </Text>
+        <Card style={{ flex: 1 }} title="SUMMARY">
+          <Text style={styles.text}>Tournament : {displayName} </Text>
+          <View style={{ flex: 1 }}>
+            <OutcomesColumns outcomes={outcomes} />
+          </View>
         </Card>
         <Button
-          loading={this.state.loading}
-          disabled={this.state.loading}
+          loading={loading}
+          disabled={loading}
           title={buttonStr}
           onPress={this.submitGame}
-          buttonStyle={{
-            backgroundColor: '#CE2728',
-            height: 45,
-            borderColor: 'transparent',
-            marginTop: 8,
-            borderWidth: 0,
-            borderRadius: 5
-          }}
+          buttonStyle={styles.button}
         />
         <DropdownAlert ref={ref => (this.dropdown = ref)} onClose={data => this.onClose(data)} />
       </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  text: {
+    fontSize: 16,
+    fontWeight: 'normal',
+    color: 'black',
+    textAlign: 'center',
+    textAlignVertical: 'center'
+  },
+  button: {
+    backgroundColor: '#CE2728',
+    height: 45,
+    borderColor: 'transparent',
+    marginTop: 8,
+    borderWidth: 0,
+    borderRadius: 5
+  }
+});
 
 const mapStateToProps = ({ userReducer, refreshReducer }) => {
   //console.log('GameFormConfirmationScreen - mapStateToProps userReducer:' + JSON.stringify(userReducer) + ' refreshReducer : ' + JSON.stringify(refreshReducer));

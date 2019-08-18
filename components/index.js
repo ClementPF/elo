@@ -13,8 +13,10 @@ import SearchableSectionList from './SearchableSectionList';
 import SearchBar from './SearchBar';
 import StatsCard from './StatsCard';
 import StatsCardRow from './StatsCardRow';
+import TournamentRow from './TournamentRow';
 import UserStatRow from './UserStatRow';
 import UserTile from './UserTile';
+import OutcomesColumns from './OutcomesColumns';
 
 export {
   AnimatedBar,
@@ -32,6 +34,8 @@ export {
   SearchBar,
   StatsCard,
   StatsCardRow,
+  TournamentRow,
   UserStatRow,
-  UserTile
+  UserTile,
+  OutcomesColumns
 };

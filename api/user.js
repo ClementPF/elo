@@ -1,44 +1,44 @@
 import Axios from 'axios';
 import { API_CONF, API_ENDPOINTS } from './config.js';
+import _ from 'lodash';
 
 function getUser() {
   console.log('getUser');
-  return Axios.get(`${API_ENDPOINTS.USER}`);
+  return Axios.get(`${API_ENDPOINTS.USER}`).then(response => response.data);
 }
 
 function getStatsForUser(username) {
-  return Axios.get(`${API_ENDPOINTS.USER}/${username}/stats`);
+  return Axios.get(`${API_ENDPOINTS.USER}/${username}/stats`).then(response => response.data);
 }
 
 function getRivalryStatsForUserForTournament(username, tournamentName) {
-  return Axios.get(`${API_ENDPOINTS.USER}/${username}/rivalry?tournamentName=${tournamentName}`);
+  return Axios.get(
+    `${API_ENDPOINTS.USER}/${username}/rivalry?tournamentName=${tournamentName}`
+  ).then(response => response.data);
 }
 
-function getGamesForUser(params) {
-  const { username, tournamentName, page, page_size } = params;
-  console.log('getGamesForUser ' + username + tournamentName);
-
+function getGamesForUser({ username, tournamentName, page, page_size }) {
+  console.log('getGamesForUser', { username, tournamentName, page, page_size });
   let requestParams;
-  if (typeof tournamentName !== 'undefined') requestParams = 'tournamentName=' + tournamentName;
-  if (typeof page !== 'undefined')
-    requestParams =
-      (typeof requestParams !== 'undefined' ? requestParams + '&' : '') + 'page=' + page;
-  if (typeof page_size !== 'undefined')
-    requestParams =
-      (typeof requestParams !== 'undefined' ? requestParams + '&' : '') + 'page_size=' + page_size;
-
-  if (typeof requestParams !== 'undefined') requestParams = '?' + requestParams;
+  if (!_.isNil(tournamentName)) requestParams = 'tournamentName=' + tournamentName;
+  if (!_.isNil(page))
+    requestParams = (!_.isNil(requestParams) ? requestParams + '&' : '') + 'page=' + page;
+  if (!_.isNil(page_size))
+    requestParams = (!_.isNil(requestParams) ? requestParams + '&' : '') + 'page_size=' + page_size;
+  if (!_.isNil(requestParams)) requestParams = '?' + requestParams;
   else requestParams = '';
 
-  return Axios.get(`${API_ENDPOINTS.USER}/${username}/games${requestParams}`);
+  return Axios.get(`${API_ENDPOINTS.USER}/${username}/games${requestParams}`).then(
+    response => response.data
+  );
 }
 
 function getTournamentsForUser(username) {
-  return Axios.get(`${API_ENDPOINTS.USER}/${username}/tournaments`);
+  return Axios.get(`${API_ENDPOINTS.USER}/${username}/tournaments`).then(response => response.data);
 }
 
 function getUsers() {
-  return Axios.get(`${API_ENDPOINTS.USERS}`);
+  return Axios.get(`${API_ENDPOINTS.USERS}`).then(response => response.data);
 }
 
 function challengeUser(challenger, challengee, message) {

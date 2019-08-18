@@ -62,16 +62,16 @@ class GameFormTournamentScreen extends Component {
   fetchData(user) {
     Promise.all([
       getTournamentsForUser(user.username)
-        .then(response => {
-          this.setState({ topTournaments: response.data });
+        .then(tournaments => {
+          this.setState({ topTournaments: tournaments });
         })
         .catch(error => {
           this.onError('Failed to get your most recent tournaments. ' + error);
           //console.log('failed to get stats for user ' + error);
         }),
       getTournaments()
-        .then(response => {
-          this.setState({ allTournaments: response.data, refreshing: false });
+        .then(tournaments => {
+          this.setState({ allTournaments: tournaments, refreshing: false });
         })
         .catch(error => {
           this.onError('Failed all tournaments. ' + error);

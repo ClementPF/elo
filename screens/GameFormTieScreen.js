@@ -68,8 +68,8 @@ class GameFormTieScreen extends React.Component {
     this.setState({ loading: true });
     Promise.all([
       getStatsForUserForTournament(username, tournamentName)
-        .then(response => {
-          this.setState({ score: response.data.score });
+        .then(stats => {
+          this.setState({ score: stats.score });
           this.setState({ loading: false });
         })
         .catch(error => {

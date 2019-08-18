@@ -4,7 +4,21 @@ import StatsCard from '../components/StatsCard';
 
 const StatsCardContainer = props => {
   const { stats } = props;
-  const { score,best_score, win_streak, lose_streak, tie_streak, tournament, worst_rivalry, best_rivalry, longuest_win_streak, longuest_lose_streak, game_count } = stats;
+  console.log('StatsCardContainer', stats);
+  const {
+    score,
+    best_score,
+    win_streak,
+    lose_streak,
+    tie_streak,
+    tournament,
+    worst_rivalry,
+    best_rivalry,
+    longuest_win_streak,
+    longuest_lose_streak,
+    game_count
+  } = stats;
+
   let currentStreakType;
   if (win_streak > 0) {
     currentStreakType = 'Winning';

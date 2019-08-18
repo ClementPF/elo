@@ -75,17 +75,16 @@ class TournamentsScreen extends Component {
   };
 
   fetchData() {
-    Promise.all([
-      getTournaments()
-        .then(response => {
-          this.setState({ tournaments: response.data, refreshing: false });
-        })
-        .catch(error => {
-          this.onError(`failed to get tournaments : ${error}`);
-        })
-    ]).then(() => {
-      this.setState({ loading: false, refreshing: false });
-    });
+    console.log('fetchData()');
+    getTournaments()
+      .then(tournaments => {
+        console.log('getTournaments()', tournaments);
+        this.setState({ tournaments, refreshing: false, loading: false });
+      })
+      .catch(error => {
+        this.setState({ loading: false, refreshing: false });
+        this.onError(`failed to get tournaments : ${error}`);
+      });
   }
 
   _onPressRow = (rowID, rowData) => {
@@ -123,8 +122,8 @@ class TournamentsScreen extends Component {
   }
 
   render() {
-    const { tournaments, tournamentName, refreshing } = this.state;
-    if (this.state.loading) {
+    const { tournaments, tournamentName, refreshing, loading } = this.state;
+    if (loading) {
       return (
         <View style={{ flex: 1, justifyContent: 'center' }}>
           <ActivityIndicator size="small" color="white" />
@@ -166,14 +165,14 @@ class TournamentsScreen extends Component {
           refreshing={refreshing}
           onRefresh={this._onRefresh.bind(this)}
           ItemSeparatorComponent={() => <View style={{ height: 1 }} />}
-          ListEmptyComponent={(
+          ListEmptyComponent={
             <EmptyResultsButton
               title="Cant' find what you're looking for? why don't you create a new tournament and start praying on some fishes"
               onPress={() => {
-                            this.props.navigation.navigate('TournamentCreation');
-                          }}
-                        />
-            )}
+                this.props.navigation.navigate('TournamentCreation');
+              }}
+            />
+          }
         />
         <DropdownAlert ref={ref => (this.dropdown = ref)} onClose={data => this.onClose(data)} />
       </View>

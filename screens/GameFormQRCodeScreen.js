@@ -2,12 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, StatusBar, StyleSheet, SectionList, TouchableOpacity } from 'react-native';
 import { Button, SearchBar, Icon, ListItem } from 'react-native-elements';
-import {
-  SearchableFlatList,
-  UserStatRow,
-  TournamentRow,
-  SearchableSectionList
-} from '../components';
+import { TournamentRow } from '../components';
 import { getTournaments, getUsersForTournament } from '../api/tournament';
 import { getTournamentsForUser, getUser, getUsers } from '../api/user';
 import QRCode from 'react-native-qrcode-svg';
@@ -31,9 +26,9 @@ class GameFormQRCodeScreen extends Component {
 
   constructor(props) {
     super(props);
+    const { tournament } = props.navigation.state.params;
     this.state = {
-      winnerName: '',
-      tournament: props.navigation.state.params.tournament,
+      tournament,
       text:
         "Check you out, you won!\n Well it's not a win until you get them sweet points. Make sure the looser scan this QR code and submit the game."
     };
@@ -70,7 +65,9 @@ class GameFormQRCodeScreen extends Component {
 
     const qrData = {
       username,
-      tournament: tournament.name
+      tournamentName: tournament.name,
+      tournament: { name: tournament.name },
+      result: 'WIN'
     };
 
     console.log('QR Code obj : ' + JSON.stringify(qrData));
@@ -87,7 +84,7 @@ class GameFormQRCodeScreen extends Component {
             }}
           />
         </View>
-        <View style={styles.hackyContainer} />
+        <View style={styles.separator} />
         <View style={styles.QRContainer}>
           <Text style={styles.text}>{text}</Text>
           <QRCode value={JSON.stringify(qrData)} size={200} />
@@ -124,7 +121,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'black'
   },
-  hackyContainer: {
+  separator: {
     width: '100%',
     height: 1,
     backgroundColor: 'black'

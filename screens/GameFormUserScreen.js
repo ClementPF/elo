@@ -43,11 +43,11 @@ class GameFormUserScreen extends Component {
 
   loadLists() {
     getUsersForTournament(this.state.tournament.name)
-      .then(response => {
-        console.log(' ' + response.data[0].first_name + ' ' + response.data[0].stats[0].score);
+      .then(users => {
+        console.log(' ' + users[0].first_name + ' ' + users[0].stats[0].score);
 
         this.setState({
-          topPlayers: response.data
+          topPlayers: users
         });
       })
       .catch(error => {
@@ -56,9 +56,9 @@ class GameFormUserScreen extends Component {
       .done();
 
     getUsers()
-      .then(response => {
+      .then(users => {
         this.setState({
-          allPlayers: response.data,
+          allPlayers: users,
           refreshing: false
         });
       })

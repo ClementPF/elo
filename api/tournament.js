@@ -2,19 +2,25 @@ import Axios from 'axios';
 import { API_CONF, API_ENDPOINTS } from './config.js';
 
 function getTournaments() {
-  return Axios.get(`${API_ENDPOINTS.TOURNAMENTS}/all`);
+  return Axios.get(`${API_ENDPOINTS.TOURNAMENTS}/all`).then(response => response.data);
 }
 
 function getTournamentsForSport(sportName) {
-  return Axios.get(`${API_ENDPOINTS.TOURNAMENT}/tournaments?sport=${sportName}`);
+  return Axios.get(`${API_ENDPOINTS.TOURNAMENT}/tournaments?sport=${sportName}`).then(
+    response => response.data
+  );
 }
 
 function getStatsForTournament(tournamentName) {
-  return Axios.get(`${API_ENDPOINTS.TOURNAMENT}/${tournamentName}/stats`);
+  return Axios.get(`${API_ENDPOINTS.TOURNAMENT}/${tournamentName}/stats`).then(
+    response => response.data
+  );
 }
 
 function getUsersForTournament(tournamentName) {
-  return Axios.get(`${API_ENDPOINTS.TOURNAMENT}/${tournamentName}/users`);
+  return Axios.get(`${API_ENDPOINTS.TOURNAMENT}/${tournamentName}/users`).then(
+    response => response.data
+  );
 }
 
 function getGamesForTournament(tournamentName, page, page_size) {
@@ -27,9 +33,28 @@ function getGamesForTournament(tournamentName, page, page_size) {
   if (typeof requestParams !== 'undefined') requestParams = '?' + requestParams;
   else requestParams = '';
 
-  return Axios.get(`${API_ENDPOINTS.TOURNAMENT}/${tournamentName}/games${requestParams}`);
+  return Axios.get(`${API_ENDPOINTS.TOURNAMENT}/${tournamentName}/games${requestParams}`).then(
+    response => response.data
+  );
 }
 
+function postGameForTournament(tournamentName, outcomes) {
+  const outcomeBuilder = ({ username, result }) => ({
+    result,
+    user: {
+      username
+    }
+  });
+
+  const outcomesDTO = outcomes.map(o => outcomeBuilder(o));
+  return Axios.post(`${API_ENDPOINTS.TOURNAMENT}/${tournamentName}/games`, {
+    outcomes: outcomesDTO,
+    tournament: {
+      name: tournamentName
+    }
+  }).then(response => response.data);
+}
+/*
 function postGameForTournament(tournamentName, winnerName, looserName, isTie) {
   return Axios.post(`${API_ENDPOINTS.TOURNAMENT}/${tournamentName}/games`, {
     outcomes: [
@@ -50,7 +75,7 @@ function postGameForTournament(tournamentName, winnerName, looserName, isTie) {
       name: tournamentName
     }
   });
-}
+}*/
 
 function postTournament(tournamentName, sportName) {
   return Axios.post(`${API_ENDPOINTS.TOURNAMENT}/`, {
@@ -59,7 +84,7 @@ function postTournament(tournamentName, sportName) {
     sport: {
       name: sportName
     }
-  });
+  }).then(response => response.data);
 }
 
 export {

@@ -21,7 +21,6 @@ import EmptyResultsButton from '../components/EmptyResultsButton';
 import EmptyResultsScreen from '../components/EmptyResultsScreen';
 import { fetchUser, fetchGamesForUser } from '../redux/actions';
 import { invalidateData } from '../redux/actions/RefreshAction';
-import { getRivalryForUserForRivalForTournament } from '../api/stats';
 
 import { getStatsForUser } from '../api/user';
 
@@ -103,8 +102,8 @@ class FeedScreen extends Component {
     this.setState({ loading: true });
     Promise.all([
       getStatsForUser(username)
-        .then(response => {
-          this.setState({ stats: response.data });
+        .then(stats => {
+          this.setState({ stats });
         })
         .catch(error => {
           this.onError(`failed to get stats for user ${error}`);
@@ -112,6 +111,7 @@ class FeedScreen extends Component {
       this.props
         .fetchGamesForUser(username, this.state.pageCount, this.state.pageSize)
         .then(response => {
+          console.log('games', response.payload);
           this.setState({ endReached: this.state.pageSize > response.payload.length });
         })
     ]).then(() => {
@@ -126,30 +126,6 @@ class FeedScreen extends Component {
   renderItem = ({ item, index }) => {};
 
   renderRivarlry = (rivalry, index) => <RivalryCardContainer rivalry={rivalry} />;
-
-  _insertRivalryAtIndex = index => {
-    getRivalryForUserForRivalForTournament(
-      this.state.games[index].outcomes[0].user.username,
-      this.state.games[index].outcomes[1].user.username,
-      this.state.games[index].tournament.name
-    )
-      .then(response => {
-        const games = this.state.games;
-        games.splice(index + 1, 0, response.data);
-        this.setState({ games });
-      })
-      .catch(error => {
-        this.onError(`failed to get tournaments : ${error}`);
-      });
-
-    this.sectionList.scrollToLocation({
-      animated: true,
-      itemIndex: index,
-      sectionIndex: 1,
-      viewOffset: 48,
-      viewPosition: 0
-    });
-  };
 
   renderItemGame = ({ item, index }) => (
     <TouchableOpacity
@@ -207,8 +183,8 @@ class FeedScreen extends Component {
     this.fetchData(this.props.user.username);
   };
 
-  onEndReached = (params) => {
-     if (this.state.paginating || this.state.endReached) return;
+  onEndReached = params => {
+    if (this.state.paginating || this.state.endReached) return;
 
     this.setState(
       (previousState, currentProps) => ({
@@ -266,7 +242,7 @@ class FeedScreen extends Component {
         />
       );
     } else {
-     rendered = (
+      rendered = (
         <SectionList
           ref={ref => (this.sectionList = ref)}
           style={feedScreenStyle.list}

@@ -10,6 +10,7 @@ const GameRowContainer = props => {
   const opponentOutcomeIndex = outcomes[0].user.username == userProps.username ? 1 : 0;
   return (
     <GameRow
+      game={game}
       name1={outcomes[userPropsOutcomeIndex].user.username}
       name2={outcomes[opponentOutcomeIndex].user.username}
       pictureUrl1={outcomes[userPropsOutcomeIndex].user.picture_url}
