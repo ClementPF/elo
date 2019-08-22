@@ -47,7 +47,6 @@ class GameFormQRScannerScreen extends React.Component {
           tournamentName: tournament.name
         }*/
       ],
-      scannedOutcomes: [],
       scanned: false,
       scanner: true
     };
