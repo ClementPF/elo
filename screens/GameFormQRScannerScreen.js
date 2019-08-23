@@ -21,7 +21,8 @@ class GameFormQRScannerScreen extends React.Component {
 
   constructor(props) {
     super(props);
-    const { tournament, user } = props.navigation.state.params;
+    const { tournament } = props.navigation.state.params;
+    const { user } = props;
     this.state = {
       tournament,
       hasCameraPermission: null,
@@ -83,7 +84,7 @@ class GameFormQRScannerScreen extends React.Component {
 
   // called when navigating back from tournament selection
   returnData = tournament => {
-    const { user } = this.state;
+    const { user } = this.props;
     this.setState({
       tournament,
       scannedOutcomes: [
@@ -276,8 +277,16 @@ class GameFormQRScannerScreen extends React.Component {
     const { scannedOutcomes, tournament } = this.state;
     this.setState({ scanned: true });
 
-    const scannedData = JSON.parse(data);
-    console.log('scannedData', scannedData);
+    let scannedData;
+    try {
+      scannedData = JSON.parse(data);
+      console.log('scannedData', scannedData);
+    } catch (error) {
+      this.onError(
+        'It does not appear to be a valid QR code for the SHARKULATOR ' + requiredKeys.join()
+      );
+      return;
+    }
 
     if (!requiredKeys.every(key => Object.keys(scannedData).includes(key))) {
       this.onError(
