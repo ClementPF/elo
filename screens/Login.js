@@ -4,7 +4,6 @@ import Constants from 'expo-constants';
 import * as Facebook from 'expo-facebook';
 import * as GoogleSignIn from 'expo-google-sign-in';
 import _ from 'lodash';
-
 import {
   View,
   Image,
@@ -155,7 +154,9 @@ class Login extends Component {
     }
   }
 
-  componentWillUnmount() {}
+  componentWillUnmount() {
+    this.dropdown.close();
+  }
 
   signInWithGoogleAsync = async () => {
     try {

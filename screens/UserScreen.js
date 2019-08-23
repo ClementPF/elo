@@ -25,6 +25,7 @@ import { invalidateData } from '../redux/actions/RefreshAction';
 import { Dimensions } from 'react-native';
 import Svg from 'react-native-svg';
 import _ from 'lodash';
+import * as R from 'constants';
 
 //import {PieChart} from 'react-native-chart-kit';
 import {
@@ -444,7 +445,7 @@ class UserScreen extends Component {
     }
 
     return (
-      <View style={feedScreenStyle.container}>
+      <View style={R.palette.sectionListContainer}>
         {rendered}
         <DropdownAlert ref={ref => (this.dropdown = ref)} onClose={data => this.onClose(data)} />
       </View>

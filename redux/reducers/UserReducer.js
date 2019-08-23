@@ -4,6 +4,7 @@ import {
   GET_USER_GAMES_SUCCESS,
   GET_USER_GAMES_FAIL
 } from '../actions/types';
+import _ from 'lodash';
 
 const INITIAL_STATE = {
   user: null,
@@ -18,12 +19,12 @@ export default (state = INITIAL_STATE, action) => {
     case GET_USER_FAIL:
       return { ...state, error: action.payload };
     case GET_USER_GAMES_SUCCESS:
-      var temp;
+      let temp;
       if (state.games == null) {
         temp = action.payload;
       } else {
-        temp = state.games;
-        temp.push(...action.payload);
+        temp = _.merge(action.payload, state.games);
+        console.log('temp', temp);
       }
       return { ...state, games: temp };
     case GET_USER_GAMES_FAIL:

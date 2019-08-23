@@ -8,8 +8,8 @@ import { NavigationActions } from 'react-navigation';
 import GameRowContainer from '../containers/GameRowContainer';
 import RankRow from '../components/RankRow';
 import EmptyResultsButton from '../components/EmptyResultsButton';
-import EmptyResultsScreen from '../components/EmptyResultsScreen';
 import { getStatsForTournament, getGamesForTournament } from '../api/tournament';
+import * as R from 'constants';
 
 import { invalidateData } from '../redux/actions/RefreshAction';
 
@@ -200,7 +200,7 @@ class TournamentScreen extends Component {
     }
 
     return (
-      <View style={feedScreenStyle.container}>
+      <View style={R.palette.sectionListContainer}>
         {rendered}
         <DropdownAlert ref={ref => (this.dropdown = ref)} onClose={data => this.onClose(data)} />
       </View>

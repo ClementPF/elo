@@ -9,6 +9,7 @@ import { getUser, getUsers } from '../api/user';
 import UserStatRow from '../components/UserStatRow';
 import EmptyResultsButton from '../components/EmptyResultsButton';
 import SearchableSectionList from '../components/SearchableSectionList';
+import * as R from 'constants';
 
 class GameFormUserScreen extends Component {
   static propTypes = {
@@ -115,14 +116,14 @@ class GameFormUserScreen extends Component {
         />
 
         <SearchableSectionList
-          style={feedScreenStyle.list}
+          style={R.palette.sectionList}
           data={[...this.state.topPlayers, ...this.state.allPlayers]}
           searchProperty={'username'}
           searchTerm={this.state.winnerName}
           keyExtractor={(item, index) => item + index}
           renderItem={({ item, index, section }) => <Text key={index}>{item}</Text>}
           renderSectionHeader={({ section: { title } }) => (
-            <Text style={feedScreenStyle.sectionHeaderText}>{title}</Text>
+            <Text style={R.palette.sectionHeaderText}>{title}</Text>
           )}
           sections={sections}
           refreshing={this.state.refreshing}

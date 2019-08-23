@@ -15,27 +15,19 @@ import DropdownAlert from 'react-native-dropdownalert';
 import { Notifications } from 'expo';
 import { NavigationActions } from 'react-navigation';
 import GameRowContainer from '../containers/GameRowContainer';
-import UserStatRow from '../components/UserStatRow';
-import RivalryCardContainer from '../containers/RivalryCardContainer';
-import EmptyResultsButton from '../components/EmptyResultsButton';
-import EmptyResultsScreen from '../components/EmptyResultsScreen';
+import {
+  UserStatRow,
+  RivalryCardContainer,
+  EmptyResultsButton,
+  EmptyResultsScreen
+} from '../components';
 import { fetchUser, fetchGamesForUser } from '../redux/actions';
 import { invalidateData } from '../redux/actions/RefreshAction';
-
 import { getStatsForUser } from '../api/user';
+import * as R from 'constants';
+import _ from 'lodash';
 
 class FeedScreen extends Component {
-  static propTypes = {
-    navigation: PropTypes.object,
-    dispatch: PropTypes.func,
-    error: PropTypes.object,
-    isDataStale: PropTypes.bool,
-    games: PropTypes.array,
-    user: PropTypes.object,
-    fetchGamesForUser: PropTypes.func,
-    fetchUser: PropTypes.func
-  };
-
   static navigationOptions = ({ navigation }) => {
     const params = navigation.state.params;
     return { title: 'Feed' };
@@ -57,6 +49,7 @@ class FeedScreen extends Component {
 
   componentWillMount() {
     // console.log('FeedScreen - componentWillMount');
+    this.setState({ loading: true });
     this.props.fetchUser();
   }
 
@@ -65,21 +58,18 @@ class FeedScreen extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.error && !this.props.error) {
+    const { error, user, games } = this.props;
+    if (nextProps.error && error) {
       this.onError(nextProps.error);
     }
 
-    if (this.props.user != nextProps.user && nextProps.user != null) {
+    if (user != nextProps.user && nextProps.user != null) {
       // console.log('FeedScreen - componentWillReceiveProps ' + JSON.stringify(nextProps.user));
       this.fetchData(nextProps.user.username);
     }
-    if (this.props.games != nextProps.games && nextProps.games != null) {
-      // console.log('FeedScreen - componentWillReceiveProps ' + nextProps.games.length);
-      this.setState({ games: nextProps.games });
-    }
     if (nextProps.isDataStale == true) {
       // console.log('FeedScreen - componentWillReceiveProps ' + JSON.stringify(nextProps.isDataStale));
-      this.fetchData(this.props.user.username);
+      this.fetchData(user.username);
     }
   }
 
@@ -97,38 +87,31 @@ class FeedScreen extends Component {
   };
 
   fetchData(username) {
-    // console.log('fetching data for  ' + JSON.stringify(username));
-    this.timing = new Date();
-    this.setState({ loading: true });
-    Promise.all([
-      getStatsForUser(username)
-        .then(stats => {
-          this.setState({ stats });
-        })
-        .catch(error => {
-          this.onError(`failed to get stats for user ${error}`);
-        }),
-      this.props
-        .fetchGamesForUser(username, this.state.pageCount, this.state.pageSize)
-        .then(response => {
-          console.log('games', response.payload);
-          this.setState({ endReached: this.state.pageSize > response.payload.length });
-        })
-    ]).then(() => {
-      const date = new Date();
-      console.log(
-        date.getTime() - this.timing.getTime() + 'ms to load a page of ' + this.state.pageSize
-      );
-      this.setState({ loading: false, refreshing: false });
-    });
+    const { screenName, fetchGamesForUser } = this.props;
+    const { pageSize, pageCount } = this.state;
+    Promise.all([getStatsForUser(username), fetchGamesForUser(username, pageCount, pageSize)])
+      .then(({ [0]: stats, [1]: games }) => {
+        console.log();
+        this.setState({
+          stats,
+          loading: false,
+          refreshing: false,
+          endReached: pageSize > games.length
+        });
+      })
+      .catch(error => {
+        this.setState({ stats: [], loading: false, refreshing: false, endReached: false });
+        this.onError(R.strings.screen[screenName].errorFailedLoadStats(error));
+      });
   }
 
-  renderItem = ({ item, index }) => {};
+  renderItem = ({ item, index, section }) => <Text key={index}>{item}</Text>;
 
   renderRivarlry = (rivalry, index) => <RivalryCardContainer rivalry={rivalry} />;
 
   renderItemGame = ({ item, index }) => (
     <TouchableOpacity
+      key={item.game_id}
       onPress={() =>
         this.sectionList.scrollToLocation({
           animated: true,
@@ -145,59 +128,62 @@ class FeedScreen extends Component {
 
   renderGameSection = ({ item, index }) => {
     if (false) return this.renderItemGame({ item, index });
-
-    if (typeof item.game_id !== 'undefined') {
+    if (_.has(item, 'game_id')) {
       return this.renderItemGame({ item, index });
     }
-    if (item.rivalry_stats_id !== 'undefined') {
+    if (_.has(item, 'rivalry_stats_id')) {
       return this.renderRivarlry(item, index);
     }
   };
 
-  /*
-    renderGameSection = ({item, index}) => {
-        if(typeof item.game_id !== 'undefined'){
-            return this.renderItemGame(item,index);
-        }else if (item.rivalry_stats_id !== 'undefined'){
-            return this.renderRivarlry(item);
+  renderItemTournament = ({ item: userStats, section, index }) => {
+    const {
+      score,
+      tournament: { name: tournamentName, display_name: tournamentDisplayName }
+    } = userStats;
+    return (
+      <TouchableOpacity
+        onPress={() =>
+          this.props.navigation.navigate('Tournament', {
+            userStats,
+            tournamentName,
+            tournamentDisplayName
+          })
         }
-    }
-*/
-  renderItemTournament = ({ item, index }) => (
-    <TouchableOpacity
-      onPress={() =>
-        this.props.navigation.navigate('Tournament', {
-          userStats: item,
-          tournamentName: item.tournament.name,
-          tournamentDisplayName: item.tournament.display_name
-        })
-      }
-    >
-      <UserStatRow tournament={item.tournament.display_name} position={1} score={item.score} />
-    </TouchableOpacity>
-  );
+      >
+        <UserStatRow tournament={tournamentDisplayName} position={1} score={score} />
+      </TouchableOpacity>
+    );
+  };
 
   onRefresh = () => {
-    // console.log('refreshing ')
     this.setState({ refreshing: true, pageCount: 0, onEndReached: false });
     this.fetchData(this.props.user.username);
   };
 
   onEndReached = params => {
-    if (this.state.paginating || this.state.endReached) return;
+    const { paginating, endReached } = this.state;
+    const { fetchGamesForUser } = this.props;
+    if (paginating || endReached) return;
 
     this.setState(
-      (previousState, currentProps) => ({
+      ({ pageCount }, currentProps) => ({
         paginating: true,
-        pageCount: previousState.pageCount + 1
+        pageCount: pageCount + 1
       }),
       () => {
-        const { user } = this.props;
+        const {
+          user: { username }
+        } = this.props;
         const { pageSize, pageCount } = this.state;
-
-        this.props.fetchGamesForUser(user.username, pageCount, pageSize).then(response => {
-          this.setState({ paginating: false, endReached: response.payload.length < pageSize });
-        });
+        fetchGamesForUser(username, pageCount, pageSize)
+          .then(games => {
+            this.setState({ paginating: false, endReached: games.length < pageSize });
+          })
+          .catch(error => {
+            this.onError(error);
+            this.setState({ paginating: false, endReached: false });
+          });
       }
     );
   };
@@ -214,30 +200,51 @@ class FeedScreen extends Component {
     // returns: automatic, programmatic, tap, pan or cancel
   }
 
+  renderListEmptyComponent = (title, navigation) => (
+    <EmptyResultsButton
+      title={title}
+      onPress={() => {
+        navigation.navigate('Tournaments');
+      }}
+    />
+  );
+
+  renderListFooterComponent = (label, endReached) =>
+    endReached && <Text style={R.palette.sectionHeaderText}>{label}</Text>;
+
+  renderListHeaderComponent = label => <Text style={R.palette.sectionHeaderText}>{label}</Text>;
+
+  renderItemSeparatorComponent = ({ section: { title } }) => <View style={styles.ItemSeparator} />;
+
+  sectionBuilder = ({ stats, games }) => {
+    const { screenName } = this.props;
+    const { firstSectionTitle, secondSectionTitle } = R.strings.screen[screenName];
+    return [
+      {
+        title: firstSectionTitle,
+        data: stats,
+        renderItem: this.renderItemTournament
+      },
+      { title: secondSectionTitle, data: games, renderItem: this.renderGameSection }
+    ].filter(section => section.data.length > 0);
+  };
+
   render() {
-    const { navigate } = this.props.navigation;
-    const { stats, games, pageCount, pageSize } = this.state;
+    const { screenName, games, navigation } = this.props;
+    const { navigate } = navigation;
+    const { loading, stats, pageCount, pageSize, endReached, refreshing } = this.state;
+    const { emptyFeedText, endReachedLabel } = R.strings.screen[screenName];
 
-    const section0 = {
-      title: 'YOUR TOURNAMENTS',
-      data: stats,
-      renderItem: this.renderItemTournament
-    };
-    const section1 = { title: 'YOUR HISTORY', data: games, renderItem: this.renderGameSection };
-    let sections = [section0, section1];
-    sections = sections.filter(section => section.data.length > 0);
-
+    console.log('game_id', _.isEmpty(games) ? '' : games[0].game_id);
     let rendered = null;
-    if (this.state.loading) {
+    if (loading) {
       rendered = <ActivityIndicator size="small" color="white" />;
-    } else if (this.state.games.length == 0) {
+    } else if (games.length == 0) {
       rendered = (
         <EmptyResultsScreen
-          title={
-            'Hey, welcome to the SHARKULATOR,\n Your feed is empty so far, \n go play a game, treat yourself,\n you deserve it Champ.'
-          }
+          title={emptyFeed}
           onPress={() => {
-            this.props.navigation.navigate('Tournaments');
+            navigate('Tournaments');
           }}
         />
       );
@@ -245,41 +252,24 @@ class FeedScreen extends Component {
       rendered = (
         <SectionList
           ref={ref => (this.sectionList = ref)}
-          style={feedScreenStyle.list}
+          style={R.palette.sectionList}
           keyExtractor={(item, index) => item + index}
-          renderItem={({ item, index, section }) => <Text key={index}>{item}</Text>}
-          renderSectionHeader={({ section: { title } }) => (
-            <Text style={feedScreenStyle.sectionHeaderText}>{title}</Text>
-          )}
-          sections={sections}
-          refreshing={this.state.refreshing}
+          renderItem={this.renderItem}
+          renderSectionHeader={({ section: { title } }) => this.renderListHeaderComponent(title)}
+          sections={this.sectionBuilder({ stats, games })}
+          refreshing={refreshing}
           onRefresh={this.onRefresh}
           onEndReached={this.onEndReached}
           onEndReachedThreshold={1.5}
-          ItemSeparatorComponent={({ section }) => (
-            <View style={{ height: section.title == 'RANKING' ? 1 : 8 }} />
-          )}
-          ListEmptyComponent={
-            <EmptyResultsButton
-              title={
-                'Hey, welcome to the SHARKULATOR,\n Your feed is empty so far, \n go play a game, treat yourself,\n you deserve it Champ.'
-              }
-              onPress={() => {
-                this.props.navigation.navigate('Tournaments');
-              }}
-            />
-          }
-          ListFooterComponent={
-            this.state.endReached && (
-              <Text style={searchableSectionList.sectionHeaderText}> This is the end. </Text>
-            )
-          }
+          ItemSeparatorComponent={this.renderItemSeparatorComponent}
+          ListEmptyComponent={this.renderListEmptyComponent(emptyFeedText, navigation)}
+          ListFooterComponent={this.renderListFooterComponent(endReached, endReachedLabel)}
         />
       );
     }
 
     return (
-      <View style={feedScreenStyle.container}>
+      <View style={R.palette.sectionListContainer}>
         {rendered}
         <DropdownAlert ref={ref => (this.dropdown = ref)} onClose={data => this.onClose(data)} />
       </View>
@@ -287,41 +277,40 @@ class FeedScreen extends Component {
   }
 }
 
-feedScreenStyle = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'transparent',
-    justifyContent: 'center'
-  },
-  list: {
-    marginRight: 8,
-    marginLeft: 8
-  },
-  sectionHeaderText: {
-    padding: 8,
-    height: 48,
-    fontSize: 28,
-    fontWeight: 'normal',
-    color: 'white',
-    textAlign: 'center',
-    backgroundColor: 'black'
+FeedScreen.defaultProps = {
+  screenName: 'FeedScreen',
+  games: []
+};
+
+FeedScreen.propTypes = {
+  navigation: PropTypes.object,
+  dispatch: PropTypes.func,
+  error: PropTypes.object,
+  isDataStale: PropTypes.bool,
+  games: PropTypes.array,
+  user: PropTypes.object,
+  fetchGamesForUser: PropTypes.func,
+  fetchUser: PropTypes.func
+};
+
+const styles = StyleSheet.create({
+  ItemSeparator: {
+    height: 8
   }
 });
 
-const mapStateToProps = ({ userReducer, refreshReducer }) =>
-  // console.log('FeedScreen - mapStateToProps userReducer:' + JSON.stringify(userReducer.user != null ? userReducer.user : 'userReducer') + ' refreshReducer : ' + JSON.stringify(refreshReducer));
+const mapStateToProps = ({ userReducer: { user, games }, refreshReducer: { isDataStale } }) => ({
+  user,
+  games,
+  isDataStale
+});
 
-  // if(this.props != null){ // avoid NPE on first run
-  // console.log('FeedScreen - mapStateToProps userReducer:' +
-  //     (userReducer.games != null ? (userReducer.games.length + ' games' : 'no games') : 'No games received : ') +
-  //     + (this.props.games != null ? ' there was ' + this.props.games.length : 'no') + ' in props '
-  //     + (this.state.games != null ? ' there was ' + this.state.games.length : 'no') + ' in state ' );
-  // }
-  ({
-    user: userReducer.user,
-    games: userReducer.games,
-    isDataStale: refreshReducer.isDataStale
-  });
+const mapDispatchStateToProps = state => ({
+  fetchUser: state.fetchUser,
+  fetchGamesForUser: state.fetchGamesForUser,
+  invalidateData: state.invalidateData
+});
+
 export default connect(
   mapStateToProps,
   { fetchUser, fetchGamesForUser, invalidateData }
