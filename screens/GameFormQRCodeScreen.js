@@ -80,7 +80,7 @@ class GameFormQRCodeScreen extends Component {
             title={'EDIT'}
             buttonStyle={styles.button}
             onPress={() => {
-              navigation.navigate('GameFormTournament', returnData);
+              navigation.navigate('GameFormTournament', this.returnData);
             }}
           />
         </View>
