@@ -36,7 +36,7 @@ class GameFormWinnerLooserScreen extends Component {
 
   onButtonPress = isWinner => {
     const { user, navigation, tournament } = this.props;
-    if (false && tournament != null) {
+    if (tournament != null) {
       navigation.navigate('GameFormQRCode', {
         tournament,
         isWinner
