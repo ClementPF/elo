@@ -91,13 +91,15 @@ class GameFormTournamentScreen extends Component {
   _keyExtractor = (item, index) => item.id;
 
   onPress(item) {
-    if (this.props.navigation.state.params.returnData !== undefined) {
-      this.props.navigation.state.params.returnData(item);
-      this.props.navigation.goBack();
-    } else if (this.state.isWinner == false) {
-      this.props.navigation.navigate('GameFormQRScanner', { tournament: item });
-    } else if (this.state.isWinner == true) {
-      this.props.navigation.navigate('GameFormQRCode', { tournament: item });
+    const { navigation } = this.props;
+    const { isWinner } = this.state;
+    if (navigation.state.params.returnData !== undefined) {
+      navigation.state.params.returnData(item);
+      navigation.goBack();
+    } else if (isWinner) {
+      navigation.navigate('GameFormQRCode', { tournament: item });
+    } else if (!isWinner) {
+      navigation.navigate('GameFormQRScanner', { tournament: item });
     }
   }
 

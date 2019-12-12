@@ -34,6 +34,21 @@ class GameFormWinnerLooserScreen extends Component {
 
   componentWillMount() {}
 
+  onButtonPress = isWinner => {
+    const { user, navigation, tournament } = this.props;
+    if (false && tournament != null) {
+      navigation.navigate('GameFormQRCode', {
+        tournament,
+        isWinner
+      });
+    } else {
+      navigation.navigate('GameFormTournament', {
+        winner: user,
+        isWinner
+      });
+    }
+  };
+
   render() {
     const { user, navigation, tournament } = this.props;
     const { text } = this.state;
@@ -46,15 +61,7 @@ class GameFormWinnerLooserScreen extends Component {
           titleStyle={styles.buttonLabel}
           buttonStyle={styles.button}
           onPress={() => {
-            if (tournament != null) {
-              navigation.navigate('GameFormQRCode', {
-                tournament
-              });
-            } else {
-              navigation.navigate('GameFormTournament', {
-                winner: user
-              });
-            }
+            this.onButtonPress(true);
           }}
         />
         {false && (
@@ -63,16 +70,7 @@ class GameFormWinnerLooserScreen extends Component {
             titleStyle={styles.buttonLabel}
             buttonStyle={styles.button}
             onPress={() => {
-              if (tournament != null) {
-                navigation.navigate('GameFormTie', {
-                  tournament,
-                  looser: user
-                });
-              } else {
-                navigation.navigate('GameFormTournament', {
-                  winner: user
-                });
-              }
+              this.onButtonPress(false);
             }}
           />
         )}
@@ -81,16 +79,7 @@ class GameFormWinnerLooserScreen extends Component {
           titleStyle={styles.buttonLabel}
           buttonStyle={styles.button}
           onPress={() => {
-            if (tournament != null) {
-              navigation.navigate('GameFormQRScanner', {
-                tournament,
-                user
-              });
-            } else {
-              navigation.navigate('GameFormTournament', {
-                looser: user
-              });
-            }
+            this.onButtonPress(false);
           }}
         />
       </View>
