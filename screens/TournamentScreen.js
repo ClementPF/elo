@@ -7,7 +7,7 @@ import DropdownAlert from 'react-native-dropdownalert';
 import { NavigationActions } from 'react-navigation';
 import GameRowContainer from '../containers/GameRowContainer';
 import RankRow from '../components/RankRow';
-import EmptyResultsButton from '../components/EmptyResultsButton';
+import { EmptyResultsButton, EmptyResultsScreen } from '../components';
 import { getStatsForTournament, getGamesForTournament } from '../api/tournament';
 import * as R from 'constants';
 
