@@ -4,7 +4,6 @@ import { View, Text, StyleSheet, SectionList, TouchableOpacity } from 'react-nat
 import { Button, SearchBar, Icon, ListItem } from 'react-native-elements';
 import SearchableFlatList from '../components/SearchableFlatList';
 import UserStatRow from '../components/UserStatRow';
-import TournamentRow from '../components/TournamentRow';
 import SearchableSectionList from '../components/SearchableSectionList';
 
 import { fetchUser } from '../redux/actions';
@@ -15,8 +14,7 @@ class GameFormWinnerLooserScreen extends Component {
   static propTypes = {
     navigation: PropTypes.object,
     dispatch: PropTypes.func,
-    user: PropTypes.object,
-    tournament: PropTypes.object
+    user: PropTypes.object
   };
 
   static navigationOptions = ({ navigation }) => {
@@ -35,22 +33,16 @@ class GameFormWinnerLooserScreen extends Component {
   componentWillMount() {}
 
   onButtonPress = isWinner => {
-    const { user, navigation, tournament } = this.props;
-    if (tournament != null) {
-      navigation.navigate('GameFormQRCode', {
-        tournament,
-        isWinner
-      });
+    const { navigation } = this.props;
+    if (isWinner) {
+      navigation.navigate('GameFormQRCode');
     } else {
-      navigation.navigate('GameFormTournament', {
-        winner: user,
-        isWinner
-      });
+      navigation.navigate('GameFormQRScanner');
     }
   };
 
   render() {
-    const { user, navigation, tournament } = this.props;
+    const { user, navigation } = this.props;
     const { text } = this.state;
     return (
       <View style={styles.container}>
@@ -112,11 +104,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = ({ userReducer }) => {
   //console.log('GameFormWinnerLooserScreen - mapStateToProps userReducer:' + JSON.stringify(userReducer));
   return {
-    user: userReducer.user,
-    tournament:
-      userReducer.games != null && userReducer.games.length > 0
-        ? userReducer.games[0].tournament
-        : null
+    user: userReducer.user
   };
 };
 

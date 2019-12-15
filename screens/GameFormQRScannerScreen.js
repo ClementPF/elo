@@ -21,17 +21,21 @@ class GameFormQRScannerScreen extends React.Component {
 
   constructor(props) {
     super(props);
-    const { tournament } = props.navigation.state.params;
-    const { user } = props;
-    this.state = {
-      tournament,
-      hasCameraPermission: null,
-      scannedOutcomes: [
-        {
-          username: user.username,
-          result: 'LOSS',
-          tournamentName: tournament.name
-        } /*,
+    const { user, tournament, navigation } = props;
+
+    if (!tournament) {
+      navigation.navigate('GameFormTournament', { returnData: this.returnData });
+      this.state = {};
+    } else {
+      this.state = {
+        tournament,
+        hasCameraPermission: null,
+        scannedOutcomes: [
+          {
+            username: user.username,
+            result: 'LOSS',
+            tournamentName: tournament.name
+          } /*,
         {
           username: 'charlotte-touvignon',
           result: 'WIN',
@@ -47,10 +51,11 @@ class GameFormQRScannerScreen extends React.Component {
           result: 'WIN',
           tournamentName: tournament.name
         }*/
-      ],
-      scanned: false,
-      scanner: true
-    };
+        ],
+        scanned: false,
+        scanner: true
+      };
+    }
   }
 
   async componentWillMount() {
@@ -168,6 +173,10 @@ class GameFormQRScannerScreen extends React.Component {
       loading
     } = this.state;
     const { user, navigation } = this.props;
+
+    if (!tournament) {
+      return <Text>Select a tournament</Text>;
+    }
 
     const qrData = {
       username: user.username,
@@ -353,10 +362,12 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = ({ userReducer, refreshReducer }) => {
-  console.log('userReducer', userReducer);
-  //console.log('GameFormConfirmationScreen - mapStateToProps userReducer:' + JSON.stringify(userReducer) + ' refreshReducer : ' + JSON.stringify(refreshReducer));
   return {
-    user: userReducer.user
+    user: userReducer.user,
+    tournament:
+      userReducer.games != null && userReducer.games.length > 0
+        ? userReducer.games[0].tournament
+        : null
   };
 };
 

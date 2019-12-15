@@ -26,12 +26,15 @@ class GameFormQRCodeScreen extends Component {
 
   constructor(props) {
     super(props);
-    const { tournament } = props.navigation.state.params;
+    const { tournament, navigation } = props;
     this.state = {
       tournament,
       text:
         "Check you out, you won!\n Well it's not a win until you get them sweet points. Make sure the looser scan this QR code and submit the game."
     };
+    if (!tournament) {
+      navigation.navigate('GameFormTournament', { returnData: this.returnData });
+    }
   }
 
   componentWillMount() {
@@ -59,6 +62,9 @@ class GameFormQRCodeScreen extends Component {
       navigation
     } = this.props;
     const { tournament, text } = this.state;
+    if (!tournament) {
+      return <Text>Select a tournament</Text>;
+    }
     const { display_name: displayName, name, sport } = tournament;
 
     const logoFromFile = require('../assets/images/icon.png');
@@ -80,7 +86,7 @@ class GameFormQRCodeScreen extends Component {
             title={'EDIT'}
             buttonStyle={styles.button}
             onPress={() => {
-              navigation.navigate('GameFormTournament', this.returnData);
+              navigation.navigate('GameFormTournament', { returnData: this.returnData });
             }}
           />
         </View>
@@ -136,10 +142,13 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = ({ userReducer }) => {
-  //console.log('GameFormQRCodeScreen - mapStateToProps userReducer:' + JSON.stringify(userReducer));
   return {
     user: userReducer.user,
-    games: userReducer.games
+    games: userReducer.games,
+    tournament:
+      userReducer.games != null && userReducer.games.length > 0
+        ? userReducer.games[0].tournament
+        : null
   };
 };
 

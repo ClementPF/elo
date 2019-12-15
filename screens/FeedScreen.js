@@ -242,7 +242,7 @@ class FeedScreen extends Component {
     } else if (games.length == 0) {
       rendered = (
         <EmptyResultsScreen
-          title={emptyFeed}
+          title={emptyFeedText}
           onPress={() => {
             navigate('Tournaments');
           }}

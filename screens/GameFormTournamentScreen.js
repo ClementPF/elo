@@ -94,12 +94,9 @@ class GameFormTournamentScreen extends Component {
     const { navigation } = this.props;
     const { isWinner } = this.state;
     if (navigation.state.params.returnData !== undefined) {
+      // case of user changing the tournament by clicking EDIT
       navigation.state.params.returnData(item);
       navigation.goBack();
-    } else if (isWinner) {
-      navigation.navigate('GameFormQRCode', { tournament: item });
-    } else if (!isWinner) {
-      navigation.navigate('GameFormQRScanner', { tournament: item });
     }
   }
 
@@ -206,7 +203,6 @@ gameFormStyle = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-  //console.log('GameFormTournamentScreen - mapStateToProps');
   let user = state.userReducer.user;
   return {
     user: user
