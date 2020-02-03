@@ -125,12 +125,12 @@ class TournamentScreen extends Component {
       }),
       () => {
         const { tournamentName, pageSize, pageCount } = this.state;
-        getGamesForTournament(tournamentName, pageCount, pageSize).then(games => {
-          if (games.length == 0) {
+        getGamesForTournament(tournamentName, pageCount, pageSize).then(loadedGames => {
+          if (loadedGames.length == 0) {
             this.setState({ endReached: true, paginating: false });
           } else {
             const { games } = this.state;
-            games.push(...games);
+            games.push(...loadedGames);
             this.setState({ games, paginating: false });
           }
         });

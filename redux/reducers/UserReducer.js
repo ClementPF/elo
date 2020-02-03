@@ -20,11 +20,12 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state, error: action.payload };
     case GET_USER_GAMES_SUCCESS:
       let temp;
+      const ids = action.payload.map(g => g.game_id).join(',');
       if (state.games == null) {
         temp = action.payload;
       } else {
-        temp = _.merge(action.payload, state.games);
         console.log('temp', temp);
+        temp = state.games.concat(action.payload);
       }
       return { ...state, games: temp };
     case GET_USER_GAMES_FAIL:
