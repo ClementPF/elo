@@ -8,16 +8,16 @@ import { createStackNavigator } from 'react-navigation';
 import Colors from '../constants/Colors';
 
 import Login from '../screens/Login';
-import Login2 from '../screens/Login2';
+//import Login2 from '../screens/Login2';
 
 export default createStackNavigator(
   {
     Login: {
       screen: Login
-    },
-    Login2: {
-      screen: Login2
     }
+    /*    Login2: {
+      screen: Login2
+  }*/
   },
   {
     defaultNavigationOptions: {
