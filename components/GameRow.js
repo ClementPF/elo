@@ -210,6 +210,7 @@ export default class GameRow extends Component {
     const rightOutcomes = losers;
     return (
       <TouchableOpacity
+        activeOpacity={0.9}
         key={`${outcomes[0].outcome_id}`}
         onPress={() => {
           this.setState({ showRivalry: !(outcomes.length > 2) && !showRivalry });
