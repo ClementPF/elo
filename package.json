@@ -11,23 +11,29 @@
   },
   "dependencies": {
     "axios": "^0.19.0",
-    "expo": "33.0.0",
-    "expo-app-auth": "^5.0.1",
-    "expo-google-sign-in": "^5.0.1",
+    "expo": "^37.0.0",
+    "expo-app-auth": "~9.0.0",
+    "expo-apple-authentication": "~2.1.0",
+    "expo-barcode-scanner": "~8.1.0",
+    "expo-facebook": "~8.1.0",
+    "expo-google-sign-in": "~8.1.0",
     "lodash": "^4.17.15",
     "lz-string": "^1.4.4",
     "moment": "^2.24.0",
     "prop-types": "^15.7.2",
-    "react": "16.8.3",
-    "react-dom": "^16.8.6",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-33.0.0.tar.gz",
+    "react": "16.9.0",
+    "react-dom": "16.9.0",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-37.0.0.tar.gz",
     "react-native-dropdownalert": "^4.0.1",
     "react-native-elements": "0.17.0",
     "react-native-extended-stylesheet": "0.6.0",
+    "react-native-gesture-handler": "~1.6.0",
     "react-native-keychain": "1.2.1",
     "react-native-qrcode-svg": "^5.1.2",
+    "react-native-screens": "~2.2.0",
+    "react-native-svg": "11.0.1",
     "react-native-vector-icons": "4.2.0",
-    "react-native-web": "^0.11.4",
+    "react-native-web": "^0.11.7",
     "react-navigation": "^3.11.0",
     "react-redux": "5.0.4",
     "redux": "3.6.0",
@@ -36,7 +42,7 @@
     "victory-native": "^32.0.2"
   },
   "devDependencies": {
-    "babel-preset-expo": "^5.1.1"
+    "babel-preset-expo": "^8.1.0"
   },
   "private": true
 }
