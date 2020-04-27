@@ -19,6 +19,15 @@ function loginUserWithFacebook(fb_token) {
   });
 }
 
+function loginUserWithApple(appleToken, username) {
+  console.log('loginUserWithApple', { appleToken, username });
+  return Axios.post(`${API_ENDPOINTS.AUTH}/token`, {
+    provider_access_token: appleToken,
+    token_provider: 'apple',
+    username: username
+  });
+}
+
 function loginUserWithGoogle(google_token) {
   return Axios.post(`${API_ENDPOINTS.AUTH}/token`, {
     provider_access_token: google_token,
@@ -47,4 +56,11 @@ function logoutUser() {
   return AsyncStorage.removeItem('@Store:token');
 }
 
-export { loginUserWithFacebook, loginUserWithGoogle, testTokenValidity, refreshToken, logoutUser };
+export {
+  loginUserWithFacebook,
+  loginUserWithApple,
+  loginUserWithGoogle,
+  testTokenValidity,
+  refreshToken,
+  logoutUser
+};

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Constants from 'expo-constants';
 import * as Facebook from 'expo-facebook';
 import * as GoogleSignIn from 'expo-google-sign-in';
+import * as AppleAuthentication from 'expo-apple-authentication';
 import _ from 'lodash';
 import {
   View,
@@ -18,6 +19,7 @@ import { SocialIcon } from 'react-native-elements';
 import {
   loginUserWithFacebook,
   loginUserWithGoogle,
+  loginUserWithApple,
   testTokenValidity,
   refreshToken
 } from '../api/login';
@@ -201,6 +203,39 @@ class Login extends Component {
     }
   };
 
+  signInWithAppleAsync = async () => {
+    try {
+      const credentials = await AppleAuthentication.signInAsync({
+        requestedScopes: [
+          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+          AppleAuthentication.AppleAuthenticationScope.EMAIL
+        ]
+      });
+
+      const { identityToken, fullName } = credentials;
+      const { givenName = 'sharky', familyName = 'sharko' } = fullName;
+
+      const firstName = fullName.givenName;
+      const lastInitial = fullName.familyName[0];
+      const rdm = Math.floor(Math.random() * 1000);
+
+      loginUserWithApple(identityToken, `${firstName}${lastInitial}-${rdm}`)
+        .then(response => {
+          this.onLoggedIn(response.data);
+        })
+        .catch(error => {
+          this.onError('User failed to log in ' + error);
+        });
+    } catch (e) {
+      console.log({ e });
+      if (e.code === 'ERR_CANCELED') {
+        // handle that the user canceled the sign-in flow
+      } else {
+        // handle other errors
+      }
+    }
+  };
+
   onLoggedIn = data => {
     this.dropdown.alertWithType('info', 'Info', 'User Logged in Successfully');
     Axios.defaults.headers.common['Authorization'] = 'Bearer ' + data.access_token;
@@ -253,17 +288,30 @@ class Login extends Component {
         </View>
         <View style={loginStyle.buttonsContainer}>
           <SocialIcon
+            style={loginStyle.socialButton}
             title="Sign In With Facebook"
             button={true}
             onPress={this.signInWithFacebookAsync}
             type="facebook"
           />
-          <SocialIcon
-            title="Sign In With Google"
-            button={true}
-            onPress={this.signInWithGoogleAsync}
-            type="google-plus-official"
-          />
+          {Platform.OS !== 'ios' && (
+            <SocialIcon
+              style={loginStyle.socialButton}
+              title="Sign In With Google"
+              button={true}
+              onPress={this.signInWithGoogleAsync}
+              type="google-plus-official"
+            />
+          )}
+          {Platform.OS === 'ios' && (
+            <AppleAuthentication.AppleAuthenticationButton
+              buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
+              buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
+              cornerRadius={22}
+              style={loginStyle.applSignInButton}
+              onPress={this.signInWithAppleAsync}
+            />
+          )}
         </View>
         <Text style={loginStyle.versionText}>
           {`Version : ${this.state.appVersion} ${
@@ -290,7 +338,9 @@ loginStyle = StyleSheet.create({
   },
   welcomeTextContainer: { flex: 1 },
   logo: { width: 256, height: 256 },
-  buttonsContainer: { flex: 2, flexDirection: 'column' },
+  buttonsContainer: { flex: 2, flexDirection: 'column', alignItems: 'stretch' },
+  socialButton: { marginHorizontal: 12 },
+  applSignInButton: { height: 54, marginHorizontal: 12, marginVertical: 4 },
   versionText: {
     textAlign: 'center',
     position: 'absolute',
